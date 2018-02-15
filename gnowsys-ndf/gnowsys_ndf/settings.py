@@ -747,7 +747,7 @@ GSTUDIO_RESOURCES_READING_LEVEL = ["Primary", "Upper Primary", "Secondary", "Sen
 
 GSTUDIO_TASK_TYPES = ["Bug", "Feature", "Support", "UI Feature", "Moderation", "Other"]
 
-GSTUDIO_NROER_MENU = [{"Repository": []}, {"Partners": ["States", "Institutions", "Individuals"]}, {"Groups":["Teachers", "Interest Groups", "Schools"]}]
+GSTUDIO_NROER_MENU = [{"Repository": []}, {"Partners": ["States", "Institutions", "Individuals"]}, {"Groups":["Teachers", "Interest Groups", "Schools", "States", "Institutions","Individuals"]}]
 
 GSTUDIO_NROER_GAPPS = [{"Themes": "topics"}, {"eLibrary": "e-library"}, {"eBooks": "e-book"}, {"eCourses": "course"}, {"Events": "program"}]
 
