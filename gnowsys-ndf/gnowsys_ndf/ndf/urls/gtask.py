@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('gnowsys_ndf.ndf.views.gtask',
                        url(r'^[/]$', 'gtask', name='gtask'),
                        url(r'^/gcreate$', 'gcreate_edit_task', name='gtask_create_edit'),
+                       url(r'^/gcreate_event$', 'gcreate_edit_event', name='gevent_create_edit'),
                        url(r'^/(?P<task_id>[\w-]+)$', 'task_details', name='task_details'),
                        url(r'^/gedit/(?P<task_id>[\w-]+)/$', 'gcreate_edit_task', name='gtask_edit'),
 				       # url(r'^/collection/(?P<task_id>[\w-]+)/page/(?P<each_page>[\w-]+)$', 'task_collection', name='task_collection'),

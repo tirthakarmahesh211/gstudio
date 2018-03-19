@@ -261,6 +261,20 @@ def gcreate_edit_task(request, group_name, task_id=None):
         )
 
 
+@login_required
+@get_execution_time
+def gcreate_edit_event(request, group_name, group_id, task_id=None):
+  """Creates/Modifies details about the given Task.
+  """
+  try:
+        group_id = ObjectId(group_id) #group_id is a valid ObjectId
+  except:
+        group_name, group_id = get_group_name_id(group_id) #instead of group_id the name of the object is passed via URL to the function
+  group_obj = node_collection.one({'_id': group_id})
+
+  print group_obj
+
+
 
 def update(request,rt_list,at_list,task_node,group_id,group_name):
       file_id=(request.POST.get("files"))
