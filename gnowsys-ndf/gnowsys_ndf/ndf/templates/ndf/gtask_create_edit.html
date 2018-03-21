@@ -213,7 +213,7 @@
           <h6>Event Type:</h6>
         </div>
         <div class="small-9 columns" >
-          <select required="" class="medium" id="event_type" name="Status" data-invalid="" style="background-color:#719dc7;">
+          <select required="" class="medium event_type" id="event_type" name="Status" data-invalid="" style="background-color:#719dc7;">
             <option selected="selected" value="Orientation" id="orientation">{% trans 'Orientation' %}</option>
             <option value="Lab Session" id="lab_session">{% trans 'Lab Session' %}</option>
             <option value="Session" id="session">{% trans 'Session' %}</option>
@@ -230,7 +230,7 @@
           <h6>Start Time </h6>
         </div>
         <div class="small-3 columns">
-          <input id="start_date" class="start_date" type="text" style="background-color:#719dc7;" placeholder="DD/MM/YYYY" value="" name="start_time" readonly="">
+          <input id="start_time" class="start_time" type="text" style="background-color:#719dc7;" placeholder="DD/MM/YYYY" value="" name="start_time" readonly="">
         </div>
         <div class="small-3 columns">
           <h6>End Time</h6>
@@ -358,7 +358,8 @@
         'task_priority' : sel_task_priority,
         'start_date' : start_date,
         'due_date' : due_date,
-        'content' : task_notes
+        'content' : task_notes,
+        'is_task': true
       } ,
 
       success: function(data){
@@ -372,20 +373,20 @@
   
   $( ".create-event-btn" ).click(function() {
     event_name = $(".event-name").val();
-    sel_event_type =  $('#event_types').find(':selected').val();
+    sel_event_type =  $('.event_type').find(':selected').val();
     event_notes =  $('#event_notes').val();
     start_time = $('#start_time').val();
     event_notes =  $('#event_notes').val();
     end_time = $('#end_time').val();
     $.ajax({
-      url: "{% url 'gevent_create_edit' group_object.name %}",
+      url: "{% url 'gtask_create_edit' group_object.name %}",
 
       type: "POST",
       data: {
         'csrfmiddlewaretoken': "{{csrf_token}}",
         'name' : event_name,
         'event_type' : sel_event_type,
-        'start_tim' : start_time,
+        'start_time' : start_time,
         'end_time' : end_time,
         'content' : event_notes
       } ,

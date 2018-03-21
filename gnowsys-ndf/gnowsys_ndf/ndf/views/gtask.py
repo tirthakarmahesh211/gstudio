@@ -216,50 +216,105 @@ def save_image(request, group_name, app_id=None, app_name=None, app_set_id=None,
 def gcreate_edit_task(request, group_name, task_id=None):
   """Creates/Modifies details about the given Task.
   """
-  group_object = node_collection.one({'name': unicode(group_name)})
-  update = request.POST.get("update")
-  if not update == "True":
-    name = request.POST.get("name")
-    content = request.POST.get("content")
-    task_type = request.POST.get("task_type")
-    Status = request.POST.get("task_status")
-    start_time = request.POST.get("start_date")
-    end_time = request.POST.get("due_date")
-    Priority = request.POST.get("task_priority")
-    Estimated_time = request.POST.get("estimated_time")
-    task_obj = node_collection.collection.GSystem()
-    task_obj.fill_gstystem_values(request=request,name=str(name),content=content, group_set=group_object._id,member_of=app._id)
-    task_obj.save(group_id=group_object._id)
-    at_list = ["Status", "start_time", "Priority", "end_time", "Assignee", "Estimated_time"]
-    
-    
-    if Status:
-      attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Status' })
-      ga_node = create_gattribute(task_obj._id, attributetype_key, Status)
+  print request.POST.get("is_task")
+  print "=============================================="
+  if request.POST.get("is_task") == True:
+    group_object = node_collection.one({'name': unicode(group_name)})
+    update = request.POST.get("update")
+    if not update == "True":
+      name = request.POST.get("name")
+      content = request.POST.get("content")
+      task_type = request.POST.get("task_type")
+      Status = request.POST.get("task_status")
+      start_time = request.POST.get("start_date")
+      end_time = request.POST.get("due_date")
+      Priority = request.POST.get("task_priority")
+      Estimated_time = request.POST.get("estimated_time")
 
-    if start_time:
-      attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'start_time' })
-      ga_node = create_gattribute(task_obj._id, attributetype_key, start_time)
+      print name
 
-    if end_time:
-      attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'end_time' })
-      ga_node = create_gattribute(task_obj._id, attributetype_key, end_time)
+      task_obj = node_collection.collection.GSystem()
+      task_obj.fill_gstystem_values(request=request,name=str(name),content=content, group_set=group_object._id,member_of=app._id)
+      task_obj.save(group_id=group_object._id)
+      at_list = ["Status", "start_time", "Priority", "end_time", "Assignee", "Estimated_time"]
+      
+      
+      if Status:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Status' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, Status)
 
-    if Priority:
-      attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Priority' })
-      ga_node = create_gattribute(task_obj._id, attributetype_key, Priority)
+      if start_time:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'start_time' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, start_time)
 
-    if Estimated_time:
-      attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Estimated_time' })
-      ga_node = create_gattribute(task_obj._id, attributetype_key, Estimated_time)
+      if end_time:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'end_time' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, end_time)
+
+      if Priority:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Priority' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, Priority)
+
+      if Estimated_time:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Estimated_time' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, Estimated_time)
 
 
-  if not task_id:
-    return render_to_response("ndf/gtask_create_edit.html",
-          {"group_object" : group_object },
-          context_instance=RequestContext(request)
-        )
+    if not task_id:
+      return render_to_response("ndf/gtask_create_edit.html",
+            {"group_object" : group_object },
+            context_instance=RequestContext(request)
+          )
+  else:
+    ''' event code'''
+    group_object = node_collection.one({'name': unicode(group_name)})
+    update = request.POST.get("update")
+    if not update == "True":
+      name = request.POST.get("name")
+      event_type = request.POST.get("event_type")
+      start_time = request.POST.get("start_time")
+      content = request.POST.get("content")
+      end_time = request.POST.get("end_time")
 
+      # print name
+      # print event_type
+      # print start_time
+      # print content
+      # print end_time
+      # print "event code................................................"
+
+      task_obj = node_collection.collection.GSystem()
+      task_obj.fill_gstystem_values(request=request,name=str(name),content=content, group_set=group_object._id,member_of=app._id)
+      task_obj.save(group_id=group_object._id)
+      at_list = ["Status", "start_time", "Priority", "end_time", "Assignee", "Estimated_time"]
+      
+      
+      # if Status:
+      #   attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Status' })
+      #   ga_node = create_gattribute(task_obj._id, attributetype_key, Status)
+
+      if start_time:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'start_time' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, start_time)
+
+      if end_time:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'end_time' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, end_time)
+
+      if Priority:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Priority' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, Priority)
+
+      if Estimated_time:
+        attributetype_key = node_collection.find_one({"_type": 'AttributeType', 'name': 'Estimated_time' })
+        ga_node = create_gattribute(task_obj._id, attributetype_key, Estimated_time)
+
+
+    if not task_id:
+      return render_to_response("ndf/gtask_create_edit.html",
+            {"group_object" : group_object },
+            context_instance=RequestContext(request)
+          )
 
 @login_required
 @get_execution_time
