@@ -236,7 +236,7 @@
           <h6>End Time</h6>
         </div>
         <div class="small-3 columns">
-          <input id="due_date" class="due_date" type="text" style="background-color:#719dc7;"   placeholder="DD/MM/YYYY" value="" name="due_date" readonly="">
+          <input id="end_time" class="end_time" type="text" style="background-color:#719dc7;"   placeholder="DD/MM/YYYY" value="" name="end_time" readonly="">
         </div>
       </div>
 <!--       <div class="row">
@@ -317,6 +317,24 @@
     );
 
 
+    $( ".end_time" ).datepicker(
+    {
+      changeMonth: true,
+      dateFormat: 'dd/mm/yy',
+      minDate: '0',
+      maxDate: '+2m',
+      defaultDate: '0',
+    }
+    );
+
+
+    $( ".start_time" ).datepicker(
+      { changeMonth: true,
+        dateFormat: 'dd/mm/yy',
+        minDate: '0',
+        maxDate: '+2m',
+        defaultDate: '0'}
+        );
   });
   
 
@@ -351,23 +369,24 @@
   });
 
   
+  
   $( ".create-event-btn" ).click(function() {
     event_name = $(".event-name").val();
-    sel_event_type =  $('#event_type').find(':selected').val();
+    sel_event_type =  $('#event_types').find(':selected').val();
     event_notes =  $('#event_notes').val();
-    start_date = $('#start_date').val();
+    start_time = $('#start_time').val();
     event_notes =  $('#event_notes').val();
-    due_date = $('#due_date').val();
+    end_time = $('#end_time').val();
     $.ajax({
-      url: "{% url 'gtask_create_edit' group_object.name %}",
+      url: "{% url 'gevent_create_edit' group_object.name %}",
 
       type: "POST",
       data: {
         'csrfmiddlewaretoken': "{{csrf_token}}",
         'name' : event_name,
         'event_type' : sel_event_type,
-        'start_date' : start_date,
-        'due_date' : due_date,
+        'start_tim' : start_time,
+        'end_time' : end_time,
         'content' : event_notes
       } ,
 
@@ -377,7 +396,6 @@
       },
     });
   });
-
 
   $(".create-event-btn").click(function(){
 

@@ -1,0 +1,239 @@
+{% load i18n %}
+{% load ndf_tags %}
+
+{% block body_content %}
+
+<script type="text/javascript" src="/static/ndf/bower_components/jquery-ui/jquery-ui.min.js"></script> <!-- checked -->
+<script type="text/javascript" src="/static/ndf/bower_components/foundation-datepicker/js/foundation-datepicker.js"></script> <!-- checked -->
+<link rel="stylesheet" type="text/css" href="/static/ndf/bower_components/foundation-datepicker/stylesheets/foundation-datepicker.css"> <!-- checked -->
+<link rel="stylesheet" type="text/css" href="/static/ndf/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css"> <!-- checked -->
+<script src="/static/ndf/bower_components/jquery-ui/jquery-ui.js"></script> <!-- checked -->
+<script src="/static/ndf/bower_components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script> <!-- checked -->
+<script src="/static/ndf/bower_components/jqueryui-timepicker-addon/dist/jquery-ui-sliderAccess.js"></script> <!-- checked -->
+<link rel="stylesheet" href="/static/ndf/bower_components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.css"> <!-- checked -->
+<link rel="stylesheet" type="text/css" href="/static/ndf/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"> <!-- checked -->
+<style type="text/css">
+
+
+  .create-new-task{
+    width: 83%;
+    margin-left: 2%;
+    border-left: 2px solid gray;
+    height: 460px;
+    border-bottom: 2px solid gray;
+    border-right: 2px solid gray;
+    border-top: 2px solid gray;
+    margin-top: 5px;
+  }
+
+
+
+  input[type="file"]:before {
+    content: 'Select files';
+    display: inline-block;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 8px 10px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    font-weight: 500;
+    // //font-size: 10pt;
+    color: black;
+    border-color: black;
+    float: right;
+    background-color: gray;
+  }
+  input[type="file"] {
+    padding: 5px;
+    margin-top: 10px;
+    margin-left: 30.4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 95%;
+  }
+  .vl {
+    border-left: 1px solid gray;
+    height: 300px;
+  }
+
+
+</style>
+
+<div class="create-new-task create-task-event-tabs">
+  <div class="small-11 columns">
+   <ul class="tabs" data-tab role="tablist">
+    <li class="tab-title" role="presentation"><a href="#create_new_event" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-2">Create New Event</a></li>
+  </ul>  
+</div>
+<hr/>
+
+<div class="tabs-content">
+  <section role="tabpanel" aria-hidden="true" class="content" id="create_new_event">
+    <div class="small-6 columns ">
+      <div class="row">
+        <div class="small-3 columns">
+          <h6> Event Name </h6>
+        </div>
+        <div class="small-9 columns">
+          <input type="text" class="event-name" name="name" placeholder="Enter Event name" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-3 columns">
+          <h6>Event Type:</h6>
+        </div>
+        <div class="small-9 columns" >
+          <select required="" class="medium" id="event_types" name="Status" data-invalid="" style="background-color:#719dc7;">
+            <option selected="selected" value="Orientation" id="orientation">{% trans 'Orientation' %}</option>
+            <option value="Lab Session" id="lab_session">{% trans 'Lab Session' %}</option>
+            <option value="Session" id="session">{% trans 'Session' %}</option>
+            <option value="Meeting" id="meeting">{% trans 'Meeting' %}</option>
+            <option value="Field_visit" id="field_fisit">{% trans 'Field Visit' %}</option>
+            <option value="Master Trainer Program" id="master_trainer_program">{% trans 'Master Trainer Program' %}</option>
+            <option value="Course Developers Meeting" id="course_developers_meeting">{% trans 'Course Developers Meeting' %}</option>
+            <option value="Training of Teachers" id="training_of_teachers">{% trans 'Training of Teachers' %}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-3 columns"> 
+          <h6>Start Time </h6>
+        </div>
+        <div class="small-3 columns">
+          <input id="start_time" class="start_time" type="text" style="background-color:#719dc7;" placeholder="DD/MM/YYYY" value="" name="start_time" readonly="">
+        </div>
+        <div class="small-3 columns">
+          <h6>End Time</h6>
+        </div>
+        <div class="small-3 columns">
+          <input id="end_time" class="end_time" type="text" style="background-color:#719dc7;"   placeholder="DD/MM/YYYY" value="" name="end_time" readonly="">
+        </div>
+      </div>
+    </div>
+    <div class="small-6 columns vl">
+      <div class="row">
+        <div class="small-3 columns">
+          <h6>Notes:</h6>
+        </div>
+        <div class="small-9 columns">
+          <textarea id="event_notes" rows="5" cols="50"></textarea>
+        </div>
+      </div>
+    </div>
+    <hr/>
+
+    <div class="small-2 columns right">
+      <button type="button" class="button expand" style="background-color:#164A7B; border-radius:10px;">Cancel</button>
+    </div>
+    <div class="small-2 columns right">
+      <button type="button" class="button expand create-event-btn" style="background-color:#164A7B; border-radius:10px;">Create Event</button>
+    </div>
+  </section>
+</div>
+
+</div>
+
+<script type="text/javascript">
+
+  $(document).foundation('tab', 'reflow');
+
+
+  $( function() {
+
+    $( ".end_time" ).datepicker(
+    {
+      changeMonth: true,
+      dateFormat: 'dd/mm/yy',
+      minDate: '0',
+      maxDate: '+2m',
+      defaultDate: '0',
+    }
+    );
+
+
+    $( ".start_time" ).datepicker(
+      { changeMonth: true,
+        dateFormat: 'dd/mm/yy',
+        minDate: '0',
+        maxDate: '+2m',
+        defaultDate: '0'}
+        );
+
+
+
+
+  });
+  
+
+  // $( ".create-task-btn" ).click(function() {
+  //   task_name = $(".task-name").val();
+  //   sel_task_type =  $('#task_type').find(':selected').val();
+  //   sel_task_status =  $('#task_status').find(':selected').val();
+  //   sel_task_priority =  $('#task_priority').find(':selected').val();
+  //   task_notes =  $('#task_notes').val();
+  //   start_date = $('#start_date').val();
+  //   due_date = $('#due_date').val();
+  //   $.ajax({
+  //     url: "{% url 'gtask_create_edit' group_object.name %}",
+
+  //     type: "POST",
+  //     data: {
+  //       'csrfmiddlewaretoken': "{{csrf_token}}",
+  //       'name' : task_name,
+  //       'task_type' : sel_task_type,
+  //       'task_status' : sel_task_status,
+  //       'task_priority' : sel_task_priority,
+  //       'start_date' : start_date,
+  //       'due_date' : due_date,
+  //       'content' : task_notes
+  //     } ,
+
+  //     success: function(data){
+
+  //       $( ".created-by-me" ).trigger( "click" );
+  //     },
+  //   });
+  // });
+
+  
+  $( ".create-event-btn" ).click(function() {
+    event_name = $(".event-name").val();
+    sel_event_type =  $('#event_types').find(':selected').val();
+    event_notes =  $('#event_notes').val();
+    start_time = $('#start_time').val();
+    event_notes =  $('#event_notes').val();
+    end_time = $('#end_time').val();
+    $.ajax({
+      url: "{% url 'gevent_create_edit' group_object.name %}",
+
+      type: "POST",
+      data: {
+        'csrfmiddlewaretoken': "{{csrf_token}}",
+        'name' : event_name,
+        'event_type' : sel_event_type,
+        'start_tim' : start_time,
+        'end_time' : end_time,
+        'content' : event_notes
+      } ,
+
+      success: function(data){
+
+        $( ".created-by-me" ).trigger( "click" );
+      },
+    });
+  });
+
+
+  $(".create-event-btn").click(function(){
+
+  });
+
+
+</script>
+
+
+
+
+{% endblock body_content %}
