@@ -142,7 +142,7 @@
 											{{key}}
 										{% endif %} #}
 									{% endcomment %}
-									{% firstof val.altnames key %}
+									{% blocktrans %}{% firstof val.altnames key %}{% endblocktrans %}
 								</option>
 
 							{% endfor %}
