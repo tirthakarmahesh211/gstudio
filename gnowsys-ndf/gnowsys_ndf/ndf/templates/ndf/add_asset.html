@@ -287,11 +287,11 @@
         <!-- </div> -->
     {% include 'ndf/pagination.html' with urlname="asset_details_paged" first_arg=group_id second_arg=asset_obj.pk page_info=assetcontent_page_info %}
 
-        <div class="asset-content-detail">
-              {% if node %}
-               &nbsp; {% include "ndf/asset_content_detail.html" with node=node %}
-              {%  endif %}
-        </div>
+    <div class="asset-content-detail">
+          {% if node %}
+           &nbsp; {% include "ndf/asset_content_detail.html" with node=node %}
+          {%  endif %}
+    </div>
     <div class="row asset-comments-section">
       <div class="small-10 columns" id="view-discussion" style="overflow-x:auto;overflow-y:hidden">
             <!-- discussion content area -->

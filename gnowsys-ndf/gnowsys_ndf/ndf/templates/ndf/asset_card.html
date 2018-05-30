@@ -4,15 +4,15 @@
 {% user_access_policy groupid request.user as user_access_priv %}
 
   {% if first_arg and second_arg and third_arg %}  
-        <a href="{% url url_name first_arg second_arg third_arg %}" title="{{each_asset.name}}" > 
+        <a href="{% url url_name first_arg second_arg third_arg %}" title="{{each_asset.name}}"> 
    {% elif first_arg and second_arg  %}
         <a href="{% url url_name first_arg second_arg  %}" title="{{each_asset.name}}">
    {% endif %}
     {% if not no_asset %}
         {% get_relation_value each_asset.pk 'has_assetcontent' as grel_asstcontent %}
     {% endif %}
-      <div class="small-12 medium-2 large-2 columns ">
-        <div class="asset_tile">
+      <div class="small-12 medium-2 large-2 columns">
+        <div class="asset_tile" data-reveal-id="assetcontentModal">
             <div class="asset_preview">
 
               {% if not no_asset %}
@@ -120,6 +120,14 @@
             </div>
         </div>
     </div>
-    {% include 'ndf/widget_cross_publish.html' with node=each_asset %}
+    {% include 'ndf/widget_cross_publish.html' with node=node %}
 
-    
+    <div id="assetcontentModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+      <h2 id="firstModalTitle">This is a modal.{{node}}</h2>        
+        <div class="asset-content-detail">
+              {% if node %}
+               &nbsp; {% include "ndf/asset_content_detail.html" with node=node %}
+              {%  endif %}
+        </div>
+      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>    
