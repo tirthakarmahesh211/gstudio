@@ -7196,3 +7196,26 @@ def get_telegram_content(request, group_id):
   print TelegramBot.getMe()
 
   return HttpResponse("success")
+
+
+# @login_required
+# @get_execution_time
+# def open_asset(request,group_id):
+#   try:
+#       group_id = ObjectId(group_id)
+#   except:
+#       group_name, group_id = get_group_name_id(group_id)
+#   group_obj = Group.get_group_name_id(group_id, get_obj=True)
+
+#   topic_gst = node_collection.one({'_type': 'GSystemType', 'name': 'Topic'})
+#   topic_nodes = node_collection.find({'member_of': {'$in': [topic_gst._id]}})
+#   context_variables = {'group_id':group_id, 'groupid':group_id,'edit': False}
+#   node_id = request.GET.get('node_id', None)
+#   title = request.GET.get('title', None)
+#   node_obj = node_collection.one({'_id': ObjectId(node_id)})
+#   if node_obj:
+#     context_variables.update({'asset_obj': node_obj,'topic_nodes':topic_nodes})
+#     context_variables.update({'edit': True})
+#   context_variables.update({'group_obj': group_obj,'title':title,'topic_nodes':topic_nodes})
+#   return render_to_response("ndf/open_asset.html",RequestContext(request,
+#     context_variables))  

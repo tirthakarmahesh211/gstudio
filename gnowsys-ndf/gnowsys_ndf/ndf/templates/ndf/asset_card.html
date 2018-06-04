@@ -8,6 +8,10 @@
    {% elif first_arg and second_arg  %}
         <a href="{% url url_name first_arg second_arg  %}" title="{{each_asset.name}}">
    {% endif %}
+   <input type="hidden" name="" value="{{url_name}}" id="url_name">
+   <input type="hidden" name="" value="{{first_arg}}" id="first_arg">
+   <input type="hidden" name="" value="{{second_arg}}" id="second_arg">
+   <input type="hidden" name="" value="{{third_arg}}" id="third_arg">
     {% if not no_asset %}
         {% get_relation_value each_asset.pk 'has_assetcontent' as grel_asstcontent %}
     {% endif %}
@@ -109,17 +113,60 @@
                 <div class="asset_title" title="{% firstof each_asset.altnames each_asset.name %}">{% firstof each_asset.altnames|truncatechars:25  each_asset.name|truncatechars:25 %}
                   </a>
                     <a class="crossPublish-{{each_asset.pk}} right" title="Click to Cross Publish this files" style="margin: -2px 1px 0px 2px; float:right; font-size: 20px;"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                    <p>
+                        <a class="openassetContent-{{each_asset.pk}} right" title="Click to open asset content" style="margin: -10px -7px 0px -4px; float:right; font-size: 20px;"><i class="fa fa-folder-open" aria-hidden="true"></i></a>
+                    </p>
+                    <input type="hidden" name="" value="{{each_asset}}" class="each_assetcontent">
                   {% if not no_checkbox %}
                     {% if user.is_authenticated  and not group_object.edit_policy == "NON_EDITABLE"  or gstaff_access %}
                                 <input type="checkbox" class="select-chkbox" name="filenode" value="{{each_asset.pk}}" style="margin-top:6px; margin-right: 2px; float:right;" class="asset_content_checkbox" />
                     {% endif %}
                     {% endif %}
 
-                    <div class="asset_desc">{{each_asset.content|striptags|truncatechars:25}}</div>
+                    <div class="asset_desc" style="margin-top: -14px ;">{{each_asset.content|striptags|truncatechars:25}}</div>
                 </div>
             </div>
         </div>
     </div>
     {% include 'ndf/widget_cross_publish.html' with node=each_asset %}
+
+    <div id="asset_resource-{{node.pk}}" class="reveal-modal" data-reveal style="position:absolute;" data-options="close_on_background_click:false;close_on_esc:false;">
+        hi
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+
+<script type="text/javascript">
+
+    $(document).on("click", ".openassetContent-{{each_asset.pk}}", function() {
+        // alert("hi")
+        var url_name=$('#url_name').val()
+        console.log(url_name)
+        var first_arg=$('#first_arg').val()
+        var second_arg=$('#second_arg').val()
+        var third_arg=$('#third_arg').val()
+
+        // {% if first_arg and second_arg and third_arg %}
+        //     url="{% url url_name first_arg second_arg third_arg %}"
+        // {% elif first_arg and second_arg %}
+        //     url="{% url url_name first_arg second_arg %}"
+        // {% endif %}
+
+        var  url = "/"+first_arg+"/course/asset_detail/"+second_arg
+        $.ajax({
+            url: url,
+            // datatype: "html",
+            data: {
+                // title: title,
+                // node_id: node_id 
+            },
+
+            type: "GET",
+            success: function(data) {
+
+                $("#asset_resource-{{node.pk}}").foundation('reveal', 'open');   
+            }    
+        });//end of ajax
+    });
+</script>
 
     
