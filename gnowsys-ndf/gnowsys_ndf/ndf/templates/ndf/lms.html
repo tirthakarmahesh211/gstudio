@@ -170,6 +170,7 @@
                     <a class="fi-photo" style="position: relative;top: -3px;left: 2px;" data-reveal-id="group_banner_prof_pic_prop">
                     {% trans "Change image" %}</a>
               </li>
+              {% if not 'Author' in group_object_member_of_names_list %}
               <li>
                   <a data-reveal-id="manage_users_modal" href="{% url 'manage_users' group_id %}"  class="fi-torsos"> {% trans "Manage Users" %}</a>
                   <div id="manage_users_modal" class="reveal-modal large" data-reveal style="position:absolute;">
@@ -179,6 +180,7 @@
                       <a class="close-reveal-modal">&#215;</a>
                   </div>
               </li>
+              {% endif %}
               {% if 'Group' not in group_object_member_of_names_list and 'announced_unit' in group_object_member_of_names_list or "base_unit" in  group_object_member_of_names_list %}
               <li>
                   <a href="{% url 'create_event_group' group_id 'CourseEventGroup' %}" class="fi-volume"> {% trans "Announce" %}</a>

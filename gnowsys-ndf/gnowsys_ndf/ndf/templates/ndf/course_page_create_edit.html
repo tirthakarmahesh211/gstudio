@@ -47,7 +47,7 @@
                             </div>
                         </div>
 
-                        <div class="small-3 columns">
+                        <div class="small-2 columns">
                             <a class="orange-button-template existing-template">{% trans "Choose template" %}</a>
                             <!--
                             <div class="row">
@@ -67,11 +67,19 @@
                             -->
                         </div>
                         {% if activity_node %}
-                            <div class="small-3 columns ">
+                            <div class="small-2 columns ">
                                 <a class="orange-button-template edit-activity-metadata">{% trans "Edit Metadata" %}</a>
                             </div>
                         {% endif %}
+                        {% check_group node.pk as is_group %}
+                        {% if not blog_type %}
+                        <div class="small-2 columns">
+                            <a class="orange-button-template edit-activity-teaches" data-reveal-id="selectTopicModal">{% trans "Select Topic" %}</a>
+                        </div>
+                        {% endif %}
                     </div>
+                    
+
                     {% if site.SITE_NAME == 'NROER' %}
                     <div class="row">
                         <div class="small-3 columns">
@@ -79,6 +87,21 @@
                         </div>
                     </div>
                     {% endif %}
+
+                    <div id="selectTopicModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
+                    <div class="content contents " id="panel-teaches"  style="width:95%; display:none;">
+                        <div class="row">
+                            <div class="small-12 columns">
+                                <div id="teaches_drawer">
+                                    <!-- {#% edit_drawer_widget "prior_node" groupid node title %#} -->
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" tabindex="4" id="save-node" value=" {% trans 'Save as Draft And Preview' %}" class="button radius" />
+                    </div>
+                      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+
+                    </div>
 
                 </div>
                 <input type="hidden" name="node_id" class="form_node_id" value="{{activity_node.pk}}">
@@ -194,6 +217,228 @@
             event.preventDefault();
         }
     });
+
+    {% get_node_type node as nodetype %}
+    var nt="{{nodetype}}"
+
+    $(document).ready(function(){
+        $(".assesses_tab").hide();
+        $(".prior_node_tab").hide();
+
+        if (nt == "Page" || nt == "File" || nt == "Pandora_video" || nt == "Concept")
+        {
+            $(".edit-activity-teaches").show();
+            $(".prior_node_tab").show();
+        }
+        else if (nt == "Topic" || nt == "Term")
+        {
+            $(".edit-activity-teaches").show();
+            $(".prior_node_tab").show();
+            $(".assesses_tab").show();
+        }
+        else if(nt == "Quiz" || nt == "QuizItem")
+        {
+            $(".assesses_tab").show();
+        }
+        {% if node %}
+            old_name = "{{node.name}}"
+            old_name = old_name.toLowerCase();
+            $("select#type_of option[value='{{node.type_of.0}}']").prop("selected", true);
+            // $("select#type_of").prop("disabled", true)
+            {% if is_auth_node %}
+                $("#name_id").attr("disabled",true)
+            {% endif %}
+
+        {% endif %}
+        {% if title != "Page" %}
+            $(".ck-editor").removeClass("hide")
+        {% endif %}
+    });
+
+    $(".edit-activity-teaches").click(function() {
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'drawer_widget' groupid %}",
+            datatype: "html",
+            data:{
+                node_id: '{{node.pk}}',
+                field: "teaches",
+                app: "{{title}}",
+                page_no: 1,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function cnt(data) {
+                // for activating div for filling the returned data from ajax according to clicked element and deactivate other div's
+                $("div.contents").css("display", "none");
+                $("#panel-teaches").css("display", "block");
+                // For highlighting current clicked element
+                $("dl.select > dd").removeClass("active")
+                $(".edit-activity-teaches").addClass("active")
+                // To fill the drawer with returned data from ajax
+                $("#teaches_drawer").html(data);
+                $("#save-node").css("display", "block");
+
+                $(".next_prev").click(function() {
+
+                    // alert(this.name);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'drawer_widget' group_id %}",
+                        datatype: "html",
+                        data:{
+                            field: "teaches",
+                            node_id: '{{node.pk}}',
+                            app:"{{title}}",
+                            page_no: this.name,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(data) {
+                            cnt(data)
+                        }
+
+                    });
+
+                });
+
+            }
+        });
+
+    });
+
+
+
+    
+    $("#save-node").click(function(event) {
+
+        pn_arr = []
+        cn_arr = []
+        md_arr = [] //for adding module
+        tch_arr=[]  // for teaches
+        assess_arr=[] // for assesses
+
+        // tags_str = $("#tags_id").val()
+        // escape_chars = "~!@#$%^&*()_+{}|:<>?/.,';][=-`'"
+        // if(tags_str.indexOf(escape_chars)>0){
+        //  alert("Tags cannot contain special characters");
+        //  event.preventDefault();
+
+        // }
+        // $("#type_of").removeAttr("disabled")
+        $(".node_id").each(function (){
+            if ($(this).parent(".bullet-item").parent("#prior_node_drawer2").attr("id") == "prior_node_drawer2") {
+                pn_arr.push($(this).val());
+            }
+
+            if ($(this).parent(".bullet-item").parent("#collection_drawer2").attr("id") == "collection_drawer2") {
+                cn_arr.push($(this).val());
+            }
+
+            if ($(this).parent(".bullet-item").parent("#module_drawer2").attr("id") == "module_drawer2") {
+                md_arr.push($(this).val());
+            }
+            if ($(this).parent(".bullet-item").parent("#teaches_drawer2").attr("id") == "teaches_drawer2") {
+                tch_arr.push($(this).val());
+            }
+            if ($(this).parent(".bullet-item").parent("#assesses_drawer2").attr("id") == "assesses_drawer2") {
+                assess_arr.push($(this).val());
+            }
+        });
+
+        $("#prior_node_list").val(pn_arr);
+        $("#collection_list").val(cn_arr) ;
+        $("#module_list").val(md_arr);
+        $("#teaches_list").val(tch_arr);
+        $("#assesses_list").val(assess_arr);
+        {% block base_save_on_click %}{% endblock %}
+
+        var name = $("#name_id").val().trim().toLowerCase();
+        var nodes = {{nodes_list|safe}}
+        condition_result_var = true;
+        {% if node %}
+            if(name == old_name){
+                condition_result_var = false;
+            }
+            else{
+                condition_result_var = true;
+            }
+        {% endif %}
+        var val_chk = name.search(/mod$/gi)
+        if (condition_result_var && name != "")
+        {
+            if(val_chk == -1){
+                if (nodes.indexOf(name) != -1)
+                {
+                    $("#message").css("display", "block");
+                    $("#message").text("{% trans title %}'" + name +"' {% trans 'already exist. Please choose another name' %}");
+                    event.preventDefault();
+                }
+            }
+            else if (val_chk != -1){
+                $("#message").css("display", "block");
+                $("#message").text("{% trans 'Name cannot include 'Mod'.'%}");
+                event.preventDefault();
+            }
+        }
+        else if (name == ""){
+          $("#message").css("display", "block");
+          $("#message").text("{% trans 'Name cannot be empty.' %}");
+          event.preventDefault();
+        }
+        else
+        {
+          $("#message").css("display", "none");
+        }
+        $("select#type_of").prop("disabled", false)
+        if($("#type_of option:selected").text() == "Wiki page"){
+            $(".ck-editor").remove();
+        }
+        else{
+            $(".org-editor").remove();
+        }
+        {% if not blog_type %}
+
+            {% get_site_name_from_settings as site_name %}
+
+            {%  if site_name == "NROER" and "File" in node.member_of_names_list %}
+                if(educationallevel.selectedIndex == 0 || educationalsubject.selectedIndex ==0 || audience.selectedIndex == 0){
+                        // $('#tabs').find('a[href="#tab2"]').trigger('click');
+                        $('.meta_tab').trigger('click');
+                        $("#message").css("display", "block");
+                        $("#message").text("{% trans 'Please fill compulsory metadata fields(marked with a *)' %}");
+                        event.preventDefault();
+                }
+            {% endif %}
+
+            $("input[name='thread_create']").attr("disabled",false);
+
+            // {% if title == "Page" or "File" in node.member_of_names_list %}
+            //  if (!$("input[name='thread_create']:checked").val()) {
+            //      $('.thread_prop_tab').trigger('click');
+            //      $("#message").css("display", "block");
+            //      $("#message").text("{% trans 'Please fill compulsory fields(marked with a *)' %}");
+            //      event.preventDefault();
+            //  }
+            // {% endif %}
+        {% endif %}
+        updateAllTags();
+
+        var tagsStr = tags.value.trim();
+        if(checkTag())
+        {
+            $("input:hidden[name='tags']").val($("input:hidden[name='tags']").val() + ', ' + tagsStr);
+        }
+        else if(tagsStr)
+        {
+            event.preventDefault();
+        }
+        getSelValuesHiddenElement('help_info_page','form-edit-node');
+
+    });
+
+
+
+
 
 
 </script>
