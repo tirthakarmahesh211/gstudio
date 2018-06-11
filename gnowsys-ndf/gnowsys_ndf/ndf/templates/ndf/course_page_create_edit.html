@@ -222,7 +222,6 @@
     var nt="{{nodetype}}"
 
     $(document).ready(function(){
-        $(".assesses_tab").hide();
         $(".prior_node_tab").hide();
 
         if (nt == "Page" || nt == "File" || nt == "Pandora_video" || nt == "Concept")
@@ -234,11 +233,10 @@
         {
             $(".edit-activity-teaches").show();
             $(".prior_node_tab").show();
-            $(".assesses_tab").show();
         }
         else if(nt == "Quiz" || nt == "QuizItem")
         {
-            $(".assesses_tab").show();
+            // $(".assesses_tab").show();
         }
         {% if node %}
             old_name = "{{node.name}}"
@@ -311,11 +309,8 @@
     
     $("#save-node").click(function(event) {
 
-        pn_arr = []
-        cn_arr = []
-        md_arr = [] //for adding module
+
         tch_arr=[]  // for teaches
-        assess_arr=[] // for assesses
 
         // tags_str = $("#tags_id").val()
         // escape_chars = "~!@#$%^&*()_+{}|:<>?/.,';][=-`'"
@@ -326,33 +321,17 @@
         // }
         // $("#type_of").removeAttr("disabled")
         $(".node_id").each(function (){
-            if ($(this).parent(".bullet-item").parent("#prior_node_drawer2").attr("id") == "prior_node_drawer2") {
-                pn_arr.push($(this).val());
-            }
 
-            if ($(this).parent(".bullet-item").parent("#collection_drawer2").attr("id") == "collection_drawer2") {
-                cn_arr.push($(this).val());
-            }
-
-            if ($(this).parent(".bullet-item").parent("#module_drawer2").attr("id") == "module_drawer2") {
-                md_arr.push($(this).val());
-            }
             if ($(this).parent(".bullet-item").parent("#teaches_drawer2").attr("id") == "teaches_drawer2") {
                 tch_arr.push($(this).val());
-            }
-            if ($(this).parent(".bullet-item").parent("#assesses_drawer2").attr("id") == "assesses_drawer2") {
-                assess_arr.push($(this).val());
+                console.log(tch_arr);
             }
         });
 
-        $("#prior_node_list").val(pn_arr);
-        $("#collection_list").val(cn_arr) ;
-        $("#module_list").val(md_arr);
         $("#teaches_list").val(tch_arr);
-        $("#assesses_list").val(assess_arr);
         {% block base_save_on_click %}{% endblock %}
 
-        var name = $("#name_id").val().trim().toLowerCase();
+        var name =  $("#name_id").val() == undefined ? '' : $("#name_id").val().trim().toLowerCase() ;
         var nodes = {{nodes_list|safe}}
         condition_result_var = true;
         {% if node %}
