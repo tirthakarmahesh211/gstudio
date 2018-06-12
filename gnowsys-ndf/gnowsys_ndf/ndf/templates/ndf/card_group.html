@@ -1,4 +1,5 @@
 {% load i18n %}
+
 {% load get_relation_value get_event_status get_unit_total_points get_name_by_node_id from ndf_tags %}
 
 {% get_event_status node as get_status %}
@@ -7,6 +8,11 @@
 {% endif %}
 
 <style type="text/css">
+{% load get_relation_value get_unit_total_points from ndf_tags %}
+{% if group_counts %}
+{% get_unit_total_points request.user.id  node.pk as get_unit_points %}
+{% endif %}
+
 
 </style>
 <div class="unit_card-{{node.pk}}" style="position: relative;">

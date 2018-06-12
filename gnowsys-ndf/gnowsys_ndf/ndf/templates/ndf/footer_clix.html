@@ -1,9 +1,16 @@
 {% load i18n %}
+
+{% load get_latest_git_hash  from simple_filters %}
 {% load ndf_tags %}
 {% load get_latest_git_hash from  simple_filters %}
 
 {% block body_content %}
 
+<style type="text/css">
+
+
+/* responsive footer */
+.clearfix {clear: both;}
 
 <style type="text/css">
  .footer-clix1{
@@ -22,112 +29,186 @@
     width: 100%!important;
 }
 
+.clr1 {background: #FFFFFF; color: #333743;}
+.clr2 {background: #F1F3F5; color: #8F94A3;}
+.clr3 {background: rgba(221, 221, 221, 0.18); color: #BDC3CF;}
+.clr4 {background: rgba(221, 221, 221, 0.18); color: #E3E7F2;}
+.clr5 {color: #F1F3F5;}
+.clr6 {color: #39B5A1;}
+.clr7 {color: #D45245;}
 
+
+
+/*##### Footer Structure #####*/
+.bo-wrap {
+    clear:both; 
+    width: auto;
+}
+.bo-footer {
+  clear:both;
+  width: auto;
+  padding: 5px;
+  width: 960px;
+  margin: 0 auto;
+}
+
+.bo-footer-social {
+  text-align: left; 
+  line-height: 1px;
+  padding: 10px 10px 10px 10px;
+
+      &>a{
+            color:$primary-orange;
+            word-spacing:8px;
+            &:hover {
+            color: $primary-orange;
+            border-bottom: 3px solid $secondary-orange;
+
+        }
+    }
+            
+}
+
+.bo-footer-copyright{
+    &>a{
+            transition: link-color 0.15s ease-in-out 0s,border 0.15s ease-in-out 0s;
+            border-bottom: none;
+            color: #777;
+            text-decoration: none !important;
+            word-spacing:3px;
+            &:hover {
+            color:#777;
+            border-bottom: 3px solid hsla(316, 88%, 42%, 1);
+        }
+    }
+}
+
+.bo-footer-smap {
+  width: 670px;
+  float: left;
+  padding: 5px 10px;
+  text-align: left;
+  font-size: 18px;
+  word-spacing:20px;
+}
+
+.bo-footer-images{
+    display: inline;
+    max-width:120px;
+    max-height:95px;
+    width: auto;
+    height: auto; 
+    vertical-align: bottom;
+}
+
+.bo-footer-uonline {
+  width: 300px; /* Account for margins + border values */
+  float: left;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+.bo-footer-power {
+  width: 300px;
+  padding: 5px 10px;
+  float: left;
+  text-align: right;
+  font-size: 14px;
+  color: #636A7D;
+  vertical-align: middle;
+}
+
+
+
+
+/*##### Footer Responsive #####*/
+/* for 980px or less */
+@media screen and (max-width: 980px) {
+  
+  .bo-footer {
+    width: 95%;
+    padding: 1% 2%;
+  }
+  .bo-footer-smap {
+    width: 33%;
+    padding: 1% 2%;
+  }
+  .bo-footer-uonline {
+    width: 46%;
+    padding: 1% 2%;
+    float: right;
+    text-align: right;
+  }
+  
+  .bo-footer-power {
+    clear: both;
+    padding: 1% 2%;
+    width: auto;
+    float: none;
+    text-align: center;
+  }
+}
+/* for 700px or less */
+@media screen and (max-width: 600px) {
+
+  .bo-footer-smap {
+    width: auto; 
+    float: none;
+    text-align: center;
+  }
+  
+  .bo-footer-uonline {
+    width: auto;
+    float: none;
+    text-align: center;
+  }
+  
+  .bo-footer-power {
+    width: auto;
+    float: none;
+    text-align: center;
+  }
+
+}
 
 </style>
 
-<footer class="footer">
-<div class="" style="margin-top:-50px;">
-<hr>
-<div style="background-color:#71355808; margin-top:-20px;">
-     <div class="small-12 medium-12 large-12 columns">
-          <div class="row" style="width:100%;">
-                <div class="small-3 columns">
-                        <a href="http://tatatrusts.org/" target="_blank">
-                            <img src="/static/ndf/images/footer-svg/tata_trusts.svg" style="margin-top: 50px;height: 100px;stroke-width: 4%;"/>
-                        </a>
-                </div>
-                <div class="small-3 columns">
-                        <p style="font-size: 13px;margin-top: 5px;font-weight: 500;margin-left: 176px; font-family: cambria;">Led By</p>
-                    <a href="http://www.tiss.edu/" target="_blank">
-                        <img src="/static/ndf/images/footer-svg/tiss.svg" style="height: 125px;width: 223px;    margin-top: -20px;stroke-width:4%;" />
-                    </a>
-                </div>
-                <div class="small-3 columns">
-                    <a href="http://www.mit.edu" target="_blank">
-                        <img src="/static/ndf/images/footer-svg/mit.svg" style="margin-top:80px; stroke-width:4%;"/>
-                    </a>
-                </div>
-                <div class="small-3 columns nav-legal" style="margin-top:15px;">
-                        <ol>
-                            <li>
-                                <a href="{% url 'site_about' %}" style="font-size: 14px!important; " target="_blank">About</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'site_credits' %}" target="_blank" style="font-size: 14px!important; ">Credits</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'site_termsofuse' %}" style="font-size: 14px!important; " target="_blank">Terms of Service</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'site_privacypolicy' %}" style="font-size: 14px!important; " target="_blank">Privacy Policy</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'site_contact' %}" style="font-size: 14px!important; " target="_blank">Contact Us</a>
-                            </li>
-                        </ol>
-                </div>
-          </div>
-    </div>
 
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+  {% get_gstudio_footer_links  as footer_links %}
 
-    <div class="small-12 medium-12 large-12 columns" style="margin-bottom:10px;">
-          <div class="row" style="width:100%;">
-                <div class="small-2 columns" style="margin-top: 25px;margin-left: 21px;">
-                    <a style="color: black;font-size: 13px;font-family: cambria;">In collaboration with</a>
-                </div>
-                <div class="small-2 columns" style="margin-left:-23px;">
-                        <img width="120px" height="250px" src="/static/ndf/images/logos/cg-logo-updated.jpg" style="height:80px; width: 80px;stroke-width: 4%;"/>
-                </div>
-                <div class="small-2 columns" style="margin-left:-56px;">
-                        <img width="120px" height="250px" src="/static/ndf/images/logos/Mizoramseal.png" style=" stroke-width:4%;"/>
-                </div>
-                <div class="small-2 columns">
-                        <img width="120px" height="250px" src="/static/ndf/images/logos/rajasthan-government-logo.png" style=" stroke-width:4%;"/>
-                </div>
-                <div class="small-2 columns">
-                        <img width="120px" height="200px" src="/static/ndf/images/logos/Telangana_State_Emblem_2000x2000.png" style="height:80px; width: 80px; stroke-width:4%;"/>
-                </div>
-          </div>
-    </div>
-    
-    <div class="row">
-    <hr>
-        <div class="small-6 columns">
-            <p style="font-size: 12px;margin-top: -10px;">© 2018 Tata Institute of Social Sciences</p>
+    <div class="bo-wrap clr4" style="">
+      <div class="bo-footer">
+        <div class="bo-footer-social">
+          <a href="{{site.ABOUT}}" target="_blank">About </a>
+          <a href="{{site.CONTACT}}" target="_blank">Contact </a>
+          <a href="" >Disclaimer </a>
 
         </div>
-        <div class="small-6 columns coyright-links " style="margin-left:-75px">
-                {% get_latest_git_hash as git_commit_hash %}  
-              <a href="https://gitlab.com/gnowledge/gstudio/tree/{{git_commit_hash}}" style="font-size: 13px!important;  margin-left: 348px;" target="_blank">Powered by gStudio</a><a href="http://www.hbcse.tifr.res.in/" target="_blank">
-                <img src="/static/ndf/images/logos/tifr.png" style="height: 25px;margin-left: 387px;" /></a>
-        </div>
+      </div>
     </div>
-    <div class="row">
-        <div class="small-6 columns coyright-links">
-            <p style="font-size: 11px; margin-top:-17px;">Except where otherwise noted, content on this site is licensed under a Creative Commons Attribution 4.0 International license <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"> <img src="/static/ndf/images/80x15cclogo.png" /></a></p>
-
+    <div class="bo-wrap clr3">
+      <div class="bo-footer">
+        <div class="bo-footer-smap">
+          {% for each in footer_links %}
+            {% for path, link in each.items %}
+          <a href="{{link}}" target="_blank">
+                  <img src="{{path}}" class="bo-footer-images" />
+              </a>              
+          {% endfor %}
+          {% endfor %}
         </div>
-        <!--<div class="small-6 columns coyright-links">
-                
-                <a style="margin-left: 85px; font-size:15px;">Government of Chattisgarh</a>   <a style="font-size:15px;">Government of Mizoram</a>   <a style="margin-left: 85px; font-size:15px;"> Government of Rajasthan</a>
-                <a style="font-size:15px;">Government of Telangana</a>-->
-                <!--<img width="100px" height="250px" src="/static/ndf/images/logos/Chhatisgarhseal.png"  /></a>
-                <img width="100px" height="250px" src="/static/ndf/images/logos/Mizoramseal.png"  /></a>
-                <img width="100px" height="250px" src="/static/ndf/images/logos/rajasthanseal.png"  /></a>
-                <img width="100px" height="250px" src="/static/ndf/images/logos/Telanganaseal.png"  /></a>-->
-        <!--</div>-->
-    </div>
-</div>
-        
-<br> 
-</div>
-</footer>
 
-{% endblock body_content %}
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="bo-wrap clr4">
+      <div class="bo-footer">
+        <div class="bo-footer-copyright">
+          <a href="">Privacy</a>&nbsp;
+          <a href="">Terms Of Use</a>&nbsp;
+          {% get_latest_git_hash as git_commit_hash %}
+          <a href="https://gitlab.com/gnowledge/gstudio/tree/{{git_commit_hash}}" target="_blank">Version</a>
+        </div>
+      </div>
+    </div>

@@ -3,58 +3,89 @@
 {% load i18n %}
 {% load get_site_variables from ndf_tags %}
 {% get_site_variables as site %}
-
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
+	<title>{% block error_title %}{% endblock %}</title>
+	
+	<!-- <script src="/static/ndf/js/app.js"></script>  -->
 
-    <title>{% block error_title %}{% endblock %}</title>
-    
-    <script src="/static/ndf/js/app.js"></script> 
+	<link rel="shortcut icon" href={{site.FAVICON}}> 
+	
+	<!-- Foundation 5 - Responsive CSS Framework http://foundation.zurb.com/docs/css.html-->
+	<link rel="stylesheet" href="/static/ndf/bower_components/foundation/css/normalize.css"> 
+	<link rel="stylesheet" type="text/css" href="/static/ndf/bower_components/foundation-icon-fonts/foundation-icons.css">
+	<link rel="stylesheet" type="text/css" href="/static/ndf/css/opensans-fonts.css">
+	<link rel="stylesheet" type="text/css" href="/static/ndf/bower_components/foundation/css/foundation.css">
+	<link rel="stylesheet" href="/static/ndf/bower_components/font-awesome/css/font-awesome.css">
+	<link rel="stylesheet" href="/static/ndf/bower_components/font-awesome/css/font-awesome.min.css">
+	<style type="text/css">
 
-    <link rel="shortcut icon" href="{{site.FAVICON}}">    
-    <!-- Foundation 5 - Responsive CSS Framework http://foundation.zurb.com/docs/css.html-->
-    <link rel="stylesheet" href="/static/ndf/bower_components/foundation/css/normalize.css"> 
-    <link rel="stylesheet" href="/static/ndf/css/themes/metastudio/styles.css"> 
+		body > footer{
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+		}
 
-    <!-- Foundation Icon Font http://zurb.com/playground/foundation-icon-fonts-3 -->
-    <link rel="stylesheet" href="/static/ndf/bower_components/foundation-icon-fonts/foundation-icons.css"> 
+		.bk-image {
+			position: absolute;
+			top: 0%;
+			left: 12%;
+			color: gray;
+			font-size: 20em;
+			z-index: -1;
+			opacity: 0.3;
+			-ms-transform: rotate(25deg); /* IE 9 */
+			-webkit-transform: rotate(25deg); /* Chrome, Safari, Opera */
+			transform: rotate(-25deg);
+		}
 
-    <style type="text/css">
+	</style>
 
-        body > footer{
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
+	{% if site.SITE_NAME == 'clix' %}
+	<link rel="stylesheet" type="text/css" href="/static/ndf/css/themes/clix/clix2017.css">
+	{% include "ndf/header_clix.html" %}
+	<!-- <link rel="stylesheet" href="/static/ndf/css/themes/{{site.SITE_NAME|lower}}/styles.css"> -->
+	{% else %}
+	<link rel="stylesheet" href="/static/ndf/css/themes/metastudio/styles.css"> 
+	{% include "ndf/header.html" %}
+	{% endif %}
 
-        .bk-image {
-            position: absolute;
-            top: 0%;
-            left: 12%;
-            color: gray;
-            font-size: 20em;
-            z-index: -1;
-            opacity: 0.5;
-            -ms-transform: rotate(25deg); /* IE 9 */
-            -webkit-transform: rotate(25deg); /* Chrome, Safari, Opera */
-            transform: rotate(-25deg);
-        }
+	<!-- Foundation Icon Font http://zurb.com/playground/foundation-icon-fonts-3 -->
+	<link rel="stylesheet" href="/static/ndf/bower_components/foundation-icon-fonts/foundation-icons.css"> 
+
+
+</head>
+<body>
+
+<!--     <nav class="top-bar drop-shadow row" data-topbar role="navigation">
+>>>>>>> d77e9cc8ef2af4426b3aceaba52353b2cbc1deb5
 
         .inverse-icon::before{
             transform: scaleX(-1)
         }
 
+<<<<<<< HEAD
     </style>
+=======
+		<li class="name">
+		    <h1>
+		      <a href="/home/" class="group" accesskey="q" id="home-group">
+		      	<img src="{{site.SECONDARY_LOGO}}" style="height:45px;">
+		      </a>
+		    </h1>
+		</li>
+>>>>>>> d77e9cc8ef2af4426b3aceaba52353b2cbc1deb5
 
 </head>
 <body>
 
 
+<<<<<<< HEAD
     <div class="bk-image">
         <i class="fi-paw"></i>
     </div>
@@ -81,7 +112,37 @@
         }
         finally{
         }
+=======
+-->    <div class="bk-image">
+<i class="fi-paw"></i>
+</div>
 
+<br/>
+<br/>
+
+<div class="text-center">
+	{% block error_body_text %}	
+	{% if message %}
+	<h2>{{message}}</h2>
+	<br/>
+	<a href="javascript:window.history.back();">
+		{% trans "Click here to go back" %}
+	</a>
+	{% endif %}
+	{% endblock %}
+</div>
+{% comment %}
+{% include "ndf/footer.html" with site=site %} 
+{% endcomment %}
+
+<script type="text/javascript">
+
+	try{
+			// function defined in app.js to check the font and load it asynchronously.
+			checkOpenSansFont();
+		}
+		finally{
+		}
     </script>
 
 </body>

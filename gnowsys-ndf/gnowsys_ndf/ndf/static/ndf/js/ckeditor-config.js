@@ -15,7 +15,7 @@
 	   CKEDITOR.plugins.addExternal('font',basePath+'ndf/bower_components/ckeditor/plugins/font/','plugin.js');
 	   CKEDITOR.plugins.addExternal('find',basePath+'ndf/bower_components/ckeditor/plugins/find/','plugin.js');
 	   CKEDITOR.plugins.addExternal('smiley',basePath+'ndf/bower_components/ckeditor/plugins/smiley/','plugin.js');
-	
+	   CKEDITOR.plugins.addExternal('youtube','/static/ndf/bower_components/ckeditor-youtube-plugin/youtube/','plugin.js');
 	})
 	();
     CKEDITOR.config.bodyId = 'scstyle';
@@ -54,7 +54,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'links', items : [ 'Link','Unlink'] },
 		{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ]},
 		{ name: 'insert', items : [ 'Flash','Iframe' ] },
-		{ name: 'tools', items : [ 'addImage','addAudio','addVideo','addJhapp','Source','Anchor', 'Maximize','-','closebtn'] },
+		{ name: 'tools', items : [ 'addImage','addAudio','addVideo','addJhapp','Youtube','Source', 'Maximize','-','closebtn'] },
 		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 		{ name: 'styles' },
 	];
@@ -110,7 +110,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
-	config.extraPlugins = 'addImage,closebtn,addAudio,addVideo,addJhapp,mathjax,justify,font,find,smiley';
+	config.extraPlugins = 'addImage,closebtn,addAudio,addVideo,addJhapp,mathjax,justify,font,find,smiley,youtube';
 	config.allowedContent = true;
 
 };

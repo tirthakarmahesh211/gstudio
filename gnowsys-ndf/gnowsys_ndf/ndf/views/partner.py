@@ -42,7 +42,7 @@ app=gst_group
 
 @login_required
 @get_execution_time
-def create_partner(request,group_id):
+def create_partner(request,group_id,partner_id):
   # ins_objectid  = ObjectId()
   # if ins_objectid.is_valid(group_id) is False :
   #   group_ins = node_collection.find_one({'_type': "Group","name": group_id})
@@ -63,8 +63,8 @@ def create_partner(request,group_id):
   try:
     if request.method == "POST":
       colg = node_collection.collection.Group()
-      street = request.POST.get('street', "")
-      cname = request.POST.get('groupname', "").strip()
+      street = request.POST.get('house_street', "")
+      cname = request.POST.get('name', "").strip()
       colg.altnames = cname
       colg.name = unicode(cname)
       colg.member_of.append(gst_group._id)
@@ -132,7 +132,7 @@ def create_partner(request,group_id):
 
   for each in available_nodes:
       nodes_list.append(str((each.name).strip().lower()))
-  return render_to_response("ndf/create_partner.html", {'groupid': group_id, 'group_obj':group_obj,'appId': app._id, 'group_id': group_id, 'nodes_list': nodes_list},RequestContext(request))
+  return render_to_response("ndf/create_partner.html", {'partner_id':partner_id,'groupid': group_id, 'group_obj':group_obj,'appId': app._id, 'group_id': group_id, 'nodes_list': nodes_list},RequestContext(request))
 
 
 def partner_list(request, group_id):
@@ -168,40 +168,47 @@ def partner_list(request, group_id):
 @get_execution_time
 def nroer_groups(request, group_id, groups_category):
     group_name, group_id = get_group_name_id(group_id)
+    GSTUDIO_NROER_MENU = ["State Partners", "Institutional Partners", "Individual Partners" , "Teachers", "Interest Groups", "Schools"]
+
 
     mapping = GSTUDIO_NROER_MENU_MAPPINGS
 
     groups_names_list = []
     # loop over nroer menu except "Repository"
-    for each_item in GSTUDIO_NROER_MENU[1:]:
-        temp_key_name = each_item.keys()[0]
-        if temp_key_name == groups_category:
-            groups_names_list = each_item.get(groups_category, [])
-            # mapping for the text names in list
-            groups_names_list = [mapping.get(i) for i in groups_names_list]
-            break
-    # print "\n\ngroups_names_list",groups_names_list
-    group_nodes = []
-    '''
-    For displaying Partners and Groups in same order
-     as defined in settings GSTUDIO_NROER_MENU_MAPPINGS
-    '''
-    for eachgroup in groups_names_list:
-        grp_node = node_collection.one({'_type': "Group", 'name': unicode(eachgroup)})
-        group_nodes.append(grp_node)
+    # for each_item in GSTUDIO_NROER_MENU[1:]:
+    #     temp_key_name = each_item.keys()[0]
+    #     if temp_key_name == groups_category:
+    #         groups_names_list = each_item.get(groups_category, [])
+    #         # mapping for the text names in list
+    #         groups_names_list = [mapping.get(i) for i in groups_names_list]
+    #         break
+    # # print "\n\ngroups_names_list",groups_names_list
+    # group_nodes = []
 
-    # group_nodes = node_collection.find({ '_type': "Group",
-    #                                     '_id': {'$nin': [ObjectId(group_id)]},
+    # '''
+    # For displaying Partners and Groups in same order
+    #  as defined in settings GSTUDIO_NROER_MENU_MAPPINGS
+    # '''
+    # for eachgroup in groups_names_list:
+    #     grp_node = node_collection.one({'_type': "Group", 'name': unicode(eachgroup)})
+    #     group_nodes.append(grp_node)
 
-    #                                     'name': {'$nin': ["home"], '$in': groups_names_list},
-    #                                     'group_type': "PUBLIC"
-    #                                  }).sort('created_at', -1)
+    # # group_nodes = node_collection.find({ '_type': "Group",
+    # #                                     '_id': {'$nin': [ObjectId(group_id)]},
+
+    # #                                     'name': {'$nin': ["home"], '$in': groups_names_list},
+    # #                                     'group_type': "PUBLIC"
+    # #                                  }).sort('created_at', -1)
 
     if groups_category == "Partners":
         app_gst = node_collection.one({'_type': 'GSystemType', 'name': 'PartnerGroup'})
 
     elif groups_category == "Groups":
         app_gst = gst_group
+    group_nodes = node_collection.find({"_type":'Group',"name" : {"$in" : GSTUDIO_NROER_MENU }})
+
+    lang_code = request.LANGUAGE_CODE
+    
 
     # print "=============", app_gst
     # group_nodes_count = group_nodes.count() if group_nodes else 0
@@ -210,6 +217,9 @@ def nroer_groups(request, group_id, groups_category):
                            #'group_nodes_count': group_nodes_count,
                           'app_gst': app_gst,
                            'groupid': group_id, 'group_id': group_id,
+                           'GSTUDIO_NROER_MENU':GSTUDIO_NROER_MENU,
+                           'lang_code': lang_code
+
 
                           }, context_instance=RequestContext(request))
 

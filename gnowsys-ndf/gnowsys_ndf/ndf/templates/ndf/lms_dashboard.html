@@ -127,19 +127,18 @@
 
   <div class="page_menu">
     <ul class="nav_menu_1">
-      <li>
 
+      <li style="margin-left: 8px;">
         {% if site.SITE_NAME == "NROER" %}
           <a href="{% url 'my_desk' request.user.id  %}" {% if title == "my desk" %} class="selected" {% endif %}><i class="fi-book-bookmark" style="font-size:20px;"></i> {% trans "My Workspaces" %}</a>
-
         {% else %}
-          <a href="{% url 'my_desk' request.user.id  %}" {% if title == "my desk" %} class="selected" {% endif %}>  <i class="fi-book-bookmark" style="font-size:20px;"></i> {% trans "My Courses" %} </a>
+          <a href="{% url 'my_desk' request.user.id  %}" {% if title == "my desk" %} class="selected" {% endif %}> {% if  is_workspace_instance %} {% trans "My Workspaces" %} {% else %} <i class="fi-book-bookmark" style="font-size:20px;"></i> {% trans "My Courses" %} {% endif %} </a>
         {% endif %}
       </li>
 
 
      {# <li class=""><a {% if title == "my workspace" %} class="selected" {% endif %} href="{% url 'course_about' request.user.username  %}">{% trans "My WorkSpace" %}</a> </li> #} 
-      <li class=""><a {% if title == "my performance" %} class="selected" {% endif %} href="{% url 'my_performance' request.user.id  %}"> <i class="fa fa-line-chart" aria-hidden="true"></i> {% trans "My Progress" %}</a> </li>
+      <li style="margin-left: 8px;"><a {% if title == "my performance" %} class="selected" {% endif %} href="{% url 'my_performance' request.user.id  %}"> <i class="fa fa-line-chart" aria-hidden="true"></i> {% trans "My Progress" %}</a> </li>
 
     </ul>
   </div>
@@ -158,71 +157,84 @@
   </ul>
 
     {% endcomment %}
-
-  {% if title == "my desk" %}
-  <div class="small-12 columns group_sections_content">
-    {% comment %}
-    <div class="small-12 columns" style="margin-left: 15px;">
-      <h3 >Enrolled Courses</h3>
-    </div>
-    {% endcomment %}
     </br>
-    <div class="small-12 columns lms_explore_back_unit">
-      <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-4">
-        {% for each_obj in units_cur %}
-          <li class="card-image-wrapper">
-            {% include "ndf/card_group.html" with node=each_obj url_name="course_content" first_arg=each_obj.name no_enroll=True %}
-          </li>
-        {% empty %}
-        <section class="empty-dashboard-message">
-          <p>Hey, welcome to CLIxPlatform. Please click on Explore and enjoy learning.</p>
-          <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>  Explore</a>
-        </section>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-  <hr/>
-  {% get_agency_type_of_group node.pk as agency_type %}
-      <div class="small-12 columns" style="margin-left: 15px;">
-        <h3> My Workspace{{workspaces_cur.count|pluralize}}</h3>
-      </div>
+
+<div class="small-12 columns group_sections_content">
+  {% if site.SITE_NAME == "NROER" %}
+    {% if title == "my desk" %}
+        <div class="row">
+          <h3> {% trans "My Workspace" %}</h3>
+            <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+              <li class="card-image-wrapper">
+                {% include "ndf/card_group.html" with node=node url_name="course_about" first_arg=node.pk  no_enroll=True %}
+              </li>
+            </ul>
+        </div>
+        <hr/>
+        <div class="row">
+          <h3>{% trans "Joined Workspaces & Enrolled Courses" %}</h3>
+          </br>
+        </div>
+        <div class="small-12 columns lms_explore_back_unit">
+          <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+            {% for each_obj in units_cur %}
+            <li class="card-image-wrapper">
+              {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.pk no_enroll=True %}
+            </li>
+            {% endfor %}
+          </ul>
+                </div>
+
+            <section class="empty-dashboard-message">
+              
+                <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>{% trans "Explore" %}</a>
+            </section>            
+          
+    {% endif %}
+  {% else %}
+    {% if title == "my desk" %}
       <div class="small-12 columns lms_explore_back_unit">
-        <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-4">
-          {% for each in workspaces_cur %}
+        <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+          {% for each_obj in units_cur %}
           <li class="card-image-wrapper">
-            {% include "ndf/card_group.html" with node=each url_name="course_content" first_arg=each.pk no_enroll=True  %}
+            {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.pk no_enroll=True %}
           </li>
+
           {% endfor %}
-        </ul>
-      </div>
-  {% endif %}  
+          </ul>
+        </div>
+          <section class="empty-dashboard-message">
+            <p>{% trans "You are not enrolled in any course!" %}</p>
+              <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>  {% trans "Explore" %}</a>
+          </section>
+    {% endif %}
+  {% endif %}
+</div></div>
 
-{% if title == "my performance" %}
-  <br/>
-  <div class="small-12 columns group_sections_content">
-    <div class="small-12 columns lms_explore_back_unit">
-      <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-4">
-        {% for each_obj in units_cur %}
-        <li class="card-image-wrapper">
-          {% include "ndf/card_group.html" with group_counts=True node=each_obj no_url=True first_arg=each_obj.pk no_prior_node_name=False %}
-        </li>
-        {% empty %}
-        <section class="empty-dashboard-message">
-          <p>Hey, welcome to CLIxPlatform. Please click on Explore and enjoy learning.</p>
-            <a class="button-explore-courses" href="{% url 'explore_courses' %}">Explore</a>
-        </section>
-        {% endfor %}
-      </ul>
-    </div>
-    </div>
+<div class="small-12 columns group_sections_content">
+  {% if title == "my performance" %}
+  <div class="small-12 columns lms_explore_back_unit">
+    <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
+      {% for each_obj in units_cur %}
+      <li class="card-image-wrapper">
+        {% include "ndf/card_group.html" with group_counts=True node=each_obj no_url=True first_arg=each_obj.pk  %}
+      </li>
+      {% empty %}
+      <section class="empty-dashboard-message">
+        <p>{% trans "You are not enrolled in any course!" %}</p>
+          <a class="button-explore-courses" href="{% url 'explore_courses' %}">{% trans "Explore" %}</a>
+      </section>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 
-    <div id="performaceReportModal" class="reveal-modal reveal-modal-overlay" data-options="close_on_background_click:false;close_on_esc:false;"  data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-      <label id="performaceReportModalLabel"></label>
-      <div class="performaceReportModalData"></div>
-      <a class="close-reveal-modal" aria-label="Close" style="font-size: inherit">Close [&#215;]</a>
-    </div>
 
+</div>
+
+
+<div id="show-overlay" class="reveal-modal reveal-modal-overlay" data-options="close_on_background_click:false;close_on_esc:false;"  data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+</div></div>
 
   <script type="text/javascript">
 

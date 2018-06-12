@@ -29,7 +29,7 @@
 
 			{% if is_gstaff and request.author.agency_type != 'Teacher' %}
 			<div class="explore-settings-drop">
-				<button href="#" data-dropdown="explore-settings" aria-controls="explore-settings" aria-expanded="false" data-options="is_hover:true;align:bottom">{% trans " Options " %}<i class="fa fa-chevron-down"></i></button><br/>
+				<button href="#" data-dropdown="explore-settings" aria-controls="explore-settings" aria-expanded="false" data-options="is_hover:true;align:bottom">{% trans " Actions " %}<i class="fa fa-chevron-down"></i></button><br/>
 				<ul id="explore-settings" data-dropdown-content class="f-dropdown" aria-hidden="true">
 			    	{% if site.SITE_NAME == 'NROER' %}
 					<li>
@@ -43,10 +43,10 @@
 						<a href="{% url 'module_create' group_id %}" > New Module</a>
 					</li>
 					<li>
-						<a data-reveal-id="sort-module-reveal"> Sort Modules</a>
+						<a data-reveal-id="sort-module-reveal"> Sort Workspace</a>
 						<div id="sort-module-reveal" class="reveal-modal large" data-reveal > 
 							<div class="content">
-								<h4>{% trans "Module Display Ordering: " %}</h4>
+								<h4>{% trans "Workspace Display Ordering: " %}</h4>
 								<div>
 									{% include "ndf/widget_selector.html" with for='module_list' all_options=all_modules selected_options=modules_node_sort_list oneline_element='true' %}
 								</div><br/>
