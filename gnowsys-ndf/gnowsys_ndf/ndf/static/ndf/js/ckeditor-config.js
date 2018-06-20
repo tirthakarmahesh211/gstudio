@@ -36,7 +36,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'styles', items: [ 'Format', 'FontSize' ] },
 		{ name: 'paragraph', items : [ 'NumberedList','BulletedList','Mathjax','-','Outdent','Indent','-','Blockquote','JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
 		{ name: 'links', items : [ 'Link','Unlink' ] },
-		{ name: 'tools', items : [ 'addImage','addAudio','addVideo','addJhapp','Youtube','Source','Maximize','-'] },
+		{ name: 'tools', items : [ 'addImage','addAudio','addVideo','addJhapp','Source','Anchor','Maximize','-'] },
 		{ name: 'document', items: [ '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates' ] },
 		
 
@@ -52,7 +52,8 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'links', items : [ 'Link','Unlink'] },
 		{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ]},
 		{ name: 'insert', items : [ 'Flash','Iframe' ] },
-		{ name: 'tools', items : [ 'addImage','addAudio','addVideo','addJhapp','Youtube','Source', 'Maximize','-','closebtn'] },
+		{ name: 'tools', items : [ 'addImage','addAudio','addVideo','addJhapp','Source','Anchor', 'Maximize','-','closebtn'] },
+
 		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
 		{ name: 'styles' },
 	];
@@ -69,7 +70,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'basicstyles', items : [ 'Bold','Italic','align' ] },
 		{ name: 'paragraph', items : [ 'NumberedList','BulletedList','Mathjax','-','JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
 		{ name: 'links', items : [ 'Link','Unlink'] },
-		{ name: 'tools', items : ['addImage','addAudio','addVideo','closebtn'] },
+		{ name: 'tools', items : ['addImage','addAudio','addVideo','Anchors','closebtn'] },
 	];
 
 
