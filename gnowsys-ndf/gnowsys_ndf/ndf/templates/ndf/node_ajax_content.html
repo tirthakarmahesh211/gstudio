@@ -8,6 +8,7 @@
 {% get_gstudio_twitter_via as twitter_via %}
 {% check_is_gstaff groupid request.user as is_gstaff %}
 {#% get_gstudio_facebook_app_id as fb_app_id %#}
+{% get_group_object groupid as group_obj %}
 {% get_gstudio_social_share_resource as social_share %}
 <script type="text/javascript" src="/static/ndf/bower_components/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="/static/ndf/bower_components/ckeditor/config.js"></script>
@@ -531,7 +532,7 @@ Still keeping for future ref (if needed).
             {% endwith %}
           </div>
           {% if node.if_file.original.relurl and not is_group %}
-          <a href="#metadata_info" id="more_info">{% trans "more info" %}</a>
+          <a href="#metadata_info" id="more_info">{% trans "More Info" %}</a>
           <div class="small-12 large-8 small-centered large-centered columns">
         <div class="panel callout radius" id="metadata_info" style="display: none;">
           <table class="small-12 large-12 large-centered">
@@ -580,11 +581,11 @@ Still keeping for future ref (if needed).
               <td width="250">{{node.legal.copyright | default_if_none:"Not set" | lower}}</td>
             </tr>
 
-
+<!-- 
             <tr>
               <td width="200">{% trans "Age Range" %}</td>
               <td width="250">{{node.age_range | default_if_none:"Not set" | lower}}</td>
-            </tr>
+            </tr> -->
 
             <tr>
               <td width="200">{% trans "Educational Level" %}</td>
@@ -603,7 +604,7 @@ Still keeping for future ref (if needed).
 
             <tr>
               <td width="200">{% trans "Target Audience" %}</td>
-              <td width="250">{{node.audience |join_with_commas | lower }}</td>
+              <td width="250">{{node.audience|join_with_commas|lower }}</td>
             </tr>
 
           </table>
@@ -614,6 +615,7 @@ Still keeping for future ref (if needed).
 
      {% if not topic and not is_group %}
              <div>
+             {% if site.SITE_NAME != "NROER"  and 'announced_unit' not in group_obj.member_of_names_list %}
               <small>License:</small>
              {% if site.SITE_NAME != "NROER" %}
                <small class="text-gray">
@@ -630,6 +632,16 @@ Still keeping for future ref (if needed).
                 {% endif %}
 
             {% if node.if_file.mime_type %}
+                {% if not node.collection_set and "Jsmol" not in node.member_of_names_list%}
+                <a class="button tiny" title="Click here to Download" href="{% url 'read_file' group_name_tag node download_filename %}" download="{{ download_filename }}">
+                  Download
+                </a>
+                {% endif %}
+            {% endif %}                   
+
+            
+
+<!--             {% if node.if_file.mime_type %}
                 {% if not node.collection_set and "Jsmol" not in node.member_of_names_list%}
                   {% if None  == node.if_file.mid.relurl %}
                     <a class="button tiny" title="Click here to Download" href="{% url 'read_file' group_name_tag node download_filename %}" download="{{ download_filename.0 }}">
@@ -653,7 +665,7 @@ Still keeping for future ref (if needed).
                 {% endif %}
 
 
-            {% endif %}
+            {% endif %} -->
             {% comment %}
           {%  else %}
             {% if node.if_file.mime_type and "Jsmol" not in node.member_of_names_list %}
@@ -1123,7 +1135,7 @@ function add_transcript_func(this_obj){
    var lable = $("#more_info").text().trim();
 
    if(lable == "Hide info") {
-     $("#more_info").text("more_info");
+     $("#more_info").text("More Info");
      $("#metadata_info").hide();
    }
    else {

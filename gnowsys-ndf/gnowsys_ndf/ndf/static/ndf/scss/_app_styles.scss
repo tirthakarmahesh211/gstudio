@@ -5369,6 +5369,7 @@ $unit-card-lines-to-show: 3;
 
     .unit_header {
         display: table;
+        height:-30px;
         .unit_banner {
             display: table-cell;
             border-radius: 5px;
@@ -5379,16 +5380,17 @@ $unit-card-lines-to-show: 3;
         }
         .unit_title {
             display: table-cell;
-            font-size: 20px;
+            font-size: 17px;
             font-weight: 500;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.4px;
             margin: 0px 0px 12px;
             width: 200px;
             overflow: hidden;
-            white-space: nowrap;
+/*            white-space: nowrap;*/
             text-overflow: ellipsis;
             vertical-align: middle;
             color: #333333;
+            line-height: 1.5em;
         }
     }
     .unit_desc {
