@@ -592,12 +592,6 @@ h5{
     .top-bar-section {
         ul {
             &.left li {
-<<<<<<< HEAD
-                border-right: 2px solid $primary-pink;
-            }
-            li {
-                background: $primary-pink;
-=======
                 border-right: 2px solid #16539f;
             
 
@@ -605,8 +599,6 @@ h5{
             li {
                 /* background: $primary-blue; */
                 background: rgba(22, 74, 123, 0.04);
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
-
 
                 &>a {
                     color: #ffffff;
@@ -715,12 +707,6 @@ h5{
                         background-color: white;
                         }
                     }
-<<<<<<< HEAD
-                }
-=======
-
-            
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
             }
             li {
                   
@@ -3814,95 +3800,6 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
         }
     }
 
-<<<<<<< HEAD
-    .header_title {
-        position: relative;
-        color: #6f0859;
-        font-weight: 500;
-        font-size: 16px;
-        letter-spacing: 0.6px;
-        padding: 0px 15px;
-        //margin-left: -2px;
-        border-right: 1px solid white;
-        a {
-            color: $ah_2_icon_color;
-        }
-
-        @media only screen and (min-device-width : 1025px) and (max-device-width : 2130px) {
-        // /* Styles */
-                 text-overflow:ellipsis;
-                width:calc(100% - 938px);
-
-        }
-
-        @media only screen and (min-device-width : 2131px) {
-        // /* Styles */
-                 text-overflow:ellipsis;
-                width:calc(100% - 970px);
-
-        }
-
-        @media only screen and (max-device-width : 1024px) {
-        // /* Styles */
-                 text-overflow:ellipsis;
-                width:calc(100% - 753px);
-
-        }
-        
-
-        
-        // /* iPads (portrait and landscape) ----------- */
-        // @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
-        // /* Styles */
-        //     text-overflow:ellipsis;
-        //     width:267px;
-
-        // }
-
-        // @media only screen and (min-device-width : 1024px) and (max-device-width : 1190px) {
-        // /* Styles */
-        //     text-overflow:ellipsis;
-        //     width:267px;
-
-        // }
-        // /* Galaxy Tab 2 (portrait and landscape) ----------- */
-        // @media only screen and (min-device-width : 1200px) and (max-device-width : 1220px) {
-        // /* Styles */
-        //         width: 341px;
-        //         text-overflow: ellipsis;
-        // }
-
-
-        // Desktops and laptops -----------
-        // @media only screen  and (min-width : 1224px) {
-        // /* Styles */
-        //         width: 363px;
-        //         text-overflow: ellipsis;
-        // }
-        // @media only screen  and (min-width : 1330px) {
-        // /* Styles */
-        //         width: 474px;
-        //         text-overflow: ellipsis;
-        // }
-        // /* Large screens ----------- */
-        // @media only screen  and (min-width : 1440px) and (max-width:1880px) {
-        // /* Styles */
-        //         width: 902px;
-        //         text-overflow: ellipsis;
-        // }
-        
-
-        // @media only screen  and (min-width : 2122px) {
-        // /* Styles */
-        //         width: 1180px;
-        //         text-overflow: ellipsis;
-        // }
-        
-
-    }
-
-=======
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
     .header_icon {
         font-size: 20px;
         line-height: $activity-header-height;
@@ -3923,24 +3820,11 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
         }
     }
 
-<<<<<<< HEAD
-    .lesson-nav{
-        position: relative;
-        color: #6f0859;
-        font-weight: 500;
-        font-size: 14px;
-        letter-spacing: 0.6px;
-        @media screen and (min-width: 1025px) {
-            float: right;
-            margin-right:70px;
-            background-color: $ah_2_background_color;
-=======
     .back_button {
         border-color: $activity-border-color;
         background-color: $ah_2_background_color_hover;
         i {
             color: #71318b;
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
         }
     }
 
@@ -3949,21 +3833,6 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
             transition: transform .5s ease-in-out;
             -webkit-transition: -webkit-transform .5s ease-in-out;
         }
-<<<<<<< HEAD
-
-        div{
-            display: inline-block;
-            vertical-align: top;
-        }
-        .header_text_block {
-            padding: 0px 15px;
-            margin-left: -2px;
-            border-right: 1px solid white;
-
-            a {
-                color: $ah_2_icon_color;
-            }
-=======
         &:hover i{
             transform: rotate(90deg);
             -webkit-transform: rotate(90deg);
@@ -3982,7 +3851,6 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
             color: #a983b9;
         }
     }
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
 
 }
 
@@ -3993,26 +3861,8 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
             
         }
 
-<<<<<<< HEAD
-        .settings {
-            i {
-                transition: transform .5s ease-in-out;
-                -webkit-transition: -webkit-transform .5s ease-in-out;
-            }
-            &:hover i{
-                transform: rotate(90deg);
-                -webkit-transform: rotate(90deg);
-            }
-        }
-        .pagination {
-            &:not(i) {
-                color: #a983b9;
-            }
-                
-=======
         .left-off-canvas-menu{
             background: $ah_2_background_color;
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
         }
 
         .right-off-canvas-menu{
@@ -4676,19 +4526,10 @@ $unit-card-lines-to-show: 3;
     font-size: $unit-card-font-size;
     border: 2px solid #d5d5d5;
     position: relative;
-<<<<<<< HEAD
-    height: 279px;
-    display:flex; justify-content: flex-end; flex-direction: column;
-=======
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
 
     &:hover {
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
 
     .unit_status {
         position: absolute;
@@ -4750,56 +4591,6 @@ $unit-card-lines-to-show: 3;
         border-top : 1px solid #ccc;
         margin: 20px 0px 0px;
         padding: 5px 0px;
-<<<<<<< HEAD
-        border-top: 1px solid black;
-        height: 40px;
-         //enroll-button 
-        div {
-            .unit-card-enrol{
-                background: #a2238d;
-                height: 37px;
-                text-align: center;
-                color: #ffffff;
-                font-size: 19px;
-                border: 2px solid rgba(43, 51, 63, 0.42);
-                border-radius: 5px;
-                width: 86px !important;
-                margin-top: 2px !important;
-                margin-left: 14px !important;
-                letter-spacing: 0.4px;
-                &:hover{
-                    background-color: #fff;
-                    color: #912a7d;
-                    font-weight: 600;
-                }
-            }
-        }
-    }
-}
-
-
-.unit-card-analytics-points{
-    background: #ffffff;
-    color: #a2238d;
-    font-size: 16px;
-    border-radius: 20px;
-    letter-spacing: 0.4px;
-    padding: 2px 3px 3px 1px;
-    font-weight: bold;
-    cursor: default;
-}
-
-.view_unit{
-    height: 37px;
-    text-align: center;
-    color: #a2238d;
-    font-size: 19px;
-    margin-top: 2px !important;
-    letter-spacing: 0.4px;
-    &:hover {
-      border-bottom: 2px solid #ffc14e;
-=======
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
     }
 }
 
@@ -5111,20 +4902,11 @@ $module-card-lines-to-show: 3;
     .card_title {
         display: block;
         width:230px;
-<<<<<<< HEAD
-        //font-size: 32px;
-        color: $primary-pink !important;
-=======
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
         font-weight: 600;
         text-align: center;
         margin: 0px auto;
         letter-spacing: 1px;
-<<<<<<< HEAD
-        font-size: 1.4vw
-=======
         font-size: 24px;
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
     }
 
     &.animated_card {
@@ -6531,7 +6313,6 @@ input.transcript-toggler{
             a{
                 color: $secondry-blue;
             }
-
             &:hover{
                 border-left: 4px solid $secondary-orange;
             }
@@ -7109,31 +6890,6 @@ input.transcript-toggler{
         font-size:17px;
         padding:10px 0px 0px 10px;
 
-<<<<<<< HEAD
-.explore-settings-drop{
-    margin-left: 59%;
-    display: inline-block;
-    &> button {
-    color: #6f0859;
-    font-weight: 400;
-    cursor: pointer;
-    background-color: #FFFFFF;
-    border: 2px solid #6f0859;
-    border-radius: 5px !important;
-    display: inline-block;
-    padding: 3px 8px 4px 8px;
-    margin-top: 10px;
-    margin-left: 20px;
-        &:hover{
-            border-radius: 10px;
-            background-color: #6f0859;
-            color: #ffffff;
-        }
-    }
-    a{
-        font-size:16px;
-=======
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
     }
     .task_ex{
         border-bottom: 2px solid rgba(128, 128, 128, 0.23);
@@ -7144,25 +6900,6 @@ input.transcript-toggler{
                 margin-top: -2px;
         }
 
-<<<<<<< HEAD
-        font-size: 0.875rem;
-        cursor: pointer;
-        line-height: 1.125rem;
-        margin: 0;
-        background-color: #6f0859;
-
-            a{
-                color: white;
-                &:hover{
-                    color: #6f0859;
-                }
-            }
-
-            &:hover{
-                border-left: 4px solid $secondary-orange;
-                background-color:white;
-
-=======
     }
 
     .task_listing{
@@ -7259,7 +6996,6 @@ input.transcript-toggler{
                             margin-top: 4px !important;
                         }
                     }
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
             }
         }   
     }
@@ -7603,67 +7339,3 @@ body > footer ul#poweredlogos{
   }
 }
 
-<<<<<<< HEAD
-}
-
-
-.exp-module-container{
-    margin-left: 60px;
-}
-
-.fill-green-circle{
-    padding: 6px 6px;
-    border-radius: 100%;
-    background-color: green;
-}
-
-.fill-orange-circle{
-    padding: 6px 6px;
-    border-radius: 100%;
-    background-color: orange;
-}
-
-[class*="img-banner-card-"]{
-    margin: -11px -11px 0px -11px;
-    height: 100px;
-}
-[class*="high-img-banner-card-"]{
-    margin: -11px -11px 0px -11px;
-    height: 160px;
-}
-[class*="mid-img-banner-card-"]{
-    margin: -11px -11px 0px -11px;
-    height: 104px;
-    .unit_banner {
-        height:85px;
-    }
-}
-
-.view-progress-report {
-    //height: 2rem;
-    /* padding: 0 2rem; */
-    background: none;
-    font-family: open_sansbold,sans-serif;
-    font-size: 1rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 3px;
-    -webkit-box-align: center;
-    align-items: center;
-    border: .2rem solid #912a7d;
-    background-color: #912a7d;
-    color: #fff;
-    transition: all .1s ease;
-    padding: 0px 7px 0px 7px;
-    //margin-top: 10px;
-    text-align: right;
-    width: 62px;
-    margin-right: -15px;
-    &:hover{
-        background-color: #fff;
-        color: #912a7d;
-    }
-
-}
-=======
->>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134

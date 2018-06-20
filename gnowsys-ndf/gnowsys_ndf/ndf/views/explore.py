@@ -26,8 +26,11 @@ from gnowsys_ndf.settings import GAPPS, MEDIA_ROOT, GSTUDIO_TASK_TYPES,GSTUDIO_D
 from gnowsys_ndf.settings import GSTUDIO_SITE_NAME, GSTUDIO_NO_OF_OBJS_PP, GSTUDIO_PRIMARY_COURSE_LANGUAGE
 from gnowsys_ndf.ndf.models import Node, Group, GSystemType,  AttributeType, RelationType
 from gnowsys_ndf.ndf.models import node_collection, triple_collection
+
 from gnowsys_ndf.ndf.views.methods import get_execution_time, get_language_tuple, create_gattribute, delete_gattribute
 from gnowsys_ndf.ndf.templatetags.ndf_tags import check_is_gstaff, get_attribute_value, cast_to_node
+from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH
+
 # from gnowsys_ndf.ndf.views.methods import get_group_name_id
 # from gnowsys_ndf.ndf.views.methods import get_node_common_fields, parse_template_data, get_execution_time, delete_node, replicate_resource
 
@@ -119,11 +122,22 @@ def explore_groups(request,page_no=1):
              'member_of': {'$in': [gst_group._id],
              '$nin': [gst_course._id, gst_basecoursegroup._id, ce_gst._id, gst_course._id, gst_base_unit_id]},
             }
+    search_text = request.GET.get("search_text",None)
 
     if gstaff_access:
-        query.update({'group_type': {'$in': [u'PUBLIC', u'PRIVATE']}})
+        if search_text:
+            search_text = ".*"+search_text+".*"
+            query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
+            ,'group_type': {'$in': [u'PUBLIC', u'PRIVATE']}})
+        else:
+            query.update({'group_type': {'$in': [u'PUBLIC', u'PRIVATE']}})
     else:
-        query.update({'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST},
+        if search_text:
+            search_text = ".*"+search_text+".*"
+            query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],
+                'group_type': u'PUBLIC'})
+        else:
+            query.update({'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST},
                     'group_type': u'PUBLIC'})
     group_cur = node_collection.find(query).sort('last_update', -1)
 
@@ -267,7 +281,56 @@ def explore_courses(request):
                 executing condition C then do not display factory Groups.
 
     '''
-    base_unit_cur = node_collection.find({
+    
+    search_text = request.GET.get("search_text",None)
+    if search_text:
+        search_text = ".*"+search_text+".*"
+        base_unit_cur = node_collection.find({
+                                            '$or': [
+                                                {
+                                                    '$and': [
+                                                                {'member_of': ce_gst._id},
+                                                                {'status':'PUBLISHED'},
+                                                                {'$or':
+                                                                    [
+                                                                        {'created_by': request.user.id},
+                                                                        {'group_admin': request.user.id},
+                                                                        {'author_set': request.user.id},
+                                                                        {
+                                                                            '$and': [
+                                                                                {'group_type': 'PUBLIC'},
+                                                                                {'language': primary_lang_tuple},
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                },
+                                                {
+                                                    '$and': [
+                                                                {'member_of': announced_unit_gst._id},
+                                                                {'status':'PUBLISHED'},
+                                                                {'$or':
+                                                                    [
+                                                                        {'created_by': request.user.id},
+                                                                        {'group_admin': request.user.id},
+                                                                        {'author_set': request.user.id},
+                                                                        {'group_type': 'PUBLIC'}
+                                                                    ]
+                                                                }
+                                                            ]
+                                                }
+                                            ],
+                                            '_type': 'Group',
+                                            #'name': search_text,
+                                            #'$or':[{'altnames':search_text},{'name':search_text}],
+                                            '$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],
+                                            '_id': {'$nin': module_unit_ids},
+                                              }).sort('last_update', -1)
+
+    else:
+
+        base_unit_cur = node_collection.find({
                                             '$or': [
                                                 {
                                                     '$and': [
@@ -321,13 +384,16 @@ def explore_courses(request):
 @get_execution_time
 def explore_drafts(request):
     title = 'drafts'
+
     modules_sort_list = None
     modules_sort_list = get_attribute_value(group_id, 'items_sort_list')
+
     context_variable = {
                         'title': title, 
                         'group_id': group_id, 'groupid': group_id,
                         'modules_is_cur': True
                     }
+
     modules_sort_list = get_attribute_value(group_id, 'items_sort_list')
 
     all_modules = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)
@@ -340,6 +406,44 @@ def explore_drafts(request):
         # modules_node_sort_list = cast_to_node(modules_sort_list)
     all_modules.rewind()
     module_unit_ids = [val for each_module in all_modules for val in each_module.collection_set ]
+# =======
+#     search_text = request.GET.get("search_text",None)
+#     if search_text:
+#         if module_sort_list:
+#             modules_cur = map(Node,module_sort_list)
+#             context_variable.update({'$or':[{'altnames':search_text},{'name':search_text}],'modules_is_cur': False})
+#         else:
+#             modules_cur = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)
+#             context_variable.update({'$or':[{'altnames':search_text},{'name':search_text}],'modules_is_cur': True})
+
+#         module_unit_ids = [val for each_module in modules_cur for val in each_module.collection_set ]
+
+
+#         gstaff_access = check_is_gstaff(group_id,request.user)
+#         draft_query = {'$or':[{'altnames':search_text},{'name':search_text}],'member_of': gst_base_unit_id,
+#                   '_id': {'$nin': module_unit_ids},
+#                   'status':'PUBLISHED',
+#                     }
+#         if not gstaff_access:
+#             draft_query.update({'$or': [
+#                   {'altnames':search_text},
+#                   {'name':search_text},
+#                   {'created_by': request.user.id},
+#                   {'group_admin': request.user.id},
+#                   {'author_set': request.user.id},
+#                   # No check on group-type PUBLIC for DraftUnits.
+#                   # {'group_type': 'PUBLIC'}
+#                   ]})
+#     else:
+#         if module_sort_list:
+#             modules_cur = map(Node,module_sort_list)
+#             context_variable.update({'modules_is_cur': False})
+#         else:
+#             modules_cur = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)
+#             context_variable.update({'modules_is_cur': True})
+
+#         module_unit_ids = [val for each_module in modules_cur for val in each_module.collection_set ]
+# >>>>>>> fdb9b51f11947df745964c62acc77d0e177a9583
 
 
     gstaff_access = check_is_gstaff(group_id,request.user)
