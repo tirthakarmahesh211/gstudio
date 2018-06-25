@@ -1,51 +1,20 @@
 /*
-Error: Invalid CSS after "...c4dc412afd0a134": expected "{", was "}"
-        on line 7000 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/_clix2017.scss
+Error: Invalid CSS after "}": expected "}", was ""
+        on line 7342 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/_clix2017.scss
         from line 18 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/themes/clix/clix2017.scss
 
-6995:                             color: rgba(0, 0, 0, 0.56) !important;
-6996:                             margin-top: 4px !important;
-6997:                         }
-6998:                     }
-6999: >>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134
-7000:             }
-7001:         }   
-7002:     }
-7003: }
-7004: 
-7005: 
+7337:     &:hover{
+7338:       background-color: #D3D3D3;
+7339:   }
+7340: }
 
 Backtrace:
-/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/_clix2017.scss:7000
+/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/_clix2017.scss:7342
 /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/themes/clix/clix2017.scss:18
 /var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:1209:in `expected'
 /var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:1137:in `expected'
 /var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:1132:in `tok!'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:665:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:737:in `declaration_or_ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:685:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:677:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:666:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:737:in `declaration_or_ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:685:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:677:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:666:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:737:in `declaration_or_ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:685:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:677:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:666:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:737:in `declaration_or_ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:685:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:677:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:666:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:737:in `declaration_or_ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:685:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:677:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:666:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:737:in `declaration_or_ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:685:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:677:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:666:in `block'
+/var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:667:in `block'
 /var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:409:in `media_directive'
 /var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:222:in `special_directive'
 /var/lib/gems/1.9.1/gems/sass-3.4.23/lib/sass/scss/parser.rb:197:in `directive'
@@ -100,4 +69,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Invalid CSS after \"...c4dc412afd0a134\": expected \"{\", was \"}\"\A         on line 7000 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/_clix2017.scss\A         from line 18 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/themes/clix/clix2017.scss\A \A 6995:                             color: rgba(0, 0, 0, 0.56) !important;\A 6996:                             margin-top: 4px !important;\A 6997:                         }\A 6998:                     }\A 6999: >>>>>>> b5e58753fd1285bd4c4005c4ac4dc412afd0a134\A 7000:             }\A 7001:         }   \A 7002:     }\A 7003: }\A 7004: \A 7005: "; }
+  content: "Error: Invalid CSS after \"}\": expected \"}\", was \"\"\A         on line 7342 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/_clix2017.scss\A         from line 18 of /home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/ndf/static/ndf/scss/themes/clix/clix2017.scss\A \A 7337:     &:hover{\A 7338:       background-color: #D3D3D3;\A 7339:   }\A 7340: }"; }
