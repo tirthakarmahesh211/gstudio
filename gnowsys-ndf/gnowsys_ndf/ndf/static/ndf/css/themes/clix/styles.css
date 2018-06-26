@@ -28626,9 +28626,9 @@ ul.authoring-tab > li > a.selected, ul.authoring-tab > li > a:hover {
   font-weight: 500;
   letter-spacing: 0.6px;
   margin: 0px 0px 12px;
-  width: 200px;
+  width: 210px;
   overflow: hidden;
-  /*            white-space: nowrap;*/
+  /*white-space: nowrap;*/
   text-overflow: ellipsis;
   vertical-align: middle;
   color: #333333;

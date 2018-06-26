@@ -42,7 +42,7 @@
         <img class="unit_banner" src="/static/ndf/images/module_banner.png" style="height:50px ;width:50px"/>
         {% endif %}
         {% if node.altnames %}
-        <div class="unit_title" title="{{node.altnames}}">{{node.altnames|truncatechars:40}}</div>
+        <div class="unit_title" title="{{node.altnames}}" style="margin-left: 3px;">{{node.altnames|truncatechars:40}}</div>
         {% else %}
         <div class="unit_title" title="{{node.name}}">{{node.name|truncatechars:40}}</div>
         {% endif %}
