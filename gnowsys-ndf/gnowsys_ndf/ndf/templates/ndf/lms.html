@@ -82,7 +82,10 @@
       </li>
       <li>
           <a href="https://interx.metastudio.org/wp-admin/admin.php?page=h5p" target="_blank" {% if title == 'Assessments' %}class="selected"{% endif %}><i class="fi-graph-trend"></i> {% trans "Assessments" %}</a>
-      </li>
+    </li>
+      <li>
+        <a href="{% url 'unit_detail' groupid %}" class="fi-pencil"> {% trans "Edit Structure" %} </a>
+    </li>
       </ul>
     </li>
     {% endif %}
@@ -164,6 +167,9 @@
       <li>
           <a href="https://interx.metastudio.org/wp-admin/admin.php?page=h5p" target="_blank" {% if title == 'Assessments' %}class="selected"{% endif %}><i class="fi-graph-trend"></i> {% trans "Assessments" %}</a>
       </li>
+    <li>
+        <a href="{% url 'unit_detail' groupid %}" class="fi-pencil"> {% trans "Edit Structure" %} </a>
+    </li>
       </ul>
     </li>
     {% endif %}
@@ -222,11 +228,11 @@
                   {% trans "Stats" %}{% else %}{% trans "Progress Report" %}
                 {% endif %}</a>
             </li>
-                <li>
+<!--                 <li>
                   <a href="{% url 'unit_detail' groupid %}" class="fi-pencil"> {% trans "Edit Structure" %} </a>
 
 
-              </li>
+              </li> -->
 
               <li>
                     <a class="fi-photo" style="position: relative;top: -3px;left: 2px;" data-reveal-id="group_banner_prof_pic_prop">
