@@ -28626,7 +28626,7 @@ ul.authoring-tab > li > a.selected, ul.authoring-tab > li > a:hover {
   font-weight: 500;
   letter-spacing: 0.6px;
   margin: 0px 0px 12px;
-  width: 210px;
+  width: 200px;
   overflow: hidden;
   /*white-space: nowrap;*/
   text-overflow: ellipsis;
@@ -36361,13 +36361,13 @@ ul.nav_menu_1 > li > a.selected, ul.nav_menu_1 > li > a:hover {
 /* line 4942, ../../../scss/_clix_styles.scss */
 .unit_card .unit_header .unit_title {
   display: table-cell;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 500;
   letter-spacing: 0.6px;
   margin: 0px 0px 12px;
   width: 200px;
   overflow: hidden;
-  white-space: nowrap;
+  /*            white-space: nowrap;*/
   text-overflow: ellipsis;
   vertical-align: middle;
   color: #333333;
