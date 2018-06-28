@@ -3267,6 +3267,14 @@ def get_sg_member_of(group_id):
 	- Takes group_id as compulsory and only argument.
 	'''
 	sg_member_of_list = []
+
+
+	try:
+		group_id = ObjectId(group_id)
+	except:
+		group_id, group_name = get_group_name_id(group_id)
+		
+	group_obj = node_collection.one({'_id': ObjectId(group_id)})
 	# get all underlying groups
 
 	try:

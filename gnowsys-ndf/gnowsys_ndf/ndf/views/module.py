@@ -25,6 +25,7 @@ from gnowsys_ndf.ndf.templatetags.ndf_tags import check_is_gstaff
 gst_module_name, gst_module_id = GSystemType.get_gst_name_id('Module')
 gst_base_unit_name, gst_base_unit_id = GSystemType.get_gst_name_id('base_unit')
 gst_announced_unit_name, gst_announced_unit_id = GSystemType.get_gst_name_id('announced_unit')
+gst_ce_name, gst_ce_id = GSystemType.get_gst_name_id('CourseEventGroup')
 
 
 @get_execution_time
@@ -106,7 +107,7 @@ def module_detail(request, group_id, node_id,title=""):
     group_name, group_id = Group.get_group_name_id(group_id)
 
     module_obj = Node.get_node_by_id(node_id)
-    print module_obj.name
+
 
     # module_detail_query = {'member_of': gst_base_unit_id,
     #           '_id': {'$nin': module_unit_ids},
@@ -121,126 +122,178 @@ def module_detail(request, group_id, node_id,title=""):
     #           # {'group_type': 'PUBLIC'}
     #           ]})
 
-    search_text = request.GET.get("search_text",None)
+    # search_text = request.GET.get("search_text",None)
     PARTNER_LIST = ['Arvind Gupta','Vigyan Prasar','Azim Premji University','CCRT','CIET, NCERT','DAE','GIET, Gujarat','Gandhi Darshan','SCERT Bihar','SCERT, UP','SIET Hyderabad','SIET, Kerala','Vidya Online']
-    partner_present = False
-    has_search = False
-    if search_text:
-        has_search = True
-        search_text = ".*"+search_text+".*"
-        gstaff_access = check_is_gstaff(group_id,request.user)
-        module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.collection_set},
-        'status':'PUBLISHED'
-        }
+    # partner_present = False
+    # has_search = False
+    # if search_text:
+    #     has_search = True
+    #     search_text = ".*"+search_text+".*"
+    #     gstaff_access = check_is_gstaff(group_id,request.user)
+    #     module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.collection_set},
+    #     'status':'PUBLISHED'
+    #     }
 
-        if module_obj.collection_set:
-            module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.collection_set},
-            'status':'PUBLISHED'
-            }
-        elif module_obj.post_node:
-            module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.post_node},
-            'status':'PUBLISHED'
-            }
+    #     if module_obj.collection_set:
+    #         module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.collection_set},
+    #         'status':'PUBLISHED'
+    #         }
+    #     elif module_obj.post_node:
+    #         module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.post_node},
+    #         'status':'PUBLISHED'
+    #         }
         
 
         
-        if not gstaff_access:
-            module_detail_query.update({'$or': [
-            {'$and': [
-                {'member_of': gst_base_unit_id},
-                {'$or': [
-                  {'created_by': request.user.id},
-                  {'group_admin': request.user.id},
-                  {'author_set': request.user.id},
-                ]},
-                {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
-            ]},
-            {'member_of': gst_announced_unit_id}
-          ]})
-        #'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
-        if title == "courses":
-            module_detail_query.update({'$or': [
-            {'$and': [
-                {'member_of': gst_announced_unit_id},
-                {'$or': [
-                  {'created_by': request.user.id},
-                  {'group_admin': request.user.id},
-                  {'author_set': request.user.id},
-                ]},
-                {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
-            ]},
-            {'member_of': gst_announced_unit_id }
-          ]})
+    #     if not gstaff_access:
+    #         module_detail_query.update({'$or': [
+    #         {'$and': [
+    #             {'member_of': gst_base_unit_id},
+    #             {'$or': [
+    #               {'created_by': request.user.id},
+    #               {'group_admin': request.user.id},
+    #               {'author_set': request.user.id},
+    #             ]},
+    #             {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
+    #         ]},
+    #         {'member_of': gst_announced_unit_id}
+    #       ]})
+    #     #'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
+    #     if title == "courses":
+    #         module_detail_query.update({'$or': [
+    #         {'$and': [
+    #             {'member_of': gst_announced_unit_id},
+    #             {'$or': [
+    #               {'created_by': request.user.id},
+    #               {'group_admin': request.user.id},
+    #               {'author_set': request.user.id},
+    #             ]},
+    #             {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
+    #         ]},
+    #         {'member_of': gst_announced_unit_id }
+    #       ]})
 
         
-        if title == "drafts":
-            module_detail_query.update({'$or': [
-            {'$and': [
-                {'member_of': gst_base_unit_id},
-                {'$or': [
-                  {'created_by': request.user.id},
-                  {'group_admin': request.user.id},
-                  {'author_set': request.user.id},
-                ]},
-                {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
-            ]},
-          ]}) 
+    #     if title == "drafts":
+    #         module_detail_query.update({'$or': [
+    #         {'$and': [
+    #             {'member_of': gst_base_unit_id},
+    #             {'$or': [
+    #               {'created_by': request.user.id},
+    #               {'group_admin': request.user.id},
+    #               {'author_set': request.user.id},
+    #             ]},
+    #             {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
+    #         ]},
+    #       ]}) 
 
-    else:
-        gstaff_access = check_is_gstaff(group_id,request.user)
+    # else:
+    #     gstaff_access = check_is_gstaff(group_id,request.user)
+    #     module_detail_query = {'_id': {'$in': module_obj.collection_set},
+    #     'status':'PUBLISHED'
+    #     }
+# <<<<<<< HEAD
+#     elif module_obj.post_node:
+#         module_detail_query = {'_id': {'$in': module_obj.post_node},
+#         'status':'PUBLISHED'
+#         }
+    
+
+    
+#     if not gstaff_access:
+#         module_detail_query.update({'$or': [
+#         {'$and': [
+#             {'member_of': gst_base_unit_id},
+#             {'$or': [
+#               {'created_by': request.user.id},
+#               {'group_admin': request.user.id},
+#               {'author_set': request.user.id},
+#             ]}
+#         ]},
+#         {'member_of': gst_announced_unit_id}
+#       ]})
+    
+#     if title == "courses":
+#         module_detail_query.update({'$or': [
+#         {'$and': [
+#             {'member_of': {'$in': [gst_announced_unit_id, gst_ce_id]}},
+#             {'$or': [
+#               {'created_by': request.user.id},
+#               {'group_admin': request.user.id},
+#               {'author_set': request.user.id},
+#             ]}
+#         ]},
+#         {'member_of': gst_announced_unit_id }
+#       ]})
+
+    
+#     if title == "drafts":
+#         module_detail_query.update({'$or': [
+#         {'$and': [
+#             {'member_of': gst_base_unit_id},
+#             {'$or': [
+#               {'created_by': request.user.id},
+#               {'group_admin': request.user.id},
+#               {'author_set': request.user.id},
+#             ]}
+#         ]},
+#       ]}) 
+# =======
+
+    gstaff_access = check_is_gstaff(group_id,request.user)
+    module_detail_query = {'_id': {'$in': module_obj.collection_set},
+    'status':'PUBLISHED'}
+
+    if module_obj.collection_set:
         module_detail_query = {'_id': {'$in': module_obj.collection_set},
         'status':'PUBLISHED'
         }
+    elif module_obj.post_node:
+        module_detail_query = {'_id': {'$in': module_obj.post_node},
+        'status':'PUBLISHED'
+        }
+    
 
-        if module_obj.collection_set:
-            module_detail_query = {'_id': {'$in': module_obj.collection_set},
-            'status':'PUBLISHED'
-            }
-        elif module_obj.post_node:
-            module_detail_query = {'_id': {'$in': module_obj.post_node},
-            'status':'PUBLISHED'
-            }
-        
+    
+    if not gstaff_access and module_obj.agency_type != "Partner":
+        module_detail_query.update({'$or': [
+        {'$and': [
+            {'member_of': gst_base_unit_id},
+            {'$or': [
+              {'created_by': request.user.id},
+              {'group_admin': request.user.id},
+              {'author_set': request.user.id},
+            ]}
+        ]},
+        {'member_of': gst_announced_unit_id}
+      ]})
+    
+    if title == "courses":
+        module_detail_query.update({'$or': [
+        {'$and': [
+            {'member_of': gst_announced_unit_id},
+            {'$or': [
+              {'created_by': request.user.id},
+              {'group_admin': request.user.id},
+              {'author_set': request.user.id},
+            ]}
+        ]},
+        {'member_of': gst_announced_unit_id }
+      ]})
 
-        
-        if not gstaff_access and module_obj.agency_type != "Partner":
-            module_detail_query.update({'$or': [
-            {'$and': [
-                {'member_of': gst_base_unit_id},
-                {'$or': [
-                  {'created_by': request.user.id},
-                  {'group_admin': request.user.id},
-                  {'author_set': request.user.id},
-                ]}
-            ]},
-            {'member_of': gst_announced_unit_id}
-          ]})
-        
-        if title == "courses":
-            module_detail_query.update({'$or': [
-            {'$and': [
-                {'member_of': gst_announced_unit_id},
-                {'$or': [
-                  {'created_by': request.user.id},
-                  {'group_admin': request.user.id},
-                  {'author_set': request.user.id},
-                ]}
-            ]},
-            {'member_of': gst_announced_unit_id }
-          ]})
-
-        
-        if title == "drafts":
-            module_detail_query.update({'$or': [
-            {'$and': [
-                {'member_of': gst_base_unit_id},
-                {'$or': [
-                  {'created_by': request.user.id},
-                  {'group_admin': request.user.id},
-                  {'author_set': request.user.id},
-                ]}
-            ]},
-          ]}) 
+    
+    if title == "drafts":
+        module_detail_query.update({'$or': [
+        {'$and': [
+            {'member_of': gst_base_unit_id},
+            {'$or': [
+              {'created_by': request.user.id},
+              {'group_admin': request.user.id},
+              {'author_set': request.user.id},
+            ]}
+        ]},
+      ]}) 
+# >>>>>>> fdb9b51f11947df745964c62acc77d0e177a9583
 
     # units_under_module = Node.get_nodes_by_ids_list(module_obj.collection_set)
     '''

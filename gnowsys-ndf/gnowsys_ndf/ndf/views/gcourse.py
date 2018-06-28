@@ -2242,7 +2242,9 @@ def course_content(request, group_id):
         template = 'ndf/basecourse_group.html'
     if 'base_unit' in group_obj.member_of_names_list:
         template = 'ndf/lms.html'
+
     if 'announced_unit' in group_obj.member_of_names_list or 'Group' in group_obj.member_of_names_list or 'base_unit' in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list:
+
         template = 'ndf/lms.html'
     # print template
     banner_pic_obj,old_profile_pics = get_current_and_old_display_pics(group_obj)
@@ -2276,7 +2278,7 @@ def course_notebook(request, group_id, node_id=None, tab="my-notes"):
     # if 'base_unit' in group_obj.member_of_names_list:
     #     template = 'ndf/gevent_base.html'
 
-    if 'announced_unit' in group_obj.member_of_names_list or 'Group' in group_obj.member_of_names_list or 'base_unit'  in group_obj.member_of_names_list:
+    if 'announced_unit' in group_obj.member_of_names_list or 'Group' in group_obj.member_of_names_list or 'base_unit'  in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list:
         template = 'ndf/lms.html'
 
     if 'Author' in group_obj.member_of_names_list:
@@ -2847,8 +2849,11 @@ def course_raw_material(request, group_id, node_id=None,page_no=1):
     #     allow_to_upload = True
     if gstaff_access:
         allow_to_upload = True
-    template = 'ndf/gcourse_event_group.html'    
-    if "announced_unit" in group_obj.member_of_names_list or "Group" in group_obj.member_of_names_list or "base_unit" in group_obj.member_of_names_list :
+
+    template = 'ndf/gcourse_event_group.html'
+
+    
+    if "announced_unit" in group_obj.member_of_names_list or "Group" in group_obj.member_of_names_list or "base_unit" in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list :
 
         template = 'ndf/lms.html'
         # assets_page_info = paginator.Paginator(asset_nodes, page_no, GSTUDIO_NO_OF_OBJS_PP)
@@ -2943,8 +2948,10 @@ def course_gallery(request, group_id,node_id=None,page_no=1):
         asset_nodes = GSystem.query_list(group_id, 'Asset', request.user.id,tags="asset@gallery")
     template = 'ndf/gcourse_event_group.html'
     
+    
+    if "announced_unit" in group_obj.member_of_names_list or "Group" in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list or 'base_unit' in group_obj.member_of_names_list:
 
-    if "announced_unit" in group_obj.member_of_names_list or "Group" in group_obj.member_of_names_list or 'base_unit' in group_obj.member_of_names_list:
+
         template = 'ndf/lms.html'
         # assets_page_info = paginator.Paginator(asset_nodes, page_no, GSTUDIO_NO_OF_OBJS_PP)
         # context_variables.update({'assets_page_info':assets_page_info})
@@ -3007,9 +3014,8 @@ def course_about(request, group_id):
         educationalsubject = get_attribute_value(group_obj._id,"educationalsubject")
         educationallevel = get_attribute_value(group_obj._id,"educationallevel")
         context_variables.update({'educationalsubject_val': educationalsubject,
-            "educationallevel_val": educationallevel})
-
-    if 'announced_unit' in group_obj.member_of_names_list or 'Group' in group_obj.member_of_names_list and 'base_unit' not in group_obj.member_of_names_list:
+            "educationallevel_val": educationallevel})    
+    if 'announced_unit' in group_obj.member_of_names_list or 'Group' in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list:
         template = 'ndf/lms.html'
     banner_pic_obj,old_profile_pics = get_current_and_old_display_pics(group_obj)
     context_variables.update({'old_profile_pics':old_profile_pics,
@@ -3956,6 +3962,7 @@ def assetcontent_detail(request, group_id, asset_id,asst_content_id,page_no=1):
     # print group_id,asset_id,asst_content_id
     asset_content_list = get_relation_value(ObjectId(asset_obj._id),'has_assetcontent')
     template = 'ndf/lms.html'
+
     # assetcontent_page_info = paginator.Paginator(asset_content_list['grel_node'], page_no, GSTUDIO_NO_OF_OBJS_PP)
     context_variables = {
             'asset_content_list':asset_content_list,'group_id':group_id,
