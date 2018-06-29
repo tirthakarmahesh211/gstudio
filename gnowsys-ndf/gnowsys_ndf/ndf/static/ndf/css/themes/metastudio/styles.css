@@ -31592,7 +31592,7 @@ svg {
   font-size: 19px;
   margin-top: 2px !important;
   letter-spacing: 0.4px;
-  margin-left: -20px;
+  margin-left: 0px;
 }
 /* line 8411, ../../../scss/_app_styles.scss */
 .edit_unit:hover {
