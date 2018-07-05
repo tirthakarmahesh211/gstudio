@@ -1056,28 +1056,28 @@ Still keeping for future ref (if needed).
 
   })
   // iframe for html content
-  function adjustIframeHt(){
+  // function adjustIframeHt(){
 
-    var iframeBodyHt = $("iframe").contents().find("body").height();
-    var docHeight = $(window).height();
-    docHeight -= docHeight * 0.20;
-    // console.log(iframeBodyHt);
-    // console.log(docHeight);
-    if (iframeBodyHt < docHeight) {
-      $("iframe").not('.twitter-share-button').height(docHeight + 50);
-    }
+  //   var iframeBodyHt = $("iframe").contents().find("body").height();
+  //   var docHeight = $(window).height();
+  //   docHeight -= docHeight * 1.20;
+  //   // console.log(iframeBodyHt);
+  //   // console.log(docHeight);
+  //   if (iframeBodyHt < docHeight) {
+  //     $("iframe").not('.twitter-share-button').height(docHeight + 50);
+  //   }
 
-    var changedHt;
+  //   var changedHt;
 
-    setTimeout(function(){
+  //   setTimeout(function(){
 
-      changedHt = $("iframe").contents().find("body").height();
-      // if(changedHt > iframeBodyHt) { adjustIframeHt() }
-      if(changedHt < docHeight) {
-        adjustIframeHt();
-      }
-    }, 4000 );
-  }
+  //     changedHt = $("iframe").contents().find("body").height();
+  //     // if(changedHt > iframeBodyHt) { adjustIframeHt() }
+  //     if(changedHt < docHeight) {
+  //       adjustIframeHt();
+  //     }
+  //   }, 4000 );
+  // }
 
   $("document").ready(function(){
 
@@ -1146,4 +1146,17 @@ function add_transcript_func(this_obj){
     
   });
 
+</script>
+
+<script type="text/javascript">
+  function adjustIframeHt(){
+
+    var iframeBodyHt = $("iframe").contents().find("body").height();
+    // console.log(iframeBodyHt);
+    var docHeight = $(window).height();
+    console.log(docHeight);
+    docHeight -= docHeight * 1.20;
+    console.log(docHeight)
+
+  }
 </script>
