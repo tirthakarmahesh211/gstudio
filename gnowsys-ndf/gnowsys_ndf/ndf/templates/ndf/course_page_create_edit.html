@@ -81,12 +81,14 @@
                     
 
                     {% if site.SITE_NAME == 'NROER' %}
+
+<!--                     {% if site.SITE_NAME == 'NROER' %}
                     <div class="row">
                         <div class="small-3 columns">
-                            <input type="checkbox" name="h5p_page" ><label class="mid_label inner">{% trans " Mark as H5P Page " %}</label>
+                            <input type="checkbox" name="h5p_page" class="h5p_page"><label id="mark_interactive" class="mid_label inner">{% trans " Mark as Interactive Page " %}</label>
                         </div>
                     </div>
-                    {% endif %}
+                    {% endif %} -->
 
                     <div id="selectTopicModal" class="reveal-modal" data-reveal aria-labelledby="firstModalTitle" aria-hidden="true" role="dialog">
                     <div class="content contents " id="panel-teaches"  style="width:95%; display:none;">
@@ -216,6 +218,17 @@
         {
             event.preventDefault();
         }
+    });
+        $( "#mark_interactive" ).click(function(event) {
+            event.preventDefault();
+            if ($('.h5p_page').is(':checked')){
+                 $('.h5p_page').prop('checked', false);
+             }
+            else
+            {
+                $('.h5p_page').prop('checked', true);
+            }
+
     });
 
     {% get_node_type node as nodetype %}

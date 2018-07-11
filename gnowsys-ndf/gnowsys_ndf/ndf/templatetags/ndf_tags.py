@@ -3266,13 +3266,9 @@ def get_sg_member_of(group_id):
 	Returns list of names of "member_of" of sub-groups.
 	- Takes group_id as compulsory and only argument.
 	'''
-
 	sg_member_of_list = []
 	# get all underlying groups
-	# group_obj = get_group_name_id(group_id, get_obj=True)
-	# if group_obj:
-	# 	group_id = group_obj._id
-	# 	group_name = group_obj.name
+
 	try:
 		group_id = ObjectId(group_id)
 	except:
@@ -3904,34 +3900,8 @@ def get_download_filename(node, file_size_name='original'):
 		file_name = slugify(name)
 		name = name.encode('utf-8')
 
-		if extension:
-			#name += extension
-			if (node.if_file.original.relurl==node.if_file.mid.relurl):
-				name += extension
-				return name
-
-			elif (node.if_file.mid.relurl == 'None'):
-				name +=extension
-				return name
-			elif (node.if_file.original.relurl.endswith('webm')==True):
-				name_list = []
-				# name_mp4=node.get_file(node.if_file.mid.relurl)
-				# name_webm = node.get_file(node.if_file.original.relurl)
-				name_mp4 = name+extension
-				name_webm = name+".webm"
-				name_list = [name_mp4,name_webm]
-				name = name_list
-				return name
-			else:
-				# name_mp4 = node.get_file(node.if_file.original.relurl)
-				# name_webm = node.get_file(node.if_file.mid.relurl)
-				name_mp4 = name+extension
-				name_webm = name+".webm"
-				name_list = [name_mp4,name_webm]
-				name = name_list
-				
-			return name		
-
+	if extension:
+		name+=extension
 		return name
 
 	else:
@@ -4334,10 +4304,82 @@ def join_with_commas(obj_list):
     if not obj_list:
         return ""
     l=len(obj_list)
+    print obj_list
     if l==1:
         return u"%s" % obj_list[0]
-    else:    
-        return ", ".join(unicode(obj) for obj in obj_list[:l-1]) \
-                + " and " + unicode(obj_list[l-1])
+    else:
+    	print "--------------------------------"
+    	str_obj = str(obj_list)
+    	str_obj = str_obj[1:-1]
+    	print str_obj
+    	string_list_of_values=""
+
+    	for temp in str_obj.split(','):
+    		# print "============================"
+    		# print temp
+    		# print "-=========================="
+    		temp = str(temp).strip()
+    		temp = temp[2:-1]
+    		# print "+++++++++++"
+    		# print temp
+    		# print "+++++++++++"
+    		string_list_of_values = string_list_of_values+temp+', '
+        # return ", ".join(unicode(obj) for obj in obj_list[:l-1]) \
+        #         + " and " + unicode(obj_list[l-1])
+        	# print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        	# print string_list_of_values
+        	# print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        return string_list_of_values[:-1]
+
+@get_execution_time
+@register.assignment_tag
+def get_download_videofilename(vid_mp4,vid_webm):
 
 
+
+	extension = None
+	if hasattr(node, 'if_file') and node.if_file[file_size_name].relurl:
+		from django.template.defaultfilters import slugify
+		relurl = node.if_file[file_size_name].relurl
+		relurl_split_list = relurl.split('.')
+
+		if len(relurl_split_list) > 1:
+			extension = "." + relurl_split_list[-1]
+		elif 'epub' in node.if_file.mime_type:
+			extension = '.epub'
+		elif not extension:
+			file_hive_obj = filehive_collection.one({'_id':ObjectId(node.if_file.original.id)})
+			file_blob = node.get_file(node.if_file.original.relurl)
+			file_mime_type = file_hive_obj.get_file_mimetype(file_blob)
+			extension = mimetypes.guess_extension(file_mime_type)
+		else:
+			extension = mimetypes.guess_extension(node.if_file.mime_type)
+
+		name = node.altnames if node.altnames else node.name
+		name = name.split('.')[0]
+		file_name = slugify(name)
+		name = name.encode('utf-8')
+
+		print name
+
+	if extension:
+		def Extension():
+			d = dict();
+			d['vid_mp4'] = name+".mp4"
+			d['vid_webm'] = name+".webm"
+			d['vid_mp4'] = vid_mp4
+			d['vid_webm'] = vid_webm
+			return vid_mp4,vid_webm
+
+		d = Extension()
+		if(node.if_file.original.relurl.endswith('webm')==True or node.if_file.original.relurl.endswith('mp4')==True):		
+			#print(name+vid_webm)
+			return d
+			# name+=extension
+			# return name
+	
+		else:
+			name+=extension
+			return name
+
+		return name

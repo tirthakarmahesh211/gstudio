@@ -565,8 +565,9 @@ body>footer {
         max-height: 600px;
       }
       .flinks{
-        font-size: 22px;
+        font-size: 20px;
         color: #999;
+        line-height: 1px;
       }
       .social_links a{
         font-size: 24px; 
@@ -5382,11 +5383,12 @@ $unit-card-lines-to-show: 3;
             display: table-cell;
             font-size: 17px;
             font-weight: 500;
-            letter-spacing: 0.4px;
+
+            letter-spacing: 0.5px;
             margin: 0px 0px 12px;
             width: 200px;
             overflow: hidden;
-/*            white-space: nowrap;*/
+           /* white-space: nowrap;*/
             text-overflow: ellipsis;
             vertical-align: middle;
             color: #333333;
@@ -5422,14 +5424,14 @@ $unit-card-lines-to-show: 3;
          //enroll-button 
         .unit-card-enrol{
             background: rgb(162, 35, 141);
-            height: 37px;
+            height: 24px;
             text-align: center;
             color: #ffffff;
-            font-size: 19px;
+            font-size: 18px;
             border: 2px solid rgba(43, 51, 63, 0.42);
             border-radius: 5px;
-            width: 120px !important;
-            margin-top: 2px !important;
+            width: 90px !important;
+            margin-top: 8px !important;
             letter-spacing: 0.4px;
 
             &:hover {
@@ -5463,6 +5465,7 @@ $unit-card-lines-to-show: 3;
             font-size: 19px;
             margin-top: 2px !important;
             letter-spacing: 0.4px;
+            margin-left: -20px;
 
             &:hover {
                 border-bottom:2px solid $secondary-orange;
@@ -7467,7 +7470,7 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
       // //font-size: 25px;
     border-radius: 5px;
     text-transform: uppercase;
-    margin-left: 1150px;
+    margin-left: 150px;
     color: #ffffff;
     padding: 5px 17px;
     width: inherit;
@@ -7549,7 +7552,6 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
         }
     }
 }
-
 
 .button-save-new{
     height: 2rem;
@@ -8401,7 +8403,19 @@ svg {
 #course-settings-drop{
   width:181px;
 }
+.edit_unit{
+  height: 37px;
+  text-align: center;
+  color: rgb(162, 35, 141);
+  font-size: 19px;
+  margin-top: 2px !important;
+  letter-spacing: 0.5px;
+  margin-left: 0px;
 
+  &:hover {
+      border-bottom:2px solid $secondary-orange;
+  }
+}
 
 
 /** New cards showing popular ***/
@@ -8607,3 +8621,22 @@ div.card.show {
 .accordion .content {
     overflow: hidden;
 }
+
+
+.analytics-cards{
+  a,h4{
+    font-size: 16px;
+
+  @media only screen and (max-width: 320px) {
+
+    font-size: 12px;
+   }
+  }
+}
+
+.reg-users-box{
+  margin-left: 0px;
+    @media only screen and (max-width: 320px) {
+      margin-left: 52px;
+    }  
+} 
