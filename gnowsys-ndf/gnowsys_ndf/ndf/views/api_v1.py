@@ -25,6 +25,7 @@ from gnowsys_ndf.ndf.views.methods import get_group_name_id, cast_to_data_type
 
 
 gst_api_fields_dict = { "_id": 1, "name": 1, "altnames": 1, "language": 1, "content": 1, "if_file": 1, "tags": 1, "location": 1, "created_by": 1, "modified_by": 1, "contributors": 1, "legal": 1, "rating": 1, "created_at": 1, "last_update": 1, "collection_set": 1, "post_node": 1, "prior_node": 1, "access_policy": 1, "status": 1, "group_set": 1, "member_of": 1, "type_of": 1,
+
     "relation_set": 1 #,"attribute_set": 1, 
 }
 
@@ -100,7 +101,7 @@ def api_get_gs_nodes(request):
         if gst_id:
             oid_name_dict[gst_id] = gst_name
             get_parameters_dict['member_of'] = gst_id
-            attributes = sample_gs.get_possible_attributes([gst_id]) 
+            attributes = sample_gs.get_possible_attributes([gst_id])
 
     get_workspace = request.GET.get('workspace', None)
     if get_workspace:
@@ -117,7 +118,6 @@ def api_get_gs_nodes(request):
             query_dict.update({('attribute_set.' + stripped_key): {'$regex': val, '$options': 'i'}})
 
     # print "query_dict: ", query_dict
-
     # making explicit human as decision taken
     human = eval(request.GET.get('human', '1'))
 

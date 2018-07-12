@@ -35,7 +35,7 @@
     "d3-cloud": "#1.0.5",
     "d3-tip": "#0.6.4",
     "side-comments": "aroc/side-comments##0.0.3",
-    "slick-carousel": "#1.3.7",
+    "slick-carousel": "^1.3.7",
     "onepage-scroll": "#1.3.1",
     "open-sans-fontface": "#1.1.0",
     "mousetrap": "#1.5.3",
@@ -62,13 +62,13 @@
     "datatables.net-buttons-dt": "#1.4.2",
     "pdfmake": "#0.1.33",
     "jszip": "#3.1.4",
-<<<<<<< HEAD
-    "css-toggle-switch": "^4.1.0"
-=======
-    "html2canvas": "^0.4.1"
->>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
+    "css-toggle-switch": "^4.1.0",
+    "html2canvas": "^0.4.1",
+    "css-toggle-switch": "^4.1.0",
+    "infinite-scroll": "^3.0.3",
+    "waypoints": "^4.0.1",
   },
   "resolutions": {
-    "jquery": "2.2.1"
+    "jquery": "2.2.1",
   }
 }

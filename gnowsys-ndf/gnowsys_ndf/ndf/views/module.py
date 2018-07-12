@@ -262,7 +262,7 @@ def module_detail(request, group_id, node_id,title=""):
                                 'group_id': group_id, 'groupid': group_id,
                                 'card': 'ndf/event_card.html', 'card_url_name': 'groupchange',
                                 'search_text':search_text,
-                                'units_under_module_count':units_under_module_count,
+                                # 'units_under_module_count':units_under_module_count,
                                 'has_search':has_search,
                                 'PARTNER_LIST':PARTNER_LIST
 

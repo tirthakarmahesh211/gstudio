@@ -55,7 +55,7 @@ from gnowsys_ndf.settings import SYNCDATA_KEY_PUB, GSTUDIO_MAIL_DIR_PATH
 from gnowsys_ndf.ndf.views.tasks import record_in_benchmark
 from datetime import datetime, timedelta, date
 from gnowsys_ndf.ndf.views.utils import get_dict_from_list_of_dicts
-
+from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH
 
 history_manager = HistoryManager()
 theme_GST = node_collection.one({'_type': 'GSystemType', 'name': 'Theme'})
@@ -117,22 +117,39 @@ def get_execution_time(f):
             # except :
             #     pass
 
-        record_in_benchmark(kwargs_len=len(kwargs),
-                            # total_param_size=sum([getsizeof(each_kwarg) for each_kwarg in kwargs.values()]),
-                            total_param_size=None,
-                            post_bool=post_bool,
-                            get_bool=get_bool,
-                            sessionid=sessionid,
-                            user_name=user_name,
-                            path=path,
-                            funct_name=f.func_name,
-                            time_taken=unicode(str(time2 - time1)),
-                            locale=locale
+        # if GSTUDIO_SITE_NAME != "NROER" :
+            record_in_benchmark(kwargs_len=len(kwargs),
+                                # total_param_size=sum([getsizeof(each_kwarg) for each_kwarg in kwargs.values()]),
+                                total_param_size=None,
+                                post_bool=post_bool,
+                                get_bool=get_bool,
+                                sessionid=sessionid,
+                                user_name=user_name,
+                                path=path,
+                                funct_name=f.func_name,
+                                time_taken=unicode(str(time2 - time1)),
+                                locale=locale
 
-                        )
+                            )
+        # else:
+        #     kwargs_len = len(kwargs)
+        #     total_param_size=None
+        #     post_bool=post_bool
+        #     get_bool=get_bool
+        #     sessionid=sessionid
+        #     user_name=user_name
+        #     path=path
+        #     funct_name=f.func_name
+        #     time_taken=unicode(str(time2 - time1))
+        #     record_in_benchmark.apply_async((kwargs_len,total_param_size,post_bool,
+        #                         get_bool,
+        #                         sessionid,
+        #                         user_name,
+        #                         path,
+        #                         funct_name,
+        #                         time_taken), countdown=1)
         return ret
     return wrap
-
 
 import json
 import bson
@@ -140,6 +157,8 @@ import shutil
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.core.mail import EmailMessage
+from gnowsys_ndf.settings import    GSTUDIO_SITE_NAME
+
 
 def server_sync(func):
     def wrap(*args, **kwargs):
@@ -2141,13 +2160,11 @@ def cast_to_data_type(value, data_type):
             casted_value = datetime.strptime(value, "%d/%m/%Y")
         except Exception as e:
             casted_value = datetime.strptime(value, "%d/%m/%Y %H:%M:%S:%f")
-
     elif (str(data_type) == "<class 'bson.objectid.ObjectId'>") or isinstance(data_type, (ObjectId, bson.objectid.ObjectId)):
         try:
             casted_value = ObjectId(value)
         except Exception as e:
             pass
-
     return casted_value
 
 
@@ -5092,14 +5109,47 @@ def repository(request, group_id):
     '''
     It's an NROER repository. Which will hold the list of apps.
     '''
+    from gnowsys_ndf.settings import GSTUDIO_NROER_GAPPS
 
     gapp_metatype = node_collection.one({"_type": "MetaType", "name": "GAPP"})
+    
+    search_text = request.GET.get('search_text',None)
+   
+    print search_text
 
-    gapps_list = [i.values()[0] for i in GSTUDIO_NROER_GAPPS]
-    gapps_list.insert(gapps_list.index('program'), 'event')
-    gapps_list.pop(gapps_list.index('program'))
+    #GSTUDIO_NROER_GAPPS = [{"themes":"topic"}]
+    GSTUDIO_NROER_GAPPS_NEW = {}
+    if search_text:
+        for a in GSTUDIO_NROER_GAPPS:
+            for k,v in a.iteritems():
+                if k.lower() == search_text.lower():
+                    
+                    GSTUDIO_NROER_GAPPS_NEW[k] = v
+            
+        GSTUDIO_NROER_GAPPS = []
+        GSTUDIO_NROER_GAPPS.append(GSTUDIO_NROER_GAPPS_NEW.copy())
+        print GSTUDIO_NROER_GAPPS
+    if len(GSTUDIO_NROER_GAPPS_NEW) == 0:
+        from gnowsys_ndf.settings import GSTUDIO_NROER_GAPPS
+        gapps_list = [i.values()[0] for i in GSTUDIO_NROER_GAPPS]
+        gapps_list.insert(gapps_list.index('program'), 'event')
+        gapps_list.pop(gapps_list.index('program'))
     # print gapps_list
+    
+    else:
+        print GSTUDIO_NROER_GAPPS
+        if search_text == "events":
+            gapps_list = [i.values()[0] for i in GSTUDIO_NROER_GAPPS]
+            gapps_list.insert(gapps_list.index('program'), 'event')
+            gapps_list.pop(gapps_list.index('program'))
+        else:
+            gapps_list = [i.values()[0] for i in GSTUDIO_NROER_GAPPS]
+    temp_search_text= ""
+    if search_text == None or search_text not in  [i.keys()[0].lower() for i in GSTUDIO_NROER_GAPPS]:
+        temp_search_text = "default"
+        print temp_search_text
 
+    GSTUDIO_NROER_GAPPS_NEW_count = len(GSTUDIO_NROER_GAPPS_NEW)
     gapps_obj_list = []
 
     for each_gapp in gapps_list:
@@ -5109,10 +5159,17 @@ def repository(request, group_id):
                                         })
         gapps_obj_list.append(gapp_obj)
 
+    lang_code = request.LANGUAGE_CODE
+
     return render_to_response("ndf/repository.html",
                               {"gapps_obj_list": gapps_obj_list,
                                "gapps_dict": GSTUDIO_NROER_GAPPS,
-                               'group_id': group_id, 'groupid': group_id
+                               'group_id': group_id, 'groupid': group_id,
+                               'search_text':search_text,
+                               'temp_search_text':temp_search_text,
+                               'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,
+                               'GSTUDIO_NROER_GAPPS_NEW_count':GSTUDIO_NROER_GAPPS_NEW_count,
+                                'lang_code':lang_code
                                },
                               context_instance=RequestContext(request)
                               )
@@ -5842,7 +5899,7 @@ def forbid_private_group(request, group_obj):
     try:
         if group_obj.access_policy == u'PRIVATE' or  group_obj.group_type == u'PRIVATE':
             from gnowsys_ndf.ndf.templatetags.ndf_tags import user_access_policy
-            access_flag = user_access_policy(group_obj, request.user)
+            access_flag = user_access_policy(group_obj._id, request.user)
             if access_flag == "disallow":
                 # print "\naccess_flag: ", access_flag, len(access_flag)
                 raise PermissionDenied()

@@ -12,7 +12,7 @@
 {% block body_content %}
 {% load ndf_tags %}
 {% get_gstudio_workspace_instance as is_workspace_instance %}
-
+{% check_is_gstaff group_id request.user as is_gstaff %}
 <div class="mydesk_page">
 
   <div class="page_banner">
@@ -127,7 +127,7 @@
 
   <div class="page_menu">
     <ul class="nav_menu_1">
-      <li>
+      <li style="margin-left: 8px;">
 
         {% if site.SITE_NAME == "NROER" %}
           <a href="{% url 'my_desk' request.user.id  %}" {% if title == "my desk" %} class="selected" {% endif %}><i class="fi-book-bookmark" style="font-size:20px;"></i> {% trans "My Workspaces" %}</a>
@@ -139,7 +139,11 @@
 
 
      {# <li class=""><a {% if title == "my workspace" %} class="selected" {% endif %} href="{% url 'course_about' request.user.username  %}">{% trans "My WorkSpace" %}</a> </li> #} 
+      {% if site.SITE_NAME !== "NROER" %}
       <li class=""><a {% if title == "my performance" %} class="selected" {% endif %} href="{% url 'my_performance' request.user.id  %}"> <i class="fa fa-line-chart" aria-hidden="true"></i> {% trans "My Performance" %}</a> </li>
+      {% else %}
+      <li style="margin-left: 8px;"><a {% if title == "my performance" %} class="selected" {% endif %} href="{% url 'my_performance' request.user.id  %}"> <i class="fa fa-line-chart" aria-hidden="true"></i> {% trans "My Progress" %}</a> </li>
+      {% endif %}
     </ul>
   </div>
 
@@ -158,37 +162,51 @@
 
     {% endcomment %}
     </br>
-
+{% include 'ndf/widget_photo_upload.html' with url_name='my_desk' widget_for="group_banner" is_profile=True  no_update_btn=True node=node  groupid=group_id if_module=True is_mydesk=True %}
 <div class="small-12 columns group_sections_content">
   {% if site.SITE_NAME == "NROER" %}
     {% if title == "my desk" %}
         <div class="row">
-          <h3> My Workspace</h3>
+          <h3> {% trans "My Workspace" %}</h3>
             <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
               <li class="card-image-wrapper">
-                {% include "ndf/card_group.html" with node=node url_name="course_about" first_arg=node.pk  no_enroll=True %}
+                {% if site.GSTUDIO_ELASTIC_SEARCH and site.TESTING_VARIABLE_FOR_ES %}
+                {% include "ndf/card_group.html" with node=node url_name="course_about" first_arg=node.id  no_enroll=True is_gstaff=is_gstaff %}
+                {% else %}
+                {% include "ndf/card_group.html" with node=node url_name="course_about" first_arg=node.pk  no_enroll=True is_gstaff=is_gstaff %}
+                {% endif %}
               </li>
             </ul>
         </div>
         <hr/>
         <div class="row">
-          <h3>Joined Workspaces & Enrolled Courses</h3>
+          <h3>{% trans "Joined Workspaces & Enrolled Courses" %}</h3>
           </br>
         </div>
+        <div id="card_list">
         <div class="small-12 columns lms_explore_back_unit">
           <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
             {% for each_obj in units_cur %}
             <li class="card-image-wrapper">
-              {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.pk no_enroll=True %}
+              {% if site.GSTUDIO_ELASTIC_SEARCH and site.TESTING_VARIABLE_FOR_ES %}
+              {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.id no_enroll=True is_gstaff=is_gstaff %}
+              {% else %}
+              {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.pk no_enroll=True is_gstaff=is_gstaff %}
+              {% endif %}
             </li>
-            {% empty %}
-            <section class="empty-dashboard-message">
-              <p>You are not enrolled in any course!</p>
-                <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>  Explore</a>
-            </section>
             {% endfor %}
           </ul>
+          {% include 'ndf/pagination.html' with urlname="my_desk_paged" first_arg=request.user.id second_arg="" %}
         </div>
+        </div>
+
+            <section class="empty-dashboard-message">
+              
+                <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>{% trans "Explore" %}</a>
+            </section>
+            
+          
+        
     {% endif %}
   {% else %}
     {% if title == "my desk" %}
@@ -196,39 +214,52 @@
         <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
           {% for each_obj in units_cur %}
           <li class="card-image-wrapper">
-            {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.pk no_enroll=True %}
+            {% if site.GSTUDIO_ELASTIC_SEARCH and site.TESTING_VARIABLE_FOR_ES %}
+            {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.id no_enroll=True is_gstaff=is_gstaff %}
+            {% else %}
+            {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.pk no_enroll=True is_gstaff=is_gstaff %}
+            {% endif %}
           </li>
-          {% empty %}
-          <section class="empty-dashboard-message">
-            <p>You are not enrolled in any course!</p>
-              <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>  Explore</a>
-          </section>
+
           {% endfor %}
-        </ul>
-      </div>
+          </ul>
+        </div>
+          <section class="empty-dashboard-message">
+            <p>{% trans "You are not enrolled in any course!" %}</p>
+              <a class="button-explore-courses" href="{% url 'explore_courses' %}"> <i class="fa fa-binoculars" aria-hidden="true"></i>  {% trans "Explore" %}</a>
+          </section>
+          
+        
+    
     {% endif %}
   {% endif %}
-</div></div></div>
+</div></div>
 
 <div class="small-12 columns group_sections_content">
   {% if title == "my performance" %}
   <div class="small-12 columns lms_explore_back_unit">
-    <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3" style="margin-top: -200px;">
+    <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
       {% for each_obj in units_cur %}
       <li class="card-image-wrapper">
-        {% include "ndf/card_group.html" with group_counts=True node=each_obj no_url=True first_arg=each_obj.pk  %}
+        {% if site.GSTUDIO_ELASTIC_SEARCH and site.TESTING_VARIABLE_FOR_ES %}
+        {% include "ndf/card_group.html" with node=each_obj url_name="groupchange" first_arg=each_obj.id no_enroll=True is_gstaff=is_gstaff %}
+        {% else %}
+        {% include "ndf/card_group.html" with group_counts=True node=each_obj no_url=True first_arg=each_obj.pk  is_gstaff=is_gstaff %}
+        {% endif %}
       </li>
       {% empty %}
       <section class="empty-dashboard-message">
-        <p>You are not enrolled in any course!</p>
-          <a class="button-explore-courses" href="{% url 'explore_courses' %}">Explore</a>
+        <p>{% trans "You are not enrolled in any course!" %}</p>
+          <a class="button-explore-courses" href="{% url 'explore_courses' %}">{% trans "Explore" %}</a>
       </section>
       {% endfor %}
     </ul>
   </div>
 </div>
+</div>
 
-<div id="show-overlay" class="reveal-modal reveal-modal-overlay" data-options="close_on_background_click:false;close_on_esc:false;"  data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
+<div id="show-overlay" class="reveal-modal reveal-modal-overlay" data-options="close_on_background_click:false;close_on_esc:false;"  data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+</div>
 </div>
   <script type="text/javascript">
 
@@ -249,6 +280,7 @@
     }
 
   </script>
+
 {% endif %}
 </ul>
 </div>
@@ -311,3 +343,107 @@
 
 </script>
 {% endblock  %}
+  {% endif %}
+  <script type="text/javascript">
+    $('ul.pagination a').click(function(e)
+    {
+      e.preventDefault();
+      
+      // alert($(this).attr("class"));
+      populateFileList(this); 
+
+    });
+    function populateFileList(pageAnchor)
+    {
+      console.log("pagination block execut")
+      var page_no = pageAnchor.text.trim(),
+      url = pageAnchor.href.substr(pageAnchor.href.search(pageAnchor.host)+pageAnchor.host.length);
+      var tabContainerDiv = $(pageAnchor).closest("div#card_list");
+      console.log(url)
+      $.ajax({
+
+      type: 'POST',
+      url: url,
+      datatype: 'html',
+      data: {
+        title: "{{title}}",
+        page_no: page_no,
+        no_of_objs_pp: 20,
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function(data,result){
+        var $response=$(data);
+        // console.log(tabContainerDiv);
+        // console.log(data['group_id'])
+        var a=$response.find("#card_list");
+        $(tabContainerDiv).empty()
+        $(tabContainerDiv).append(a)
+        $(tabContainerDiv).find("ul.pagination a").click(function(e){
+
+          e.preventDefault();
+          populateFileList(this);
+
+          });
+
+        },
+        error: function(xhr, errmsg, err){
+         console.log("error")
+         console.log(error_data)
+        }
+      });
+    }
+$("a.edit_unit").click(function(event){
+  var id= $(this).attr("id");
+  var unit_id = id;
+  console.log(id)
+  var node = {"pk":id};
+
+   $(this).parent().parent().find(".unit_banner").replaceWith("<a  data-reveal-id='group_banner_prof_pic_prop'>{% trans 'Change image' %}</a>");
+   // $(".dropzone").html("<form class='dropzone' id ='group_banner_docPost' enctype='multipart/form-data' method='post'  action='/"+id+"/upload_prof_pic'>");
+   var url="/"+id+"/upload_prof_pic/";
+
+   $('.dropzone').attr('action', url);
+   $( "input[name='pic_rt']" ).attr('value','is_profile');
+   var id = "#"+id;
+
+   var label = $(id).text().trim();
+   console.log(label)
+   if(label == "Edit") {
+     $(id).text("Save");
+     var title=$(this).parent().parent().find('.unit_title').attr("title");
+     var description=$(this).parent().parent().find('.unit_desc').text();
+     console.log(description);
+     $(this).parent().parent().find(".unit_title").replaceWith("<input type='text' id='unit-title-{{unit_id}}' class='unit_title' value='"+title+"'>");
+     $(this).parent().parent().find(".unit_desc").replaceWith("<input type='text' id='unit-desc-{{unit_id}}' class='unit_desc' value='"+description+"'>");
+     $(this).parent().parent().find("a#unit_card_link").removeAttr("href");
+     // $(this).parent().parent().find("#unit_card_link").append("-->");
+   }
+   else {
+     $(id).text("Edit");
+     var id = "#unit_card_"+unit_id
+     console.log(id)
+     var unit_title = $(id).find("#unit-title-{{unit_id}}").val();
+     var unit_desc = $(id).find("#unit-desc-{{unit_id}}").val();
+     console.log(unit_title)
+     console.log(unit_desc)
+     console.log("-------------------------------")
+    $.ajax({
+              type: "POST",
+              data:{
+                "unit_title":unit_title,
+                "unit_desc":unit_desc,
+                "unit_id":unit_id,
+                'csrfmiddlewaretoken': "{{csrf_token}}"
+                },
+              url: "{% url 'save_edited_card_info' group_id  %}",
+              datatype: "html",
+              success: function(data) {
+                location.reload()
+            }
+        });
+   }
+
+
+});//edit_unit closed
+  </script>
+  {% endblock  %}
