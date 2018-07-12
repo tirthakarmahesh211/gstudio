@@ -6802,10 +6802,6 @@ def create_edit_asset(request,group_id):
       group_id = ObjectId(group_id)
   except:
       group_name, group_id = get_group_name_id(group_id)
-<<<<<<< HEAD
-
-=======
->>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
   group_obj = Group.get_group_name_id(group_id, get_obj=True)
   selected_topic =  request.POST.get("topic_list", '')
   # selected_topic_list =  request.POST.getlist("coll_arr[]", '')

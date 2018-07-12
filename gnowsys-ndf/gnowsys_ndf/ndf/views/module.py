@@ -15,18 +15,16 @@ from django.core.urlresolvers import reverse
 
 ''' -- imports from application folders/files -- '''
 from gnowsys_ndf.ndf.models import GSystemType, Group, Node, GSystem  #, Triple
-from gnowsys_ndf.ndf.models import node_collection, triple_collection
+from gnowsys_ndf.ndf.models import node_collection
 
 from gnowsys_ndf.ndf.views.group import CreateGroup
-from gnowsys_ndf.ndf.views.methods import get_execution_time, staff_required, create_gattribute,get_language_tuple, delete_gattribute
+from gnowsys_ndf.ndf.views.methods import get_execution_time, staff_required, create_gattribute,get_language_tuple
 from gnowsys_ndf.ndf.views.ajax_views import get_collection
-from gnowsys_ndf.settings import GSTUDIO_RESOURCES_EDUCATIONAL_LEVEL, GSTUDIO_RESOURCES_EDUCATIONAL_SUBJECT, GSTUDIO_PRIMARY_COURSE_LANGUAGE
-from gnowsys_ndf.ndf.templatetags.ndf_tags import check_is_gstaff, get_attribute_value
+from gnowsys_ndf.settings import GSTUDIO_RESOURCES_EDUCATIONAL_LEVEL, GSTUDIO_RESOURCES_EDUCATIONAL_SUBJECT
+from gnowsys_ndf.ndf.templatetags.ndf_tags import check_is_gstaff
 gst_module_name, gst_module_id = GSystemType.get_gst_name_id('Module')
 gst_base_unit_name, gst_base_unit_id = GSystemType.get_gst_name_id('base_unit')
 gst_announced_unit_name, gst_announced_unit_id = GSystemType.get_gst_name_id('announced_unit')
-gst_ce_name, gst_ce_id = GSystemType.get_gst_name_id('CourseEventGroup')
-at_items_sort_list = node_collection.one({'_type': "AttributeType", 'name': "items_sort_list"})
 
 
 @get_execution_time
@@ -107,12 +105,8 @@ def module_detail(request, group_id, node_id,title=""):
     '''
     group_name, group_id = Group.get_group_name_id(group_id)
 
-    module_obj = Node.get_node_by_id(ObjectId(node_id))
-    context_variable = {
-                        'group_id': group_id, 'groupid': group_id,
-                        'node': module_obj, 'title': title,
-                        'card': 'ndf/event_card.html', 'card_url_name': 'groupchange'
-                    }
+    module_obj = Node.get_node_by_id(node_id)
+    print module_obj.name
 
     # module_detail_query = {'member_of': gst_base_unit_id,
     #           '_id': {'$nin': module_unit_ids},
@@ -127,34 +121,150 @@ def module_detail(request, group_id, node_id,title=""):
     #           # {'group_type': 'PUBLIC'}
     #           ]})
 
+    search_text = request.GET.get("search_text",None)
+    PARTNER_LIST = ['Arvind Gupta','Vigyan Prasar','Azim Premji University','CCRT','CIET, NCERT','DAE','GIET, Gujarat','Gandhi Darshan','SCERT Bihar','SCERT, UP','SIET Hyderabad','SIET, Kerala','Vidya Online']
+    partner_present = False
+    has_search = False
+    if search_text:
+        has_search = True
+        search_text = ".*"+search_text+".*"
+        gstaff_access = check_is_gstaff(group_id,request.user)
+        module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.collection_set},
+        'status':'PUBLISHED'
+        }
 
+        if module_obj.collection_set:
+            module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.collection_set},
+            'status':'PUBLISHED'
+            }
+        elif module_obj.post_node:
+            module_detail_query = {'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],'_id': {'$in': module_obj.post_node},
+            'status':'PUBLISHED'
+            }
+        
 
-    gstaff_access = check_is_gstaff(group_id,request.user)
+        
+        if not gstaff_access:
+            module_detail_query.update({'$or': [
+            {'$and': [
+                {'member_of': gst_base_unit_id},
+                {'$or': [
+                  {'created_by': request.user.id},
+                  {'group_admin': request.user.id},
+                  {'author_set': request.user.id},
+                ]},
+                {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
+            ]},
+            {'member_of': gst_announced_unit_id}
+          ]})
+        #'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
+        if title == "courses":
+            module_detail_query.update({'$or': [
+            {'$and': [
+                {'member_of': gst_announced_unit_id},
+                {'$or': [
+                  {'created_by': request.user.id},
+                  {'group_admin': request.user.id},
+                  {'author_set': request.user.id},
+                ]},
+                {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
+            ]},
+            {'member_of': gst_announced_unit_id }
+          ]})
 
-    module_detail_query = {'_id': {'$in': module_obj.collection_set},
-    'status':'PUBLISHED'
-    }
+        
+        if title == "drafts":
+            module_detail_query.update({'$or': [
+            {'$and': [
+                {'member_of': gst_base_unit_id},
+                {'$or': [
+                  {'created_by': request.user.id},
+                  {'group_admin': request.user.id},
+                  {'author_set': request.user.id},
+                ]},
+                {'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}
+            ]},
+          ]}) 
 
-    if module_obj.collection_set:
+    else:
+        gstaff_access = check_is_gstaff(group_id,request.user)
         module_detail_query = {'_id': {'$in': module_obj.collection_set},
         'status':'PUBLISHED'
         }
-    elif module_obj.post_node:
-        module_detail_query = {'_id': {'$in': module_obj.post_node},
-        'status':'PUBLISHED'
-        }
-    
 
-    
-    if not gstaff_access:
-        module_detail_query.update({'$or': [
-        {'$and': [
-            {'member_of': gst_base_unit_id},
-            {'$or': [
-              {'created_by': request.user.id},
-              {'group_admin': request.user.id},
-              {'author_set': request.user.id},
-            ]}
-        ]},
-        {'member_of': gst_announced_unit_id}
-      ]})
+        if module_obj.collection_set:
+            module_detail_query = {'_id': {'$in': module_obj.collection_set},
+            'status':'PUBLISHED'
+            }
+        elif module_obj.post_node:
+            module_detail_query = {'_id': {'$in': module_obj.post_node},
+            'status':'PUBLISHED'
+            }
+        
+
+        
+        if not gstaff_access and module_obj.agency_type != "Partner":
+            module_detail_query.update({'$or': [
+            {'$and': [
+                {'member_of': gst_base_unit_id},
+                {'$or': [
+                  {'created_by': request.user.id},
+                  {'group_admin': request.user.id},
+                  {'author_set': request.user.id},
+                ]}
+            ]},
+            {'member_of': gst_announced_unit_id}
+          ]})
+        
+        if title == "courses":
+            module_detail_query.update({'$or': [
+            {'$and': [
+                {'member_of': gst_announced_unit_id},
+                {'$or': [
+                  {'created_by': request.user.id},
+                  {'group_admin': request.user.id},
+                  {'author_set': request.user.id},
+                ]}
+            ]},
+            {'member_of': gst_announced_unit_id }
+          ]})
+
+        
+        if title == "drafts":
+            module_detail_query.update({'$or': [
+            {'$and': [
+                {'member_of': gst_base_unit_id},
+                {'$or': [
+                  {'created_by': request.user.id},
+                  {'group_admin': request.user.id},
+                  {'author_set': request.user.id},
+                ]}
+            ]},
+          ]}) 
+
+    # units_under_module = Node.get_nodes_by_ids_list(module_obj.collection_set)
+    '''
+    gstaff_access = check_is_gstaff(group_id, request.user)
+
+    if gstaff_access:
+        module_detail_query.update({'member_of': {'$in': [gst_announced_unit_id, gst_base_unit_id]}})
+    else:
+        module_detail_query.update({'member_of': gst_announced_unit_id})
+    '''
+
+    units_under_module = node_collection.find(module_detail_query).sort('last_update', -1)
+    units_under_module_count = units_under_module.count()
+    template = 'ndf/module_detail.html'
+
+    req_context = RequestContext(request, {
+                                'title': title,
+                                'node': module_obj, 'units_under_module': units_under_module,
+                                'group_id': group_id, 'groupid': group_id,
+                                'card': 'ndf/event_card.html', 'card_url_name': 'groupchange',
+                                'search_text':search_text,
+                                'units_under_module_count':units_under_module_count,
+                                'has_search':has_search,
+                                'PARTNER_LIST':PARTNER_LIST
+
+                            })
+    return render_to_response(template, req_context)

@@ -3776,20 +3776,11 @@ def assetcontent_detail(request, group_id, asset_id,asst_content_id,page_no=1):
     # print group_id,asset_id,asst_content_id
     asset_content_list = get_relation_value(ObjectId(asset_obj._id),'has_assetcontent')
     template = 'ndf/lms.html'
-<<<<<<< HEAD
-    # assetcontent_page_info = paginator.Paginator(asset_content_list['grel_node'], page_no, GSTUDIO_NO_OF_OBJS_PP)
-    context_variables = {
-            'asset_content_list':asset_content_list,'group_id':group_id,
-            'groupid':group_id,'node':assetcontent_obj,'asset_obj':asset_obj,
-            'title':"asset_content_detail",'group_obj':group_obj,
-            # 'assetcontent_page_info':assetcontent_page_info
-=======
     assetcontent_page_info = paginator.Paginator(asset_content_list['grel_node'], page_no, GSTUDIO_NO_OF_OBJS_PP)
     context_variables = {
             'asset_content_list':asset_content_list,'group_id':group_obj._id,'group_name':group_obj.name,
             'groupid':group_obj._id,'node':assetcontent_obj,'asset_obj':asset_obj,
             'title':"asset_content_detail",'group_obj':group_obj,'assetcontent_page_info':assetcontent_page_info
->>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
         }
     if request.user.is_authenticated():
         # Counter.add_visit_count.delay(resource_obj_or_id=file_obj._id.__str__(),
@@ -3803,12 +3794,6 @@ def assetcontent_detail(request, group_id, asset_id,asst_content_id,page_no=1):
             context_variables.update( {'title':"raw_material_detail"})
         if "asset@gallery" in asset_obj.tags:
             context_variables.update( {'title':"asset_gallery_detail"})
-<<<<<<< HEAD
-
-
-=======
-            
->>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
     return render_to_response(template,
                                 context_variables,
                                 context_instance = RequestContext(request)
@@ -4006,7 +3991,6 @@ def save_course_page(request, group_id):
         return HttpResponseRedirect(reverse("view_course_page",
          kwargs={'group_id': group_id, 'page_id': page_obj._id}))
 
-<<<<<<< HEAD
 @login_required
 def save_asset_page(request, group_id, asset_id):
     group_obj = get_group_name_id(group_id, get_obj=True)
@@ -4066,9 +4050,6 @@ def save_asset_page(request, group_id, asset_id):
         return HttpResponseRedirect(reverse("assetcontent_detail",
          kwargs={'group_id': group_id, 'asset_id': asset_id,'asst_content_id':page_obj._id}))
 
-=======
-@get_execution_time
->>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
 def load_content_data(request, group_id):
     node_id = request.GET.get("node_id", "")
     node = node_collection.one({'_id': ObjectId(node_id)})
