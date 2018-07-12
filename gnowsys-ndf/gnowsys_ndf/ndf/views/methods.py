@@ -41,7 +41,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.core.exceptions import PermissionDenied
 
 ''' -- imports from application folders/files -- '''
-from gnowsys_ndf.settings import META_TYPE, GSTUDIO_NROER_GAPPS
+from gnowsys_ndf.settings import META_TYPE, GSTUDIO_NROER_GAPPS, GSTUDIO_IMPLICIT_ENROLL
 from gnowsys_ndf.settings import GSTUDIO_DEFAULT_GAPPS_LIST, GSTUDIO_WORKING_GAPPS, BENCHMARK, GSTUDIO_DEFAULT_LANGUAGE
 from gnowsys_ndf.settings import LANGUAGES, OTHER_COMMON_LANGUAGES, GSTUDIO_BUDDY_LOGIN, DEFAULT_DISCUSSION_LABEL
 # from gnowsys_ndf.ndf.models import db, node_collection, triple_collection, counter_collection
@@ -92,11 +92,13 @@ def get_execution_time(f):
         sessionid = user_name = path = '',
 
         req = args[0] if len(args) else None
+        locale = 'en'
 
         if isinstance(req, WSGIRequest):
             # try :
             post_bool = bool(args[0].POST)
             get_bool = bool(args[0].GET)
+            locale = req.LANGUAGE_CODE
             # except :
             #     pass
 
@@ -124,7 +126,9 @@ def get_execution_time(f):
                             user_name=user_name,
                             path=path,
                             funct_name=f.func_name,
-                            time_taken=unicode(str(time2 - time1))
+                            time_taken=unicode(str(time2 - time1)),
+                            locale=locale
+
                         )
         return ret
     return wrap
@@ -2085,7 +2089,10 @@ def cast_to_data_type(value, data_type):
     # print "\n\t\tin method: ", value, " == ", data_type
 
     if data_type != "list":
-      value = value.strip()
+        try:
+            value = value.strip()
+        except Exception as e:
+            pass
     casted_value = value
     if data_type == "unicode":
         casted_value = unicode(value)
@@ -2126,11 +2133,20 @@ def cast_to_data_type(value, data_type):
             casted_value = [i.strip() for i in value if i]
             # print "casted_value",casted_value
 
-    elif data_type == "datetime.datetime":
-        # "value" should be in following example format
-        # In [10]: datetime.strptime( "11/12/2014", "%d/%m/%Y")
-        # Out[10]: datetime(2014, 12, 11, 0, 0)
-        casted_value = datetime.strptime(value, "%d/%m/%Y")
+    elif (data_type == "datetime.datetime") or (str(data_type) == "<type 'datetime.datetime'>"):
+        try:
+            # "value" should be in following example format
+            # In [10]: datetime.strptime( "11/12/2014", "%d/%m/%Y")
+            # Out[10]: datetime(2014, 12, 11, 0, 0)
+            casted_value = datetime.strptime(value, "%d/%m/%Y")
+        except Exception as e:
+            casted_value = datetime.strptime(value, "%d/%m/%Y %H:%M:%S:%f")
+
+    elif (str(data_type) == "<class 'bson.objectid.ObjectId'>") or isinstance(data_type, (ObjectId, bson.objectid.ObjectId)):
+        try:
+            casted_value = ObjectId(value)
+        except Exception as e:
+            pass
 
     return casted_value
 
@@ -5835,3 +5851,106 @@ def forbid_private_group(request, group_obj):
     except Exception as forbid_status_err:
         print "\nError in forbid_private_group()", forbid_status_err
         pass
+@get_execution_time
+def update_unit_in_modules(module_val, unit_id):
+    gst_module_name, gst_module_id = GSystemType.get_gst_name_id('Module')
+    # get all modules which are parent's of this unit/group
+    parent_modules = node_collection.find({
+            '_type': 'GSystem',
+            'member_of': gst_module_id,
+            'collection_set': {'$in': [unit_id]}
+        })
+    # check for any mismatch in parent_modules and module_val
+    if parent_modules or module_val:
+        # import ipdb; ipdb.set_trace()
+        module_oid_list = [ObjectId(m) for m in module_val if m]
+        parent_modules_oid_list = [o._id for o in parent_modules]
+
+        # summing all ids to iterate over
+        oids_set = set(module_oid_list + parent_modules_oid_list)
+
+        for each_oid in oids_set:
+            if each_oid not in module_oid_list:
+                # it is an old module existed with curent unit.
+                # remove current node's id from it's collection_set
+                # existing deletion
+                each_node_obj = Node.get_node_by_id(each_oid)
+                each_node_obj_cs = each_node_obj.collection_set
+                each_node_obj_cs.pop(each_node_obj_cs.index(unit_id))
+                each_node_obj.collection_set = each_node_obj_cs
+                each_node_obj.save(group_id=unit_id)
+            elif each_oid not in parent_modules_oid_list:
+                # if this id does not exists with existing parent's id list
+                # then add current node_id in collection_set of each_oid.
+                # new addition
+                each_node_obj = Node.get_node_by_id(each_oid)
+                if unit_id not in each_node_obj.collection_set:
+                    each_node_obj.collection_set.append(unit_id)
+                    each_node_obj.save(group_id=unit_id)
+
+@get_execution_time
+def add_to_author_set(group_id, user_id, add_admin=False):
+    def _update_user_counter(userid, group_id):
+        counter_obj = Counter.get_counter_obj(userid, ObjectId(group_id))
+        counter_obj['is_group_member'] = True
+        counter_obj.save()
+
+    group_obj = get_group_name_id(group_id, get_obj=True)
+    if group_obj:
+        try:
+            if add_admin:
+                if isinstance(user_id, list):
+                    non_admin_user_ids = [each_userid for each_userid in user_id if each_userid not in group_obj.group_admin ]
+                    if non_admin_user_ids:
+                        group_obj.group_admin.extend(non_admin_user_ids)
+                        group_obj.group_admin = list(set(group_obj.group_admin))
+                else:
+                    if user_id not in group_obj.group_admin:
+                        group_obj.group_admin.append(user_id)
+            else:
+                if isinstance(user_id, list):
+                    non_member_user_ids = [each_userid for each_userid in user_id if each_userid not in group_obj.author_set ]
+                    if non_member_user_ids:
+                        group_obj.author_set.extend(non_member_user_ids)
+                        group_obj.author_set = list(set(group_obj.author_set))
+                else:
+                    if user_id not in group_obj.author_set:
+                        group_obj.author_set.append(user_id)
+            group_obj.save()
+
+            if 'Group' not in group_obj.member_of_names_list:
+                # get new/existing counter document for a user for a given course for the purpose of analytics
+                if isinstance(user_id, list):
+                    for each_user_id in user_id:
+                        _update_user_counter(each_user_id, group_obj._id)
+                else:
+                    _update_user_counter(user_id, group_obj._id)
+            # print "\n Added to author_set"
+        except Exception as e:
+            pass
+        return group_obj
+    pass
+
+@get_execution_time
+def auto_enroll(f):
+    def wrap(*args,**kwargs):
+
+        ret = f(*args,**kwargs)
+        if GSTUDIO_IMPLICIT_ENROLL:
+            group_id = kwargs.get("group_id", None)
+            user_id = None
+            request = args[0] if len(args) else None
+            if request and isinstance(request, WSGIRequest):
+                user_id = [request.user.id]
+                if GSTUDIO_BUDDY_LOGIN:
+                    user_id += Buddy.get_buddy_userids_list_within_datetime(request.user.id,
+                                         datetime.now())
+            else:
+                user_id = kwargs.get("user_id", None)
+                if not user_id:
+                    user_id = kwargs.get("created_by", None)
+
+            if user_id and group_id:
+                add_to_author_set(group_id=group_id, user_id=user_id)
+        return ret
+    return wrap

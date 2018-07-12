@@ -4764,8 +4764,6 @@ h5{
     }
 }
 
-
-
 /*Blue color variable*/
 $primary-blue : #164A7B;
 $secondry-blue : #74b3dc;
@@ -4909,6 +4907,7 @@ $header-link-active-color: #50c2fa;
     }
 
 }
+
 //LMS Page: Unit detail of LMS
 
 .lms_page{
@@ -6702,7 +6701,6 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
       height: 100%;
       color: #f8f8f8;
 
-
       .activity-slide {
         padding: 1em;
         height: inherit;
@@ -7585,7 +7583,6 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
     }
 }
 
-
 .lms_explore_back_unit{
     background-color: #fff;
     margin-top:-19.3px;
@@ -7716,6 +7713,7 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
     border-radius: 4px;
     margin-right: 30px;
     margin-bottom: 8px;
+    margin-top: 300px;
     &:hover{
         background-color:rgba(206,120,105,0.2);
         color: $primary-orange;
@@ -8071,7 +8069,6 @@ $module-card-lines-to-show: 3;
     display: inline-block !important;
 }
 
-
 .enroll-btn{
                 width: 90px;
                 opacity: 1;
@@ -8086,8 +8083,6 @@ $module-card-lines-to-show: 3;
                 //border: 2px solid #ffc14e;
                 border: 1px solid #c1b4b5;
                 background-color: #4b4852;
-
-
 
     }
 
@@ -8130,3 +8125,31 @@ $module-card-lines-to-show: 3;
   }
 }
 
+.quiz-player{
+    .quiz_qtn{
+        margin-left:20px !important;
+        font-size: 20px;
+    }
+    .question_edit{
+        margin-left: 20px !important;
+    }
+
+    input[type=checkbox], input[type=radio]{
+        margin-right: 10px;
+        width: 15px;
+        height: 15px;
+    }
+
+    .chk_ans_lbl, .rad_ans_lbl{
+        font-size: 22px;
+        margin-left: 5px;
+    }
+
+    .fi-check{
+        color: green;
+    }
+
+    .fi-x{
+        color: red;
+    }
+}

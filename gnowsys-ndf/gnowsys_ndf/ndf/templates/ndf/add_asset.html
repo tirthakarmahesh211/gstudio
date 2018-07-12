@@ -78,6 +78,9 @@
             {% if request.user.is_authenticated  %}
                 <button type="button" class="orange-button add-asset-content"><i class="fi-plus"></i> {% trans "Add File" %}</button>
                 <a href="{% url 'create_edit_asset_page' group_id asset_obj.pk %}"><button type="button" class="orange-button" ><i class="fi-plus"></i> {% trans "Add  page" %}</button></a>
+            {% if asset_content_list.grel_id and asset_obj.created_by == request.user.id  or is_gstaff and asset_obj and asset_content_list.grel_id  %}
+            
+                <button type="button" class="orange-button delete-asset-content right"  title="Click on the checkbox on the files below to Delete"><i class="fa fa-trash"></i> {% trans "Delete Files" %}</button>
             {% endif %}
 
             <div class="small-3 columns page-name">
@@ -182,7 +185,6 @@
             </div>
         </div>
 
-
         <div class="row">
             <div class="small-12 medium-10 large-10 columns">
                 <label style="text-transform: none!important;">
@@ -212,6 +214,7 @@
                 </label>
             </div>
         </div>
+        {% if title ==  "asset_list"  %}
         <div class="row">
             <div class="asset-tags-container small-12 medium-10 large-10 columns">
                 <label>
@@ -229,7 +232,7 @@
 
             </div>
         </div>
-
+        {% endif %}
         <button type="button" class="button-save-new save-asset" data-asset_id='{{asset_obj.pk}}' style="margin-top: 9px;margin-right: -150px;">{% trans "Save" %}</button>
         
         {% endif %}
@@ -429,7 +432,6 @@
     $( ".save-asset" ).click(function(event) {
         updateAllTags();
         coll_arr = []
-
         $('#topic_list :selected').each(function(){
             coll_arr.push($(this).val())
         });
@@ -456,7 +458,6 @@
         sel_tags = $("input:hidden[name='tags']").val()
         sel_asset_lang =  $('#asset_lang').find(':selected').attr('data-sub-code');
         asset_name = $("#asset-name").val();
-        topic_list = $("#topic_list").find(':selected').attr('data-topic');
         asset_disp_name = $("#asset-disp-name").val();
         asset_description = $("#asset-descid").val();
         var asset_id = $(this).attr('data-asset_id');
@@ -472,7 +473,6 @@
                         "sel_tags":sel_tags,
                         "sel_asset_lang":sel_asset_lang,
                         "is_raw_material": is_raw_material,
-                        'topic_list':topic_list,
                         //'coll_arr':coll_arr,
                         'title' :"{{title}}",
                         'access_check':access_check

@@ -62,7 +62,11 @@
     "datatables.net-buttons-dt": "#1.4.2",
     "pdfmake": "#0.1.33",
     "jszip": "#3.1.4",
+<<<<<<< HEAD
     "css-toggle-switch": "^4.1.0"
+=======
+    "html2canvas": "^0.4.1"
+>>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
   },
   "resolutions": {
     "jquery": "2.2.1"

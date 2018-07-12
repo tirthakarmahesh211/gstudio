@@ -3,6 +3,7 @@
 {% check_is_gstaff group_id request.user as is_gstaff %}
 {% get_download_filename node as download_filename %}
 {% get_group_object groupid as group_object %}
+{% get_file_obj node as file_obj %}
 <div class="row">
   <div class="medium 12 columns">
       <div class="left small-3 columns">
@@ -73,6 +74,32 @@
       </div>
       <div class="small-9 columns">
             <div  {% if 'Page' in node.member_of_names_list %} class="preview_asset_page" {% else %} class="preview_asset" style="text-align:center;"{% endif %} > 
+	    <div class="left small-12 medium-6 columns">
+                  <label>{% trans "File name:" %} <b> {{node.name}} </b>
+                  	                    
+	                    <!--<input type="text" placeholder="" name="resource_name" />-->
+	                </label>
+                    <label>{% trans "Created By:" %} <b> {{ node.user_details_dict.contributors|join:', ' }} </b>
+                      <!--<input type="text" placeholder="" name="resource_name" />-->
+                  </label>
+                  <label>{% trans "Created At:" %} <b> {{node.created_at}} </b>
+                      <!--<input type="text" placeholder="" name="resource_name" />-->
+                  </label>
+                  {% if "image" in node.if_file.mime_type %}
+                  <label>{% trans "Dimensions:" %} <b> {{file_obj.if_image_dimensions|default_if_none:"No dimensions available" }}  </b> 
+                      <!--<input type="text" placeholder="" name="resource_name" />-->
+                  </label>
+                  {% endif %}
+                  <label>{% trans "Format:" %} <b> {{file_obj.mime_type}}  </b> 
+                      <!--<input type="text" placeholder="" name="resource_name" />-->
+                  </label>
+                  {% if file_obj.length %}
+                  <label>{% trans "File Size:" %} <b> {{file_obj.length|filesizeformat}} </b>
+                      <!--<input type="text" placeholder="" name="resource_name" />-->
+                  </label>
+                  {% endif %}
+
+	      <div class="preview_asset"> 
            {% if title == "asset_content_detail" or title == "asset_gallery_detail" or title == "raw_material_detail"%}
 
             {% include "ndf/resource_view.html" with node=node %}

@@ -81,6 +81,7 @@ width: 100% !important;
 {# <link rel="stylesheet" type="text/css" href="/static/ndf/orgitdown/skins/gstudio/style.css" /> #}
 
 <script src="/static/ndf/bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="/static/ndf/js/meta_info.js"></script>
 <link rel="stylesheet" href="/static/ndf/bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
 
 {% endblock %}
@@ -139,6 +140,7 @@ width: 100% !important;
                   <li>
                     <a href="{% url 'create_event_group' group_id 'CourseEventGroup' %}?cnode_id={{group_id}}" class="fi-volume"> Announce</a>
                   </li>
+                  {% endif %}
                   <li>
                     <a id="subscr_users" class="fi-torsos" data-reveal-id="inviteusers" title="View/Subscribe Users">{% if sg_type == "CourseEventGroup" %}{% trans ' Add Students' %} {% else %} {% trans ' Add Members' %} {% endif %} </a>
                     {% include "ndf/invite_users.html" with no_subscribe_btn=True node=group_obj%}
@@ -235,7 +237,6 @@ width: 100% !important;
                   <i class="fi-book "></i><span>{% trans "Notebook" %}</span>
                 </a>
               </li>
-
               <li class="tab-title {% ifequal title 'gallery' %}active{% endifequal %}">
                 <a href="{% url 'course_gallery' group_id %}">
                   <i class="fi-photo "></i> <span>{% trans "Gallery" %}</span>
@@ -248,7 +249,6 @@ width: 100% !important;
                 </a>
               </li>
               {% endif %}
-
             <!--
             <li class="tab-title {% ifequal title 'dashboard' %}active{% endifequal %}">
               <a href="{% url 'course_about' group_id %}">
@@ -322,7 +322,6 @@ width: 100% !important;
 
               {% elif title == 'course_quiz_data' %}
               {% include "ndf/course_quiz_data.html" %}
-
               {% elif title == 'about' %}
               {% include "ndf/course_about.html" %}
               {% comment %}

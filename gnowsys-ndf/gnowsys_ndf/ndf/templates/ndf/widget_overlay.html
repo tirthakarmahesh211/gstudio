@@ -1,0 +1,92 @@
+{% load i18n %}
+{% load jsonify from ndf_tags %}
+{% load es_tags %}
+
+
+<div id="openassetContent-{{node.pk}}" class="reveal-modal" data-reveal style="position:absolute;" data-options="close_on_background_click:false;close_on_esc:false;"> 
+
+
+  <div id="switchgrp-{{node.pk}}">
+    <div id="assetlist-{{node.pk}}">
+
+    </div>
+    <div id="assetcontent-{{node.pk}}" class="switch_asset_content">
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<script type="text/javascript">
+
+  $(document).on('click', '.button-cancel-new', function(){
+    $("#openassetContent-{{node.pk}}").foundation('reveal', 'close');
+  });
+{% comment %}
+  // $(document).on('click', '.pages-{{node.pk}}', function(){
+{% endcomment %}
+  $('.pages-{{node.pk}}').click(function(){
+      // console.log(".........................................");
+      var title = "{{title}}";
+      console.log(title)
+      console.log("{{second_arg}}")
+      console.log("{{third_arg}}")
+
+      if( title == "asset_list"){
+        console.log("asset_detail")
+        $.ajax({
+        type: "GET",
+        url: "{% url 'asset_list' group_id %}",
+        datatype: "html",
+        success: function(data) {
+          var $response=$(data);
+          console.log($response)
+          var activity_detail_page=$response.filter("div#gbase_wrap").find(".activity-detail-page");
+          $("#switchgrp-{{node.pk}}").empty();
+          $("#switchgrp-{{node.pk}}").append(activity_detail_page);
+          $("#openassetContent-{{node.pk}}").foundation('reveal', 'open');
+
+
+        }
+        });
+      } 
+      else if (title=="course_pages"){
+        $.ajax({
+        type: "GET",
+        url: "{% url 'view_course_page' group_id second_arg %}",
+        datatype: "html",
+        data:{"page_list":"true"},
+        success: function(data) {
+          var $response=$(data);
+          // console.log($response)
+          var activity_detail_page=$response.filter("div#gbase_wrap").find(".activity-detail-page");
+          $("#assetcontent-{{node.pk}}").empty();
+          $("#assetcontent-{{node.pk}}").append(activity_detail_page);
+          $("#openassetContent-{{node.pk}}").foundation('reveal', 'open');
+        }
+        });
+      } 
+      else if(title == "asset_detail" ){
+
+        var url="{{second_arg}}/asset_content/{{third_arg}}"
+        $.ajax({
+        type: "GET",
+        url:url,
+        datatype: "html",
+        data:{
+          file_list:"True"
+        },
+        success: function(data) {
+          // console.log(data.asset_list)
+          var $response=$(data);
+          console.log($response)
+          var activity_detail_page=$response.filter("div#gbase_wrap").find(".asset-content-detail");
+          $("#assetcontent-{{node.pk}}").empty();
+          $("#assetcontent-{{node.pk}}").append(activity_detail_page);
+          $("#openassetContent-{{node.pk}}").foundation('reveal', 'open');
+        }
+        });
+      }
+  });
+
+
+</script>

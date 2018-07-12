@@ -1,4 +1,4 @@
-{% load get_nroer_menu  get_user_group  get_group_object  get_existing_groups_excluded  get_profile_pic  get_gapps_iconbar user_access_policy get_user_object check_is_gstaff get_attribute_value get_sg_member_of get_relation_value get_explore_url get_test_page_oid get_gstudio_registration get_gstudio_workspace_instance get_header_lang from  ndf_tags %}
+{% load get_nroer_menu  get_user_group  get_group_object  get_existing_groups_excluded  get_profile_pic  get_gapps_iconbar user_access_policy get_user_object check_is_gstaff get_attribute_value get_sg_member_of get_relation_value get_explore_url get_test_page_oid get_gstudio_registration get_gstudio_workspace_instance get_header_lang check_accounts_url from  ndf_tags %}
 {% load i18n %}
 {% load cache %}
 
@@ -7,11 +7,54 @@
   {% get_test_page_oid as help_oid %}
   {% get_gstudio_registration as registration %}
   {% get_gstudio_workspace_instance as is_workspace_instance %}
+  {% check_accounts_url request.path as is_ac_url %}
+  <div id ="toolbar">
+    <div style="width:50%;float: left;">    
+      <div class="datetime">
+
+        <script type="text/javascript">
+          document.write ('<span id="date-time">', new Date().toLocaleString(), '<\/span>')
+          if (document.getElementById) onload = function () {
+            setInterval ("document.getElementById ('date-time').firstChild.data = new Date().toLocaleString()", 50)
+          }
+        </script>
+      </div>
+    </div>
+    
+    <div style="width:50%;float:right;">
+      <div class="changefont">
+       <div class="fontlist" style=" cursor: pointer; color:">
+        <a class="font-button minus font-minus">A-</a> &nbsp;<a class="font-button normal font-normal">A</a>&nbsp; <a class="font-button plus font-plus">A+</a>
+      </div>
+    </div>    
+    <script type="text/javascript">
+      $(function () {
+        $(".font-button").bind("click", function () {
+          var size = parseInt($('body').css("font-size"));
+          if ($(this).hasClass("plus")) {
+            size = size + 1;
+          } else if ($(this).hasClass("minus")){
+            size = size - 1;
+            if (size <= 10) {
+              size = 10;
+            }}
+            else if ($(this).hasClass("normal")){
+              size = 14;
+            }
+
+            else {}
+              $('body , a, nav, h1, p, li, h2,h3,h4,span').css("font-size", size);
+          });
+      });
+    </script>
+  </div>
+</div>
+
 
 <nav class="top-bar" data-topbar role="navigation" id="menu_bar_gstudio">
         <ul class="title-area">
-            <li class="name show-for-medium-up">
-                <a title="About: Connected Learning Initiative (CLIx)" class="loggedin-user" href="{% url 'landing_page'  %}?True">
+            <li class="name show-for-medium-up" style="height:47px;">
+                <a title="About: Connected Learning Initiative (CLIx)" class="loggedin-user" href="{% url 'landing_page'  %}?True" style="margin-top:1px;">
                 
                 <img src="{{site.SECONDARY_LOGO}}">
                 </a>
@@ -92,7 +135,7 @@
                 </li>
 
                 <li>
-                    <a  title="Click here to play, learn and have Fun!" target="_blank" href="{% url 'tools_temp' %}" {% if title == 'tools' %} class="active" {% endif %}> <i class="fi-die-three" aria-hidden="true" style="font-size:20px;"></i> Apps</a>
+                    <a  title="Click here to play, learn and have Fun!" target="_blank" href="{% url 'tools_temp' %}" {% if title == 'tools' %} class="active" {% endif %}> <i class="fi-die-three" aria-hidden="true" style="font-size:16px;"></i> Apps</a>
                 </li>
                 
             </ul>
@@ -148,7 +191,7 @@
                 </li>
             {% else %}
                 <li>
-                    <a title="Click here to login" class="" href="{% url 'auth_login' %}" accesskey="l">
+                    <a title="Click here to login" class="" href="{% url 'auth_login' %}{% if not is_ac_url %}?next={{request.path}}{% endif %}" accesskey="l">
                     <i class="fi-key"></i>&nbsp; {% trans "Login" %}
                   </a>
                 </li>

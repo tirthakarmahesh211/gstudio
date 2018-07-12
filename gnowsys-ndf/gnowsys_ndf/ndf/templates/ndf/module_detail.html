@@ -1,6 +1,7 @@
 {% extends "ndf/gbase.html" %}
 {% load i18n %}
-{% load check_is_gstaff from ndf_tags %}
+{% load check_is_gstaff rewind_cursor cast_to_node get_relation_value from ndf_tags %}
+{% load get_dict_from_list_of_dicts  from simple_filters %}
 
 {% block title %}  {% firstof node.altnames node.name %}{% endblock %}
 
@@ -63,30 +64,82 @@
 				{% endif %}
 		        </div>
 		    </div>
+				<br/>
+				<br/>
+				<label  style="margin-left: auto;">{% trans "Description: " %}</label> <div class="module-desc">{{node.content|default:'No description added yet.'|safe}}
+			</div>
+			<u><a class="show-more hide">Show more</a></u>
+			</div>
+
+	        
 		</div>
+		<div class="small-12 columns">
+	        <div class="unit_under_mod_lbl">
+	          <span>
+	            <i class=""></i> Units</span>
+	        </div>
+		</div>
+		<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4" style="margin-left: 1%">
+			{% for each_node in units_node_sort_list  %}
+		    <li class="card-image-wrapper" >
+				{% include 'ndf/card_group.html' with node=each_node  url_name='course_content' first_arg=each_node.name groupid=each_node.pk is_gstaff=is_gstaff is_module_detail=True %}	
+			</li>
+			{% empty %}
+				<br/><h3>{% trans "No data to display" %}</h3>
+			{% endfor %}
+		</ul>
+
+	</div>
+</div>
+
+<script type="text/javascript">
+    // ready function
+    $(document).ready(function() {
+        var course_about_panel = $('.module-desc')
+        if(course_about_panel.height() > 130 ){
+          $(".show-more").removeClass("hide")
+          $(".module-desc").addClass("short-mtext")
+        }
+    })
+
+    // Show more/less Course Description
+    $(document).on('click','.show-more',function(){
+      if($(".module-desc").hasClass("short-mtext")){
+        $(".module-desc").removeClass("short-mtext")
+        $(".module-desc").addClass("full-mtext")
+        $(this).text("Show Less")
+      }
+      else if($(".module-desc").hasClass("full-mtext")){
+        $(".module-desc").removeClass("full-mtext")
+        $(".module-desc").addClass("short-mtext")
+        $(this).text("Show More")
+      }
+    })
 
 
+	$(document).on('click', '#save_units_order_list', function(e){
+		getSelValuesHiddenElement('unit_list', 'sort-unit-reveal')
+		unit_list_ids = $("input[name=unit_list]").val()
+		$.ajax({
+			type: "POST",
 
-{# {% include 'ndf/card_group.html' with node=node groupid=node.pk %} #}
+			url: "{% url 'unit_order_list' group_id node.pk %}",
+			datatype: "html",
+			data:{
+				'csrfmiddlewaretoken': "{{csrf_token}}",
+				'unit_list': unit_list_ids,
+			},
+			success: function(data) {
+				data = JSON.parse(data)
+				if (!data['success']){
+					alert("Something went wrong. Please try again later.")
+				}
+				$('#sort-unit-reveal').foundation('reveal', 'close');
+				location.reload()
+			}
+		});
 
+	})
 
-<!-- Existing card list-->
-</div>	
-
-
-
-<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4" >
-<!-- Existing card list-->
-	{% for each_node in units_under_module  %}
-    <li class="card-image-wrapper" >
-		{% include 'ndf/card_group.html' with node=each_node  url_name='groupchange' first_arg=each_node.pk groupid=each_node.pk is_gstaff=is_gstaff %}	
-	</li>
-	{% endfor %}
-</ul>
-
-
+</script>
 {% endblock %}
-
-
-
-

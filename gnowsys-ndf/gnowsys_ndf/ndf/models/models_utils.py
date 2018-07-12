@@ -6,7 +6,7 @@ class NodeJSONEncoder(json.JSONEncoder):
       return str(o)
 
     if isinstance(o, datetime.datetime):
-      return o.strftime("%d/%m/%Y %H:%M:%S")
+      return o.strftime("%d/%m/%Y %H:%M:%S:%f")
 
     return json.JSONEncoder.default(self, o)
 
@@ -50,6 +50,7 @@ class ActiveUsers(object):
         from django.utils.importlib import import_module
         from django.conf import settings
         from django.contrib.auth import logout
+        from .buddy import Buddy
         
         request = HttpRequest()
 
@@ -68,7 +69,7 @@ class ActiveUsers(object):
                 request.session = engine.SessionStore(session.session_key)
 
                 request.user = User.objects.get(id=user_id)
-                print ('\nProcessing session of [ %d : "%s" ]\n' % (request.user.id, request.user.username))
+                print ('\nProcessing session of [ %d : "%s" ]' % (request.user.id, request.user.username))
 
                 logout(request)
                 print('- Successfully logout user with id: %r ' % user_id)
@@ -133,7 +134,7 @@ class node_holder(DjangoDocument):
 
 #     try:
 #         active_loggedin_and_buddy_users_group = DjangoGroup.objects.get_or_create(name=django_active_users_group_name)[0]
-#     except Exception, e:
+#     except Exception as e:
 #         print e
 #         pass
 

@@ -9,14 +9,13 @@ from registration.backends.default.views import ActivationView
 from jsonrpc import jsonrpc_site
 
 # from gnowsys_ndf.ndf.forms import *
-from gnowsys_ndf.settings import GSTUDIO_SITE_NAME
+from gnowsys_ndf.settings import GSTUDIO_SITE_NAME,GSTUDIO_USERNAME_SELECTION_WIDGET
 from gnowsys_ndf.ndf.views.email_registration import password_reset_email, password_reset_error, GstudioEmailRegistrationForm
 from gnowsys_ndf.ndf.forms import UserChangeform, UserResetform
 from gnowsys_ndf.ndf.views.home import homepage, landing_page
 from gnowsys_ndf.ndf.views.methods import tag_info
 from gnowsys_ndf.ndf.views.custom_app_view import custom_app_view, custom_app_new_view
 from gnowsys_ndf.ndf.views import rpc_resources
-
 if GSTUDIO_SITE_NAME.lower() == 'clix':
     login_template = 'registration/login_clix.html'
     logout_template = "ndf/landing_page_clix.html"
@@ -123,6 +122,7 @@ urlpatterns = patterns('',
     (r'^tools/', include('gnowsys_ndf.ndf.urls.tools')),
     (r'^sitemap.html/',include('gnowsys_ndf.ndf.urls.sitemap')),
     (r'^(?P<group_name>[^/]+)/gtask', include('gnowsys_ndf.ndf.urls.gtask')),
+
     # meeting app
     # (r'^online/', include('online_status.urls')),   #for online_users.
     # url(r'^(?P<group_id>[^/]+)/inviteusers/(?P<meetingid>[^/]+)','gnowsys_ndf.ndf.views.meeting.invite_meeting', name='invite_meeting'),
@@ -131,6 +131,11 @@ urlpatterns = patterns('',
     # url(r'^(?P<group_id>[^/]+)/online','gnowsys_ndf.ndf.views.meeting.get_online_users', name='get_online_users'),
     # following url (name="meeting") kept uncommented to avoid errors
     url(r'^(?P<group_id>[^/]+)/meeting','gnowsys_ndf.ndf.views.meeting.dashb', name='meeting'),
+    url(r'^about.html/','gnowsys_ndf.ndf.views.site.site_about',name='site_about'),    
+    url(r'^credits.html/','gnowsys_ndf.ndf.views.site.site_credits',name='site_credits'),    
+    url(r'^contact.html/','gnowsys_ndf.ndf.views.site.site_contact',name='site_contact'),    
+    url(r'^termsofservice.html/','gnowsys_ndf.ndf.views.site.site_termsofuse',name='site_termsofuse'),    
+    url(r'^privacypolicy.html/','gnowsys_ndf.ndf.views.site.site_privacypolicy',name='site_privacypolicy'),    
     # --end meeting app
 
     # (r'^(?P<group_id>[^/]+)/Observations', include('gnowsys_ndf.ndf.urls.observation')),
@@ -213,7 +218,8 @@ urlpatterns = patterns('',
         ),
         name='registration_register'),
 
-    url(r'^accounts/login/$', auth_views.login ,{'template_name': login_template}, name='login'),
+    # url(r'^accounts/login/$', auth_views.login ,{'template_name': login_template}, name='login'),
+    url(r'^accounts/login/$', auth_views.login ,{'template_name': login_template, 'extra_context': {'USERNAME_SELECTION_WIDGET': GSTUDIO_USERNAME_SELECTION_WIDGET}}, name='login'),
     url(r'^accounts/logout/$', auth_views.logout ,{'template_name': logout_template}, name='logout'),
     url(r'^accounts/', include('registration_email.backends.default.urls')),
 
@@ -221,6 +227,8 @@ urlpatterns = patterns('',
 
    (r'^status/cache/$', 'gnowsys_ndf.ndf.views.cache.cache_status'),
     # url(r'^Beta/', TemplateView.as_view(template_name= 'gstudio/beta.html'), name="beta"),
+    url(r'^(?P<user_id>[\w-]+)/profile$', 'gnowsys_ndf.ndf.views.userDashboard.save_profile', name='save_user_profile'),
+
 )
 
 if settings.DEBUG:

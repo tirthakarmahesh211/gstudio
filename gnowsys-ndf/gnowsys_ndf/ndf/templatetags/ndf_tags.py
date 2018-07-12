@@ -135,6 +135,7 @@ def get_site_variables():
 	site_var['BUDDY_LOGIN'] = GSTUDIO_BUDDY_LOGIN
 	site_var['INSTITUTE_ID'] = GSTUDIO_INSTITUTE_ID
 	site_var['HEADER_LANGUAGES'] = HEADER_LANGUAGES
+	site_var['GSTUDIO_DOC_FOOTER_TEXT'] = GSTUDIO_DOC_FOOTER_TEXT
 
 	cache.set('site_var', site_var, 60 * 30)
 
@@ -2221,7 +2222,12 @@ def user_access_policy(node, user):
         user_access = True
 
       else:
-        user_access = False
+        auth_obj = Author.get_author_by_userid(user.id)
+        if auth_obj:
+          if auth_obj.agency_type == 'Teacher':
+            user_access = True
+          elif auth_obj.agency_type == 'Student' and GSTUDIO_IMPLICIT_ENROLL:
+            user_access = True
 
     if user_access:
       return "allow"
@@ -4242,3 +4248,45 @@ def get_header_lang(lang):
         if lang in each_lang:
             return each_lang[1]
     return lang
+
+
+@get_execution_time
+@register.assignment_tag
+def get_profile_full_name(user_obj):
+	if isinstance(user_obj, basestring):
+		if user_obj.isdigit():
+			user_obj = int(user_obj)
+		else:
+			user_obj = User.objects.get(username=user_obj)
+	if isinstance(user_obj, int):
+		user_obj = User.objects.get(pk=user_obj)
+	auth_obj = Author.get_author_by_userid(user_obj.pk)
+	list_of_attr = ['first_name', 'last_name']
+	auth_attr = auth_obj.get_attributes_from_names_list(list_of_attr)
+	if auth_attr.values():
+		full_name = ' '.join("%s" % val for (key,val) in auth_attr.iteritems())
+		full_name += " (Username: " + user_obj.username + ", ID: " + str(user_obj.pk) + ")"
+	else:
+		full_name = "Username: " + user_obj.username  + ", ID: " + str(user_obj.pk)
+	return full_name
+
+@get_execution_time
+@register.assignment_tag
+def get_implicit_enrollment_flag():
+	return GSTUDIO_IMPLICIT_ENROLL
+
+@get_execution_time
+@register.assignment_tag
+def get_name_by_node_id(node_id):
+    if isinstance(node_id, list) and len(node_id):
+        node_id = node_id[-1]
+    node = Node.get_node_by_id(node_id)
+    if node:
+        return node.name
+    else:
+        return None
+
+@get_execution_time
+@register.assignment_tag
+def get_institute_name():
+	return GSTUDIO_INSTITUTE_NAME

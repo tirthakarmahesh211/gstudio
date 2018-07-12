@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="row group_content">
-    <div class="small-12 medium-12 large-12 columns  group_sections_content">
+    <div class="small-12 medium-12 large-12 columns  group_sections_content" style="min-height:100%;">
         <form enctype="multipart/form-data" method="post" action="{{post_url}}" class="node-create-edit-form small-12  medium-10 large-10 columns small-centered medium-centered ">
             {% csrf_token %}
             <!-- _id -->
@@ -15,13 +15,12 @@
                 <div class="gray-text"></div>
                 </div>
                 <div class="small-10 medium-10 large-10 columns small-centered medium-centered">
-                    <input name="name" type="text" class="node_name" style="margin-top:11px;margin-left:40px" placeholder="Enter title"  
-                    value="{{node_obj.name|safe}}"/>
+                    <input name="name" type="text" class="node_name" style="margin-top:11px;margin-left:40px" placeholder="Enter title"  value="{{node_obj.name|safe}}"/>
                     <label class="node_name_empty hide" style="color:red">{% trans "Please enter Name" %}</label>
-
                 </div>
                 <br>
                 {% if not no_altnames %}
+
                     <div class="left small-1 medium-1 large-1 columns">
                         <h5>{% trans "Display Name" %}</h5>
                         <div class="gray-text"></div>
