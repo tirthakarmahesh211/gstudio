@@ -790,68 +790,68 @@ def my_desk(request, group_id,page_no=1):
     # for each in my_modules_cur:
     #     my_modules.append(each._id)
 
-    if GSTUDIO_SITE_NAME == "clix":
-        list_of_attr = ['first_name', 'last_name', 'enrollment_code', 'organization_name', 'educationallevel']
-        auth_attr = auth_obj.get_attributes_from_names_list(list_of_attr)
-        auth_profile_exists = all(v not in ['', None] for v in auth_attr.values())
+    # if GSTUDIO_SITE_NAME == "clix":
+    #     list_of_attr = ['first_name', 'last_name', 'enrollment_code', 'organization_name', 'educationallevel']
+    #     auth_attr = auth_obj.get_attributes_from_names_list(list_of_attr)
+    #     auth_profile_exists = all(v not in ['', None] for v in auth_attr.values())
+    #     my_units = node_collection.find(
+    #                 {'member_of':
+    #                     {'$in': [ce_gst._id, announced_unit_gst._id, gst_group._id]
+    #                 },
+    #                 'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST },
+    #                 'agency_type': {'$ne': unicode("School")},
+    #                 'author_set': request.user.id}).sort('last_update', -1)
+    #     my_units_page_cur = paginator.Paginator(my_units, page_no, GSTUDIO_NO_OF_OBJS_PP)
+        
+    #     query =  {'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST } }
+        
+        
+    #     if auth_obj.agency_type == "Teacher":
+    #         query.update({'member_of': { '$in' :  [gst_author_id,gst_group._id]},
+    #                      '$or': [
+    #                         {'agency_type': {'$eq': unicode("School")}}, 
+    #                         {'_type': unicode ("Author"),
+    #                          'created_by' : request.user.id,
+    #                         } 
+    #                     ],    
+    #                 })
+    #     else:
+    #         query.update({'agency_type': {'$eq': unicode("School")}})
+    #     my_workspaces = node_collection.find(query).sort('last_update', -1)
+        
+    # else:
+    if GSTUDIO_ELASTIC_SEARCH and TESTING_VARIABLE_FOR_ES:
+
+        my_units_page_cur = None
+        q = Q('bool', must=[Q('match', author_set=request.user.id),~Q('match', name='Trash'),~Q('terms', name=GSTUDIO_DEFAULT_GROUPS_LIST)],
+        should=[Q('match',member_of=ce_gst.hits[0].id),Q('match',member_of=announced_unit_gst.hits[0].id),Q('match',member_of=gst_group.hits[0].id) ],
+        minimum_should_match=1)
+        my_units =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        # print my_units.count()
+
+        if int(page_no)==1:
+            my_units=my_units[0:21]
+        else:
+            temp=( int(page_no) - 1) * 21
+            my_units=my_units[temp:temp+21]
+        paginator = Paginator(my_units, 21)
+        try:
+            my_units_page_cur = paginator.page(page_no)
+        except PageNotAnInteger:
+            my_units_page_cur = paginator.page(1)
+        except EmptyPage:
+            my_units_page_cur = paginator.page(paginator.num_pages)
+
+    else:
+        from mongokit import paginator
         my_units = node_collection.find(
                     {'member_of':
                         {'$in': [ce_gst._id, announced_unit_gst._id, gst_group._id]
                     },
                     'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST },
-                    'agency_type': {'$ne': unicode("School")},
                     'author_set': request.user.id}).sort('last_update', -1)
+
         my_units_page_cur = paginator.Paginator(my_units, page_no, GSTUDIO_NO_OF_OBJS_PP)
-        
-        query =  {'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST } }
-        
-        
-        if auth_obj.agency_type == "Teacher":
-            query.update({'member_of': { '$in' :  [gst_author_id,gst_group._id]},
-                         '$or': [
-                            {'agency_type': {'$eq': unicode("School")}}, 
-                            {'_type': unicode ("Author"),
-                             'created_by' : request.user.id,
-                            } 
-                        ],    
-                    })
-        else:
-            query.update({'agency_type': {'$eq': unicode("School")}})
-        my_workspaces = node_collection.find(query).sort('last_update', -1)
-        
-    else:
-        if GSTUDIO_ELASTIC_SEARCH and TESTING_VARIABLE_FOR_ES:
-
-            my_units_page_cur = None
-            q = Q('bool', must=[Q('match', author_set=request.user.id),~Q('match', name='Trash'),~Q('terms', name=GSTUDIO_DEFAULT_GROUPS_LIST)],
-            should=[Q('match',member_of=ce_gst.hits[0].id),Q('match',member_of=announced_unit_gst.hits[0].id),Q('match',member_of=gst_group.hits[0].id) ],
-            minimum_should_match=1)
-            my_units =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
-            # print my_units.count()
-
-            if int(page_no)==1:
-                my_units=my_units[0:21]
-            else:
-                temp=( int(page_no) - 1) * 21
-                my_units=my_units[temp:temp+21]
-            paginator = Paginator(my_units, 21)
-            try:
-                my_units_page_cur = paginator.page(page_no)
-            except PageNotAnInteger:
-                my_units_page_cur = paginator.page(1)
-            except EmptyPage:
-                my_units_page_cur = paginator.page(paginator.num_pages)
-
-        else:
-            from mongokit import paginator
-            my_units = node_collection.find(
-                        {'member_of':
-                            {'$in': [ce_gst._id, announced_unit_gst._id, gst_group._id]
-                        },
-                        'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST },
-                        'author_set': request.user.id}).sort('last_update', -1)
-
-            my_units_page_cur = paginator.Paginator(my_units, page_no, GSTUDIO_NO_OF_OBJS_PP)
 
         #my_units_page_cur = paginator.Paginator(my_units, page_no, GSTUDIO_NO_OF_OBJS_PP)
     # my_modules_cur.rewind()
@@ -864,7 +864,7 @@ def my_desk(request, group_id,page_no=1):
                     'my_units_page_cur':my_units_page_cur,
                     'page_info':my_units_page_cur,
                     # 'modules_cur': my_modules_cur
-                    'workspaces_cur' : my_workspaces,
+                    # 'workspaces_cur' : my_workspaces,
                 },
                 context_instance=RequestContext(request)
         )
