@@ -2195,7 +2195,7 @@ def _get_current_and_old_display_pics(group_obj):
 # :::::::::::::::::::::::::::::::::TAB VIEWS BEGINS::::::::::::::::::::::
 @get_execution_time
 def course_content(request, group_id):
-
+    # print "course_content"
     group_obj   = get_group_name_id(group_id, get_obj=True)
     forbid_private_group(request, group_obj)
     group_id    = group_obj._id
@@ -2211,6 +2211,7 @@ def course_content(request, group_id):
 
     if 'announced_unit' in group_obj.member_of_names_list or 'Group' in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list and 'base_unit' not in group_obj.member_of_names_list:
         template = 'ndf/lms.html'
+    # print template
     banner_pic_obj,old_profile_pics = get_current_and_old_display_pics(group_obj)
     if request.user.is_authenticated():
         counter_obj = Counter.get_counter_obj(request.user.id, ObjectId(group_id))
@@ -2811,10 +2812,10 @@ def course_raw_material(request, group_id, node_id=None,page_no=1):
     #     allow_to_upload = True
     if gstaff_access:
         allow_to_upload = True
-    template = 'ndf/gcourse_event_group.html'
 
-    
+    template = 'ndf/gcourse_event_group.html'    
     if "announced_unit" in group_obj.member_of_names_list or "Group" in group_obj.member_of_names_list or "base_unit" in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list :
+
         template = 'ndf/lms.html'
         # assets_page_info = paginator.Paginator(asset_nodes, page_no, GSTUDIO_NO_OF_OBJS_PP)
         # context_variables.update({'assets_page_info':assets_page_info})
@@ -2906,9 +2907,9 @@ def course_gallery(request, group_id,node_id=None,page_no=1):
     else:
         asset_nodes = GSystem.query_list(group_id, 'Asset', request.user.id,tags="asset@gallery")
     template = 'ndf/gcourse_event_group.html'
-
     
     if "announced_unit" in group_obj.member_of_names_list or "Group" in group_obj.member_of_names_list or 'Author' in group_obj.member_of_names_list or 'base_unit' in group_obj.member_of_names_list:
+
         template = 'ndf/lms.html'
         # assets_page_info = paginator.Paginator(asset_nodes, page_no, GSTUDIO_NO_OF_OBJS_PP)
         # context_variables.update({'assets_page_info':assets_page_info})
@@ -3739,21 +3740,22 @@ def assets(request, group_id, asset_id=None,page_no=1):
                                     context_variables,
                                     context_instance = RequestContext(request)
         )
-    gstaff_access = check_is_gstaff(group_id, request.user)    
-    if gstaff_access:
-        asset_nodes = node_collection.find({'member_of': {'$in': [asset_gst_id]},'group_set': {'$all': [ObjectId(group_id)]},'access_policy': {'$in': ['PRIVATE','PUBLIC']  } }).sort('last_update', -1)
+    # gstaff_access = check_is_gstaff(group_id, request.user)    
+    # # if gstaff_access:
+    # #     asset_nodes = node_collection.find({'member_of': {'$in': [asset_gst_id]},'group_set': {'$all': [ObjectId(group_id)]},'access_policy': {'$in': ['PRIVATE','PUBLIC']  } }).sort('last_update', -1)
     
-    else:
-        asset_nodes = node_collection.find({'member_of': {'$in': [asset_gst_id]},
-            'group_set': {'$all': [ObjectId(group_id)]},
-            '$and': [
-              {'access_policy': 'PUBLIC'},
-              {'$or': [
-                {'created_by': request.user.id},
-                {'access_policy': 'PRIVATE'}
-                ]
-              }
-            ]}).sort('last_update', -1)
+    # # else:
+    # #     asset_nodes = node_collection.find({'member_of': {'$in': [asset_gst_id]},
+    # #         'group_set': {'$all': [ObjectId(group_id)]},
+    # #         '$and': [
+    # #           {'access_policy': 'PUBLIC'},
+    # #           {'$or': [
+    # #             {'created_by': request.user.id},
+    # #             {'access_policy': 'PRIVATE'}
+    # #             ]
+    # #           }
+    # #         ]}).sort('last_update', -1)
+    asset_nodes = node_collection.find({'member_of': {'$in': [asset_gst_id]},'group_set': {'$all': [ObjectId(group_id)]}}).sort('last_update', -1)
     
     assets_page_info = paginator.Paginator(asset_nodes, page_no, GSTUDIO_NO_OF_OBJS_PP)
     context_variables = {
@@ -3911,6 +3913,8 @@ def course_pages(request, group_id, page_id=None,page_no=1):
                     }).sort('last_update',-1)
         course_pages_info = paginator.Paginator(all_pages, page_no, GSTUDIO_NO_OF_OBJS_PP)
         context_variables.update({'editor_view': False, 'all_pages': all_pages,'course_pages_info':course_pages_info})
+    # print "----==========---------================"
+    # print context_variables
     return render_to_response(template,
                                 context_variables,
                                 context_instance = RequestContext(request)

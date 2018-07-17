@@ -20,8 +20,8 @@
 		<div class="small-10 columns title-strip strip">
 
 			<div class="small-11 columns">
-				<h7 class="text-button-blue"><i>{% trans "Module Name: " %}</h7></i><strong> {{node.name}} </strong><br/>
-				<h7 class="text-button-blue"><i>{% trans "Module Description: " %}</i></h7> {{node.content|default:'No description added yet.'|safe}}
+				<h7 class="text-button-blue"><i>{% trans "Name: " %}</h7></i><strong> {{node.name}} </strong><br/>
+				<h7 class="text-button-blue"><i>{% trans "Description: " %}</i></h7> {{node.content|default:'No description added yet.'|safe}}
 			</div>
 			<div class="small-1 columns" style="margin-top:25px;">
 		         <div class="right course_actions">
@@ -64,6 +64,7 @@
 				{% endif %}
 		        </div>
 		    </div>
+{% if site.SITE_NAME != "NROER" %}
 				<br/>
 				<br/>
 				<label  style="margin-left: auto;">{% trans "Description: " %}</label> <div class="module-desc">{{node.content|default:'No description added yet.'|safe}}
@@ -88,6 +89,148 @@
 				<br/><h3>{% trans "No data to display" %}</h3>
 			{% endfor %}
 		</ul>
+{% else %}
+		</div>
+{% if units_under_module_count == 0  and has_search == True %}
+		<div class="large-8 columns">
+		<h3>Sorry, We couldn't find any results matching "{{ search_text|slice:"2:"|slice:"-2" }}" </h3>
+		</div>
+{% endif %}
+
+{# {% include 'ndf/card_group.html' with node=node groupid=node.pk %} #}
+
+<!-- Existing card list-->
+</div>	
+
+<ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4" >
+<!-- Existing card list-->
+	{% for each_node in units_under_module %}
+		<li class="card-image-wrapper">
+		{% if each_node.name in PARTNER_LIST %}
+			{% include 'ndf/card_group.html' with node=each_node  url_name='e-library' first_arg=each_node.pk groupid=each_node.pk is_gstaff=is_gstaff %}
+		{% comment %}
+			{% include 'ndf/card_group.html' with node=each_node has_prof_pic=True url_name='e-library' first_arg='home' second_arg='' search_url_text='filter?selfilters=[{"or":[{"selFieldValue":"source","selFieldValueAltnames":"source","selFieldGstudioType":"attribute","selFieldText":"'|add:each_node.name|add:'","selFieldPrimaryType":"basestring"}]}]' %}
+		{% endcomment %}
+		{% else %}
+			{% include 'ndf/card_group.html' with node=each_node  url_name='groupchange' first_arg=each_node.pk groupid=each_node.pk is_gstaff=is_gstaff %}	
+		{%  endif %}
+		</li>
+	{% endfor %}
+</ul>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	{% comment %}
+
+// function doClickAction(divtag) {
+//     var a = $(divtag).attr("id");
+//     var a="/"+a+"/"
+//     console.log(a)
+//     $(divtag).children("a").attr("href",a);
+//     // $(divtag).css("background-color", "red");
+//     // alert("single")
+//     // $(".unit_card").find("#582eac4f16b51c01da6b87d").removeAttr("href");
+//     // console.log($(divtag).find(a).removeAttr("href"))
+//     // console.log(id)
+
+// }
+// function doDoubleClickAction(divtag) {
+// 	// $(divtag).css("background-color", "green");
+// 	$(divtag).children("a").removeAttr("href");
+//     // alert("double click");
+//     $(divtag).find("img").replaceWith("<a href='/home/'>Change Image</a>");
+
+//   // $("#double-click h2").append("•"); 
+// }
+
+// var timer = 0;
+// var delay = 10;
+// var prevent = false;
+// $(".card-image-wrapper .unit_card")
+//   .on("click", function() {
+//     var a = $(this)
+//     var id="{{first_arg}}";
+//     timer = setTimeout(function() {
+//       if (!prevent) {
+//         doClickAction(this);
+//       }
+//       prevent = false;
+//     }, 100);
+//     // doClickAction(this);
+//   })
+//   .on("dblclick", function() {
+//     // var a = $(this).html();
+//     clearTimeout(timer);
+//     prevent = true;
+//     doDoubleClickAction(this);
+//   });
+
+        // $(".card-image-wrapper .unit_card").click(function(e){ 
+        // // e.preventDefault()       
+        // // console.log("asasassas")    
+        // // var fired_button = $(this).val();
+        // // alert(fired_button);
+        // $(this).css("background-color", "yellow");
+        // $(this).children("a").removeAttr("href");
+        // // console.log($(this).children().removeAttr("href"))
+        // });
+{% endcomment %}
+$("a.edit_unit").click(function(event){
+	var id= $(this).attr("id");
+	var unit_id = id;
+	console.log(id)
+	var node = {"pk":id};
+
+   $(this).parent().parent().find(".unit_banner").replaceWith("<a  data-reveal-id='group_banner_prof_pic_prop'>{% trans 'Change image' %}</a>");
+   // $(".dropzone").html("<form class='dropzone' id ='group_banner_docPost' enctype='multipart/form-data' method='post'  action='/"+id+"/upload_prof_pic'>");
+   var url="/"+id+"/upload_prof_pic/";
+
+   $('.dropzone').attr('action', url);
+   $( "input[name='pic_rt']" ).attr('value','is_profile');
+   var id = "#"+id;
+
+   var label = $(id).text().trim();
+   console.log(label)
+   if(label == "Edit") {
+     $(id).text("Save");
+     var title=$(this).parent().parent().find('.unit_title').attr("title");
+     var description=$(this).parent().parent().find('.unit_desc').text();
+     console.log(description);
+     $(this).parent().parent().find(".unit_title").replaceWith("<input type='text' id='unit-title-{{unit_id}}' class='unit_title' value='"+title+"'>");
+     $(this).parent().parent().find(".unit_desc").replaceWith("<input type='text' id='unit-desc-{{unit_id}}' class='unit_desc' value='"+description+"'>");
+     $(this).parent().parent().find("a#unit_card_link").removeAttr("href");
+     // $(this).parent().parent().find("#unit_card_link").append("-->");
+   }
+   else {
+     $(id).text("Edit");
+     var id = "#unit_card_"+unit_id
+     console.log(id)
+     var unit_title = $(id).find("#unit-title-{{unit_id}}").val();
+     var unit_desc = $(id).find("#unit-desc-{{unit_id}}").val();
+     console.log(unit_title)
+     console.log(unit_desc)
+     console.log("-------------------------------")
+    $.ajax({
+              type: "POST",
+              data:{
+              	"unit_title":unit_title,
+              	"unit_desc":unit_desc,
+              	"unit_id":unit_id,
+              	'csrfmiddlewaretoken': "{{csrf_token}}"
+                },
+              url: "{% url 'save_edited_card_info' group_id  %}",
+              datatype: "html",
+              success: function(data) {
+                location.reload()
+            }
+        });
+   }
+
+
+});//edit_unit closed
+});//ready
+</script>
+{% endif %}
 
 	</div>
 </div>

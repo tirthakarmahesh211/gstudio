@@ -9,19 +9,31 @@ from registration.backends.default.views import ActivationView
 from jsonrpc import jsonrpc_site
 
 # from gnowsys_ndf.ndf.forms import *
-from gnowsys_ndf.settings import GSTUDIO_SITE_NAME,GSTUDIO_USERNAME_SELECTION_WIDGET
+from gnowsys_ndf.settings import GSTUDIO_SITE_NAME,GSTUDIO_USERNAME_SELECTION_WIDGET,LOGIN_WITH_MASTODON
 from gnowsys_ndf.ndf.views.email_registration import password_reset_email, password_reset_error, GstudioEmailRegistrationForm
 from gnowsys_ndf.ndf.forms import UserChangeform, UserResetform
 from gnowsys_ndf.ndf.views.home import homepage, landing_page
 from gnowsys_ndf.ndf.views.methods import tag_info
 from gnowsys_ndf.ndf.views.custom_app_view import custom_app_view, custom_app_new_view
 from gnowsys_ndf.ndf.views import rpc_resources
+
+################################################
+#Middleware for login with mastodon oauth
+from gnowsys_ndf.ndf.middleware.oauth_middleware import mastodon_login 
+################################################
+from gnowsys_ndf.ndf.views.es_analytics import get_analytics
+    
+#from gnowsys_ndf.ndf.views.esearch import get_search,get_advanced_search_form,advanced_search
+
 if GSTUDIO_SITE_NAME.lower() == 'clix':
     login_template = 'registration/login_clix.html'
     logout_template = "ndf/landing_page_clix.html"
 else:
     login_template = 'registration/login.html'
     logout_template = 'registration/logout.html'
+    login_instance_mastodon=mastodon_login()
+
+    
 
 urlpatterns = patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
@@ -29,6 +41,7 @@ urlpatterns = patterns('',
 
     # gstudio admin url's
     (r'^admin/', include('gnowsys_ndf.ndf.urls.gstudio_admin')),
+    #(r'^api/v1', include('gnowsys_ndf.ndf.urls.api')),
 
     # --mobwrite-- commented for time being
     # (r'^raw/(?P<name>.+)/', 'gnowsys_ndf.mobwrite.views.raw'),
@@ -38,16 +51,35 @@ urlpatterns = patterns('',
     # (r'^new/$', 'gnowsys_ndf.mobwrite.views.new'),
     # (r'^mobwrite/', 'gnowsys_ndf.mobwrite.views.mobwrite'),
     # --end of mobwrite
+    ############################################################################
+    #url(r'^oauth2/', include('provider.oauth2.urls', namespace = 'oauth2')),
+    ############################################################################
 
     # url(r'^(?P<group_id>[^/]+)/mailclient[/]error[/](?P<error_obj>[\w-]+)$', 'gnowsys_ndf.ndf.views.mailclient.mailclient_error_display', name='mailclient_error_display'),
-
+    
     url(r'^$', homepage, {"group_id": "home"}, name="homepage"),
     url(r'^welcome/?', landing_page, name="landing_page"),
+    url(r'^popular', get_analytics, name="get_analytics"),
+    # Elastic Search
+    # url(r'^esearch/advanced/?', get_triples, name="get_triples"),
+    #url(r'^esearch/?', get_search, name="get_search"),
+    #url(r'^advanced_form/?', get_advanced_search_form, name="get_advanced_search_form"),
+    #url(r'^advanced_search/?', advanced_search, name="advanced_search"),
+    
+    # url(r'^esearch//?',advanced_search,name='advanced_search')
+    # url(r'^esearch/get_mapping_json/(?P<json_type>[^/]+)/?$', '', name=''),
+    # --END of Elastic Search
 
+    # url(r'^autocompletion/', include('gnowsys_ndf.ndf.urls.autocompletion')),
     url(r'^captcha/', include('captcha.urls')),
     (r'^', include('gnowsys_ndf.ndf.urls.captcha')),
 
+    # advanced search using ES
+
+    (r'^(?P<group_id>[^/]+)/advanced_search', include('gnowsys_ndf.ndf.urls.advanced_search')),
+
     # all main apps
+
     (r'^(?P<group_id>[^/]+)/mailclient', include('gnowsys_ndf.ndf.urls.mailclient')),
     (r'^(?P<group_id>[^/]+)/analytics', include('gnowsys_ndf.ndf.urls.analytics')),
     (r'^(?P<group_id>[^/]+)/file', include('gnowsys_ndf.ndf.urls.file')),
@@ -117,8 +149,9 @@ urlpatterns = patterns('',
     # ---end of mis
 
     #test url
-
     (r'^dev/', include('gnowsys_ndf.ndf.urls.dev_utils')),
+
+
     (r'^tools/', include('gnowsys_ndf.ndf.urls.tools')),
     (r'^sitemap.html/',include('gnowsys_ndf.ndf.urls.sitemap')),
     (r'^(?P<group_name>[^/]+)/gtask', include('gnowsys_ndf.ndf.urls.gtask')),
@@ -224,6 +257,10 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('registration_email.backends.default.urls')),
 
    # --end of django-registration
+    #################################################
+
+    url(r'^accounts/login_test_view/$', login_instance_mastodon.moauth , name='login_view'),
+    ################################################
 
    (r'^status/cache/$', 'gnowsys_ndf.ndf.views.cache.cache_status'),
     # url(r'^Beta/', TemplateView.as_view(template_name= 'gstudio/beta.html'), name="beta"),
@@ -240,3 +277,10 @@ if settings.DEBUG:
             'document_root': settings.STATIC_ROOT,
         }),
 )
+
+# if settings.login_with_mastodon=True:
+#     urlpatterns += patterns('',
+#         url(r'^accounts/login_test_view/$', some_instance.moauth , name='login_view'),    
+
+
+# )

@@ -25,7 +25,7 @@ from gnowsys_ndf.ndf.views.methods import get_group_name_id, cast_to_data_type
 
 
 gst_api_fields_dict = { "_id": 1, "name": 1, "altnames": 1, "language": 1, "content": 1, "if_file": 1, "tags": 1, "location": 1, "created_by": 1, "modified_by": 1, "contributors": 1, "legal": 1, "rating": 1, "created_at": 1, "last_update": 1, "collection_set": 1, "post_node": 1, "prior_node": 1, "access_policy": 1, "status": 1, "group_set": 1, "member_of": 1, "type_of": 1,
-    "relation_set": 1 #,"attribute_set": 1, 
+    "relation_set": 1 #,"attribute_set": 1,
 }
 
 api_name_model_name_dict = {
@@ -117,7 +117,6 @@ def api_get_gs_nodes(request):
             query_dict.update({('attribute_set.' + stripped_key): {'$regex': val, '$options': 'i'}})
 
     # print "query_dict: ", query_dict
-
     # making explicit human as decision taken
     human = eval(request.GET.get('human', '1'))
 
