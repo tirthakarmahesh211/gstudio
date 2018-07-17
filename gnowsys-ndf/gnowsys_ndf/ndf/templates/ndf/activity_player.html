@@ -335,17 +335,14 @@
               </div>
               </div>
           </div>
-{% if site.SITE_NAME != "NROER"  %}
-          <div class="small-8 columns section-expand">
-{% endif %}
-          <div class="small-12 medium-12 large-8 columns">
-            <div class="small-12 medium-12 large-12 columns course_editor_section">
+{% if site.SITE_NAME != "NROER" %}
+          <div class="small-9 medium-9 large-9 columns activity-section-expand">
+          <div class="activity-player-controls">
               {% with node.member_of_names_list as node_member_of_names_list %}
               {% get_relation_value node.pk 'has_help' as grel_help %}
               {% get_relation_value node.pk 'has_admin_page' as grel_admin_page %}
 
               {% if "QuizItemEvent" not in node_member_of_names_list and "QuizItem" not in node_member_of_names_list%}
-{% if site.SITE_NAME != "NROER" %}
               {% if grel_help.grel_id  or grel_admin_page.grel_id %}
               <div class="input_links row" style="margin-left:10px;">
                   {% if grel_help.grel_id  %}
@@ -364,7 +361,23 @@
                 {# Adding alternate Language, if present #}
               </div>
               {% endif %}
+              <div class="activity_page_rendered buddy_margin">
+                {% if "QuizItemEvent" in node_member_of_names_list or "QuizItem" in node_member_of_names_list%}
+                  {% load_quiz_player request group_id node True %}
+                {% else %}
+                <div class="activity-content-container">
+                  {% include "ndf/node_ajax_content.html" with node=trans_node expand_content=True  no_discussion=True hide_breadcrumbs=True %}
+                </div>
+                {% endif %}
+                <div class="rating-widget-container"><span>{% trans "Rating: " %}</span>{% include 'ndf/rating.html'%}</div>
+              </div>
+              {% endwith %}
 {% else %}
+          <div class="small-8 columns section-expand">
+          <div class="small-12 medium-12 large-8 columns">
+            <div class="small-12 medium-12 large-12 columns course_editor_section">
+              {% if "QuizItemEvent" not in node_member_of_names_list and "QuizItem" not in node_member_of_names_list%}
+              <div class="input_links row" style="margin-left:10px;">
               {% if player_discussion or node_discussion %}
                 <a class="discuss right explore-button"> {% if not thr_int_type %} {{disc_label}} {% else %} {{thr_int_type}} {% endif %} </a>
               {% endif %}
@@ -392,23 +405,22 @@
                 
                <!-- <a class="discuss right"> {% if not thr_int_type %} {{disc_label}} {% else %} {{thr_int_type}} {% endif %} </a>-->
                 <a class="translate right"> Translate</a>
+                {% endif %}
                 {% endcomment %}
                 {# Adding alternate Language, if present #}
               </div>
               {% endif %}
-{% endif %}
-
-              <div class="activity_page_rendered buddy_margin">
+                <div class="activity_page_rendered buddy_margin">
                 {% if "QuizItemEvent" in node_member_of_names_list or "QuizItem" in node_member_of_names_list%}
                   {% load_quiz_player request group_id node True %}
                 {% else %}
-                <div class="activity-content-container">
-                  {% include "ndf/node_ajax_content.html" with node=trans_node expand_content=True  no_discussion=True hide_breadcrumbs=True %}
-                </div>
+                {# {{node.content|safe}} #}
+                {% include "ndf/node_ajax_content.html" with node=trans_node expand_content=True  no_discussion=True hide_breadcrumbs=True %}
                 {% endif %}
-                <div class="rating-widget-container"><span>{% trans "Rating: " %}</span>{% include 'ndf/rating.html'%}</div>
               </div>
               {% endwith %}
+{% endif %}
+
 
               <div class="discussion-area activity_page_rendered">
                 {% get_attribute_value node.pk 'discussion_enable' as node_discussion %}
