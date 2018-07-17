@@ -141,13 +141,15 @@ def get_execution_time(f):
             path=path
             funct_name=f.func_name
             time_taken=unicode(str(time2 - time1))
+            locale=locale
             record_in_benchmark.apply_async((kwargs_len,total_param_size,post_bool,
                                 get_bool,
                                 sessionid,
                                 user_name,
                                 path,
                                 funct_name,
-                                time_taken), countdown=1)
+                                time_taken,
+                                locale), countdown=1)
 
         return ret
     return wrap
