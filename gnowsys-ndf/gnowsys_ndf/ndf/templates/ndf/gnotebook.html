@@ -98,10 +98,12 @@
                     {% comment %}
                     <a {% if user_access_priv == "allow" %} class=" add-note-btn button radius" title="Create Note" {% else %} class="bef-note-btn button radius user_not_enrolled" {% endif %}><i class="fi-plus"></i></a>
                     {% endcomment %}
-
+                    {% if site.SITE_NAME == "NROER" %}
                     <a {% if user_access_priv == "allow" %} class="add-note-btn button radius" title="Create Note" {% else %} class="bef-note-btn button radius user_not_enrolled" {% endif %}>Create New <i class="fi-plus"></i></a>
+                    {% else %}
                     <a {% if user_access_priv == "allow" %} class="add-note-btn" title="Create Note" {% else %} class="bef-note-btn button radius user_not_enrolled" {% endif %}><i class="fa fa-pencil"></i> {% trans "New" %} {% if 'Group' in group_object.member_of_names_list and 'base_unit' not in group_object.member_of_names_list %} {% trans "Blog" %} {% else %} {% trans "Note" %} {% endif %}</a>
                     {# <a class="add-note-btn"><i class="fi-plus"></i></a> #}
+                    {% endif %}
                     {% endif %}
                 </div>
             </div>
