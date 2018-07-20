@@ -14,26 +14,30 @@
  -->    
     {% include 'ndf/widget_user_access_modal.html' %}
        <div class ="row">
-           {% comment %}
+
             {% if title == "raw material" and is_gstaff %}
                 <input type="hidden"  class="title-for-filters" value="raw_material_lms">
+                {% comment %}
                 {% get_course_filters group_id "raw_material_lms" as filter_dict %}
                 {% include "ndf/filters.html" with filter_dict=filter_dict %}
-
+                {% endcomment %}
             {% endif %}
             
             {% if title == "gallery"  %}
                 <input type="hidden"  class="title-for-filters" value="gallery_lms">
+                {% comment %}
                 {% get_course_filters group_id "gallery_lms" as filter_dict %}
                 {% include "ndf/filters.html" with filter_dict=filter_dict %}
+                {% endcomment %}
             {% endif %}
             {% if title == "asset_list"  %}
                 <input type="hidden"  class="title-for-filters" value="assets_lms">
+                {% comment %}
                 {% get_course_filters group_id "assets_lms" as filter_dict %}
                 {% include "ndf/filters.html" with filter_dict=filter_dict %}
+                {% endcomment %}
             {% endif %}
-            {% endcomment %}
-        
+
        </div>
        
         <div class="row">
