@@ -201,9 +201,11 @@ def module_detail(request, group_id, node_id,title=""):
             'status':'PUBLISHED'
             }
         
+        agency_type=""
+        if module_obj.get('agency_type'):
+            agency_type=module_obj.agency_type
 
-        
-        if not gstaff_access and module_obj.agency_type != "Partner":
+        if not gstaff_access and agency_type != "Partner":
             module_detail_query.update({'$or': [
             {'$and': [
                 {'member_of': gst_base_unit_id},
