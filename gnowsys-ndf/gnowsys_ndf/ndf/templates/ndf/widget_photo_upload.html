@@ -36,7 +36,7 @@
         {% if not no_update_btn %}
         {% if request.user.is_authenticated %}
         {% check_is_gstaff groupid request.user as gstaff_access %}
-        {% if "Author" in group_object.member_of_names_list and user_id == request.user.id or "Author" not in group_object.member_of_names_list and gstaff_access %}
+        {% if "Author" in group_object.member_of_names_list and node.created_by == request.user.id or "Author" not in group_object.member_of_names_list and gstaff_access %}
                 <div class="row" >
                   <div class="small-12 columns" >
                     <a data-reveal-id="{{widget_for}}_prof_pic_prop" class="button tiny expand margin-p5 btn-font" id="{{widget_for}}_btnUploadProfilePic">{% if prof_pic_obj %}Change{% else %}Upload{% endif %}</a>

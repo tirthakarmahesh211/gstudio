@@ -17,7 +17,7 @@ from gnowsys_ndf.ndf.views.methods import create_gattribute, create_grelation
 from gnowsys_ndf.ndf.templatetags.ndf_tags import get_relation_value, get_attribute_value
 
 ##############################################
-from gnowsys_ndf.ndf.middleware.oauth_middleware import test
+#from gnowsys_ndf.ndf.middleware.oauth_middleware import test
 from gnowsys_ndf.ndf.models import *
 ##############################################
 

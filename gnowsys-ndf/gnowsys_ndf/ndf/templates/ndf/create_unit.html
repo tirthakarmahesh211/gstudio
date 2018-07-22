@@ -1,7 +1,7 @@
 {% extends "ndf/gbase.html" %}
 {% load i18n %}
 {% load ndf_tags %}
-
+{% get_site_variables as site %}
 {% block title %} {{title}} {% endblock %}
 {% block body_content %}
     <div class="row create_unit">
@@ -75,7 +75,7 @@
                           </label>
                         </div>
                 {% endif %}
-<<<<<<< HEAD
+{% if site.SITE_NAME == "NROER" %}
                     {% get_language_info_list for LANGUAGES as languages %}
                         <div class="large-6 columns">
                           <label>{% trans "Select Language" %}
@@ -86,7 +86,7 @@
                             </select>
                           </label>
                         </div>
-=======
+{% else %}
                 <div class="course_creator_header">
                     <div class="left course_heading">
                     <h5>{% trans "Select Language" %}</h5>
@@ -141,7 +141,7 @@
                     <div class="right course_heading_unit">
                          <input id="section-name" name="section_name" value="{{unit_node.project_config.section_name}}"  type="text" placeholder="Enter Section name"/>
                     </div>
->>>>>>> 2acca8f5692782da528ed7ea19633bfe3a43bbae
+{% endif %}
                 </div>
 
                 <div class="row">
