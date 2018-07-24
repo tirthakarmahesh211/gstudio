@@ -735,7 +735,7 @@ class Node(DjangoDocument):
                         # user = User.objects.get(pk=self.modified_by).username
                         user_list = User.objects.filter(pk=self.created_by)
                         user = user_list[0].username if user_list else 'user'
-                        if last_update:
+                        if self.last_update:
                             message = "This document (" + self.name + ") is lastly updated by " + user + " status:" + self.status + " on " + self.last_update.strftime("%d %B %Y")
                         else:
                             pass
