@@ -8,7 +8,7 @@
 {% block body_content %}
 {% check_is_gstaff group_id request.user as is_gstaff %}
     
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 	{% include 'ndf/explore_secondary_header.html' %}
 {% endif %}
 <div class="medium-12 columns">
@@ -64,7 +64,7 @@
 				{% endif %}
 		        </div>
 		    </div>
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 				<br/>
 				<br/>
 				<label  style="margin-left: auto;">{% trans "Description: " %}</label> <div class="module-desc">{{node.content|default:'No description added yet.'|safe}}
@@ -234,7 +234,7 @@ $("a.edit_unit").click(function(event){
 
 	</div>
 </div>
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 <script type="text/javascript">
     // ready function
     $(document).ready(function() {

@@ -7,7 +7,7 @@
   {% endif %}
   {% get_explore_url as explore_url %}
 
-  {% if site.SITE_NAME != "NROER" %}
+  {% if site.SITE_NAME != "NROER" or  site.SITE_NAME != "metaStudio" %}
   <div id="feedsModal" class="reveal-modal medium alert-box radius" data-reveal data-alert>
     <p id="feedsModalLabel"></p>
     <div class="row feeds_proceed">
@@ -57,7 +57,7 @@
 
       <!-- add GSTUDIO_SITE_NAME = "NROER" in the local_settings.py file, to check locally -->
       <!-- {#% cache 3600 top_header request.LANGUAGE_CODE request.path request.user.username %} -->
-      {% if site.SITE_NAME == "NROER"  %}
+      {% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
 
         <!-- NROER level one menu -->
         {% get_nroer_menu request group_name_tag as nroer_menu %}
@@ -328,7 +328,7 @@
               <li class="text-center">
                 <a href="/admin/designer">{% trans "Admin Designer" %}</a>
               </li>
-              {% if site.SITE_NAME == "NROER" %}
+              {% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
                 <li class="text-center">
                   <a href="/home/">{% trans "Home Dashboard" %}</a>
                 </li>
@@ -710,7 +710,7 @@
 </div>
   <!-- end of LOGO + top header's -->
 
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio"  %}
 <script>
   var set_href = false;
   $(document).on('click','.feeds_btn',function(){

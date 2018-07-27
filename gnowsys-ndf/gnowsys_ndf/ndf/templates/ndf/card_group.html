@@ -8,7 +8,7 @@
 {% load get_member_of_list from es_tags %}
 
 {% if site.GSTUDIO_ELASTIC_SEARCH != True or site.TESTING_VARIABLE_FOR_ES == False %}
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 <style type="text/css">
 </style>
 <div class="unit_card-{{node.pk}}" style="position: relative;">

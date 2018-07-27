@@ -69,7 +69,7 @@
       <a  aria-controls="autoCloseExample" class="authoring-tab" aria-expanded="false" data-dropdown="hover1" data-options="is_hover:true; hover_timeout:5000" style="color:#fff;background-color: #164a7b;">Authoring  &raquo;</a>
       <ul id="hover1" class="f-dropdown" data-dropdown-content tabindex="-1" aria-hidden="true" aria-autoclose="false" tabindex="-1" style="border-radius: 0px;">
          <li>
-        {% if site.SITE_NAME == 'NROER' %}
+        {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
             <a href="{% url 'course_pages' group_id %}"  {% if title == 'course_pages' or title == 'create_course_pages' %}class="selected"{% endif %}><i class="fi-page-filled "></i> {% trans "Pages" %}</a>
         {% else %}
           <a href="{% url 'course_pages' group_id %}"  {% if title == 'course_pages' or title == 'create_course_pages' %}class="selected"{% endif %}><i class="fi-page-filled "></i> {% trans "Activities" %}</a>
@@ -79,7 +79,7 @@
         {% endcomment %}
         </li>
       <li>
-        {% if site.SITE_NAME == 'NROER' %}
+        {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
             <a href="{% url 'asset_list' group_id %}" {% if title == 'asset_list' or title == 'asset_detail' or title == 'asset_content_detail'%}class="selected"{% endif %}><i class="fi-folder-lock"></i> {% trans "Asset Collection" %}</a>
         {% else %}
           <a href="{% url 'asset_list' group_id %}" {% if title == 'asset_list' or title == 'asset_detail' or title == 'asset_content_detail'%}class="selected"{% endif %}><i class="fi-folder-lock"></i> {% trans "Assets" %}</a>
@@ -157,7 +157,7 @@
       <a  aria-controls="autoCloseExample" class="authoring-tab" aria-expanded="false" data-dropdown="hover1" data-options="is_hover:true; hover_timeout:5000" style="color:#fff;background-color: #164a7b;">Authoring  &raquo;</a>
       <ul id="hover1" class="f-dropdown" data-dropdown-content tabindex="-1" aria-hidden="true" aria-autoclose="false" tabindex="-1" style="border-radius: 0px;">
          <li>
-        {% if site.SITE_NAME == 'NROER' %}
+        {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
             <a href="{% url 'course_pages' group_id %}"  {% if title == 'course_pages' or title == 'create_course_pages' %}class="selected"{% endif %}><i class="fi-page-filled "></i> {% trans "Pages" %}</a>
         {% else %}
           <a href="{% url 'course_pages' group_id %}"  {% if title == 'course_pages' or title == 'create_course_pages' %}class="selected"{% endif %}><i class="fi-page-filled "></i> {% trans "Activities" %}</a>
@@ -167,7 +167,7 @@
         {% endcomment %}
         </li>
       <li>
-        {% if site.SITE_NAME == 'NROER' %}
+        {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
             <a href="{% url 'asset_list' group_id %}" {% if title == 'asset_list' or title == 'asset_detail' or title == 'asset_content_detail'%}class="selected"{% endif %}><i class="fi-folder-lock"></i> {% trans "Asset Collection" %}</a>
         {% else %}
           <a href="{% url 'asset_list' group_id %}" {% if title == 'asset_list' or title == 'asset_detail' or title == 'asset_content_detail'%}class="selected"{% endif %}><i class="fi-folder-lock"></i> {% trans "Assets" %}</a>

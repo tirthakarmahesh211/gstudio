@@ -2105,7 +2105,7 @@ def group_dashboard(request, group_id=None):
 
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
-        if any(group_type in group_member_of for group_type in redir_groups_type):
+        if any(group_type in group_member_of for group_type in redir_groups_type) and False:
             return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
 
         # Subgroups listing
@@ -2224,6 +2224,9 @@ def group_dashboard(request, group_id=None):
         annotations = json.dumps(group_obj.annotations)
         '''
         default_template = "ndf/groupdashboard.html"
+        print default_template
+        print alternate_template
+
         return render_to_response([alternate_template,default_template] ,{'node': group_obj, 'groupid':group_id,
                                                              'group_id':group_id, 'user':request.user,
                                                              # 'shelf_list': shelf_list,
@@ -2367,9 +2370,11 @@ def group_dashboard(request, group_id=None):
     annotations = json.dumps(group_obj.annotations)
   
     default_template = "ndf/groupdashboard.html"
+    print default_template
   # print "\n\n blog_pages.count------",blog_pages
     if alternate_template:
         return HttpResponseRedirect( reverse('course_content', kwargs={"group_id": group_id}) )
+        print alternate_template    
     else:
         return render_to_response([alternate_template,default_template] ,{'node': group_obj, 'groupid':group_id,
                                                            'group_id':group_id, 'user':request.user,

@@ -67,7 +67,7 @@
         {% include "ndf/buddy.html" %}
     {% endif %}
 
-    {% if site.SITE_NAME == 'NROER' %}
+    {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
         {% include "ndf/header.html" %}
     {% else %}
         {% include "ndf/header_clix.html" %}
@@ -218,6 +218,8 @@
       {% if not no_footer %}
         {% if site.SITE_NAME == "NROER" %}
             {% include 'ndf/footer.html' %}
+        {% elif   site.SITE_NAME == "metaStudio"%} 
+            {% include 'ndf/footer_metastudio.html' %}  
         {% else %}
             {% include 'ndf/footer_clix.html' %}   
         {% endif %}

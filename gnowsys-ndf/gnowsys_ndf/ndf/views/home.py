@@ -154,24 +154,24 @@ def landing_page(request):
                                     'attribute_set.educationaluse': {'$in':['Images','Audios','Videos','Interactives','Documents','eBooks']}
                                     }).sort("last_update", -1).count()
 
-        q = Q('match',name=dict(query='Jsmol',type='phrase'))
-        GST_JSMOL = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
-        q = Q('match',name=dict(query='interactive_page',type='phrase'))
-        GST_IPAGE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
-        q = Q('match',name=dict(query='File',type='phrase'))
-        GST_FILE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
-        q = Q('match',name=dict(query='Page',type='phrase'))
-        GST_PAGE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
-        files = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id)), Q('match',access_policy='public')],
-                    should=[Q('match',member_of=GST_FILE.hits[0].id),Q('match',member_of=GST_IPAGE.hits[0].id),Q('match',member_of=GST_JSMOL.hits[0].id),Q('match',member_of=GST_PAGE.hits[0].id)],
-                    minimum_should_match=1)
-        files_count =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(files).count()
+        # q = Q('match',name=dict(query='Jsmol',type='phrase'))
+        # GST_JSMOL = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+        # q = Q('match',name=dict(query='interactive_page',type='phrase'))
+        # GST_IPAGE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+        # q = Q('match',name=dict(query='File',type='phrase'))
+        # GST_FILE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+        # q = Q('match',name=dict(query='Page',type='phrase'))
+        # GST_PAGE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+        # files = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id)), Q('match',access_policy='public')],
+        #             should=[Q('match',member_of=GST_FILE.hits[0].id),Q('match',member_of=GST_IPAGE.hits[0].id),Q('match',member_of=GST_JSMOL.hits[0].id),Q('match',member_of=GST_PAGE.hits[0].id)],
+        #             minimum_should_match=1)
+        # files_count =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(files).count()
 
         discussion = node_collection.find_one({'_type':'GSystemType',"name":"Reply"})
         discussion_count = node_collection.find({"member_of":ObjectId(discussion._id)}).count()
     
 
-    if (GSTUDIO_SITE_LANDING_PAGE == "home") and (GSTUDIO_SITE_NAME == "NROER"):
+    if (GSTUDIO_SITE_LANDING_PAGE == "home") and (GSTUDIO_SITE_NAME == "NROER") or (GSTUDIO_SITE_NAME == "metaStudio"):
         return render_to_response(
                                 "ndf/landing_page_nroer.html",
                                 {
