@@ -2078,7 +2078,6 @@ def group_dashboard(request, group_id=None):
     # which can be used for `alternate_template`
     alternate_template = None 
     allow_to_join=[]
-
     selected = request.GET.get('selected','')
     group_obj = get_group_name_id(group_id, get_obj=True)
     try:
@@ -2105,7 +2104,10 @@ def group_dashboard(request, group_id=None):
 
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
-        if any(group_type in group_member_of for group_type in redir_groups_type):
+        check_site_name = True
+        if GSTUDIO_SITE_NAME == "metaStudio":
+            check_site_name = False
+        if any(group_type in group_member_of for group_type in redir_groups_type) and check_site_name:
             return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
 
         # Subgroups listing

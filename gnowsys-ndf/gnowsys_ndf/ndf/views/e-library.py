@@ -339,11 +339,11 @@ if GSTUDIO_ELASTIC_SEARCH:
 		images_count = images_count.count()
 		collection_pages_cur_count = collection_pages_cur.count()
 
-		if group_id == 	"55ab34ff81fccb4f1d806025" or group_id == "home" and selfilters in (None,'',"") and search_text in (None,'',""):
+		if str(group_id) == "55ab34ff81fccb4f1d806025" or group_id == "home" and selfilters in (None,'',"") and search_text in (None,'',""):
 			# ebooks_count = ebooks_count.count()
-			all_count = all_count.count()
-			images_count = images_count.count()
-			collection_pages_cur_count = collection_pages_cur.count()
+			all_count = all_count
+			images_count = images_count
+			collection_pages_cur_count = collection_pages_cur_count
 
 		return render_to_response(
 	        'ndf/resource_list.html',
