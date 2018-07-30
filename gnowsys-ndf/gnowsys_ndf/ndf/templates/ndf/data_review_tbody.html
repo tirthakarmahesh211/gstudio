@@ -312,8 +312,9 @@
 	</td>
 	{% if user.is_superuser %}
 		<td class="deletedata">
-		   	 
+			{% comment %}
 			<div class="button tiny expand" id ="{{resource.pk}}" onclick = "deleteNode('{{resource.pk}}')"> Delete </div> 
+			{% endcomment %}
 		</td>
 		<td class="right-border">
 			<div class="button tiny expand" id ="{{resource.pk}}" onclick = "restoreNode('{{resource.pk}}')"> Restore </div>
