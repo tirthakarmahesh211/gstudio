@@ -16,7 +16,7 @@
 
 
 
-
+{% if site.SITE_NAME == "NROER" %}
   <div class="repository-title medium-3 medium-offset-2 large-3 large-offset-2 columns"></div> 
   <div class="repository-desc medium-6 large-7 columns">{{app_gst.content_org|default_if_none:''|safe}}</div>
 <div class="content row">
@@ -30,5 +30,12 @@
   </div>
 </div>
 {% paginate %}
+{% elif site.SITE_NAME == "metaStudio" %}
+    {% for each in group_nodes %}
+      <div class="app-card-container">
+        {% include 'ndf/card_group.html' with node=each url_name="course_content" first_arg=each.pk %}
+      </div>
+    {% endfor %}
+{% endif %}
 
 {% endblock %}

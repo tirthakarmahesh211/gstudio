@@ -2105,7 +2105,7 @@ def group_dashboard(request, group_id=None):
 
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
-        if any(group_type in group_member_of for group_type in redir_groups_type) and False:
+        if any(group_type in group_member_of for group_type in redir_groups_type) :
             return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
 
         # Subgroups listing
