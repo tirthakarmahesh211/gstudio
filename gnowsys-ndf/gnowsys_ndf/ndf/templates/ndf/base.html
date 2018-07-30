@@ -169,7 +169,11 @@
   <!-- end of workspace -->
 
   {% cache 360 footer request.LANGUAGE_CODE %} <!-- cache for footer -->
+  {% if site.SITE_NAME == "NROER" %} 
   {% include "ndf/footer.html" with site=site %}
+  {% else %}
+  {% include "ndf/footer_metastudio.html" with site=site %}
+  {% endif %}
 
   <!-- JS -->
   <script src="/static/ndf/bower_components/foundation/js/foundation.min.js"></script>

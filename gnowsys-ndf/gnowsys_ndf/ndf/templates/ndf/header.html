@@ -64,12 +64,14 @@
 
         <ul class="left">
 
+          {% if site.SITE_NAME == "NROER" %}
           <li>
             <!-- <a href="{#% url 'GAPPS' 'home' 'topics' %#}" {#% if nroer_menu.top_menu_selected == "Repository" %#}class="active"{#% endif %#}> -->
             <a href="{% url 'repository' 'home' %}" {% if nroer_menu.top_menu_selected == "Repository" %}class="active"{% endif %}>
               {% trans "Repository" %}
             </a>
           </li>
+          {% endif %}
           {% comment %}
           {% for each_menu in nroer_menu.top_menus %}
             {% for menuk, menuv in each_menu.items %}
@@ -116,7 +118,11 @@
           <li>
 
             <a href="{% url 'nroer_groups' 'home' 'Groups' %}" {% if nroer_menu.top_menu_selected == "Workspaces" %}class="active"{% endif %}>
+              {% if site.SITE_NAME == "NROER" %}
                 {% trans "Workspaces" %}
+              {% else %}
+                {% trans "Explore" %}
+              {% endif %}  
               </a>
           </li>
 <!-- 
