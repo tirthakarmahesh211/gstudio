@@ -166,18 +166,19 @@
 						{% else %}
 							<input type="button" class="tiny button radius right-btn-mod secondary disabled" value="{% trans 'Delete' %} {{node.member_of_names_list.0}}" title="{% trans 'You are not authorized for this action' %}">
 						{% endif %}
-						
+						{%comment%}
 						<a href="{% url 'uploadDoc' groupid %}" class="tiny expand button radius">
             				{% trans "Upload File" %}
       					</a>
+      					{%endcomment%}
 						<!-- Cross Publish -->
 						{% if 'CourseEventGroup' not in group_object.member_of_names_list %}
 							{% if node.created_by == request.user.id or is_gstaff %}
 							<!-- {% switch_group_conditions request.user group_id as switch_conditions %} -->
 							<!-- If resource is already under moderation, don't show cross-publish button -->
-
+								{%comment%}
 								<span  title="{% trans 'Publish this resource in other group/s' %}" class="has-tip tip-bottom"><a id="switch_group" class="tiny button radius mod-btn" data-reveal-id="publish_resource"> {% trans "Cross Publish" %}</a></span>
-								
+								{%endcomment%}
 								<div id="publish_resource" class="reveal-modal" data-reveal style="position:absolute;"> 
 									<h4>{% trans "Select Groups" %}</h4>
 									<div id="switchgrp" class="content">
@@ -354,6 +355,7 @@
 							{% endif %}								
 							{% endif %}								
 						{% else %}
+							{%comment%}
 							{% if user_is_joined == "joined" or  user_is_joined == "author" %}
 								{% if node.status != 'MODERATION' %} 
 									{% if "File" in node.member_of_names_list and group_object.name != "home" %}
@@ -373,6 +375,7 @@
 									{% endif %}
 								{% endif %}
 							{% endif %}
+							{%endcomment%}
 						{% endif %}
 
 				{% comment %}
@@ -385,6 +388,7 @@
 			
 			{% if is_gstaff %}
 			<!-- New SubGroup and PE-->
+			{%comment%}
 			<div class="row btn-row">
 						{% if is_partner_val %}
 							<a class="button tiny radius left-btn-mod" href="{% url 'create_group' group_object.pk %}?subgroup=True&partnergroup=True" title="Create New Sub Partner">{% trans "New Sub Partner" %} </a>
@@ -393,6 +397,7 @@
 	  					{% endif %}
 						<a href="{% url 'create_event_group' group_id 'ProgramEventGroup' %}" class="tiny button radius right-btn-mod" title="Create New Program">{% trans "New Program" %}</a>
 			</div>
+			{%endcomment%}
 			{% endif %}
 		</div>
 		{% endif %}
@@ -416,8 +421,9 @@
 		                    <!-- Reveal Modals begin -->
 		                    <div id="firstModal" class="reveal-modal" data-reveal></div>
 					{% endcomment %}
+					{%comment%}
 							<a href="{% url 'program' groupid %}" class="tiny button radius left-btn-mod"><span>{% trans 'Programs' %}</span></a>
-					
+					{%endcomment%}
 					<!-- Join/ Unsubscribe -->
 						{% if user.is_authenticated %}
 							{% if not is_gstaff %}
@@ -448,7 +454,9 @@
 
             {% if is_gstaff %}
 				<!-- Subscribe Users and Subscribe Admins buttons-->
+				{%comment%}
 				<div class="row btn-row">
+
                    <a data-reveal-id="manage_users_modal" class="tiny expand button radius mod-btn" href="{% url 'manage_users' group_id %}">Manage Members</a>                    
 
                 <div id="manage_users_modal" class="reveal-modal large" data-reveal style="position:absolute;"> 
@@ -456,7 +464,8 @@
                     {% include "ndf/widget_user_search.html" with subscription_status=True %}
                     </div>
                     <a class="close-reveal-modal">&#215;</a>
-                </div>          
+                </div>
+                {%endcomment%}          
 
 				</div>
 
