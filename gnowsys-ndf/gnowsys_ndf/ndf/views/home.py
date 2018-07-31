@@ -208,6 +208,8 @@ def landing_page(request):
                                         },
                                         context_instance=RequestContext(request)
                                     )
+    elif GSTUDIO_SITE_NAME == "metaStudio":
+        return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": "welcome"}) )
     else:
         return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": "home"}) )
 

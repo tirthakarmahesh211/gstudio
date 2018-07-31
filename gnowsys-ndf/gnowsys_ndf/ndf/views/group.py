@@ -2079,6 +2079,13 @@ def group_dashboard(request, group_id=None):
     alternate_template = None 
     allow_to_join=[]
     selected = request.GET.get('selected','')
+    redirect_to_course_content = True
+    if GSTUDIO_SITE_NAME == "metaStudio" and group_id == "welcome":
+        print "home id"
+        group_id = "home"
+        redirect_to_course_content = False
+    group_name,group_id = get_group_name_id(group_id)
+
     group_obj = get_group_name_id(group_id, get_obj=True)
     try:
         if not group_obj:
@@ -2226,6 +2233,7 @@ def group_dashboard(request, group_id=None):
         annotations = json.dumps(group_obj.annotations)
         '''
         default_template = "ndf/groupdashboard.html"
+
         return render_to_response([alternate_template,default_template] ,{'node': group_obj, 'groupid':group_id,
                                                              'group_id':group_id, 'user':request.user,
                                                              # 'shelf_list': shelf_list,
