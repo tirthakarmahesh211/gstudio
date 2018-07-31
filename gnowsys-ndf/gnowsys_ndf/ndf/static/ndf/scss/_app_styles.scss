@@ -1997,6 +1997,9 @@ aside#help{
   text-align:left;
   display:inline-block;
   margin-left:2px;
+  @media screen and (min-width: 321px) and (max-width: 850px) {
+    margin-left: 16px;
+  } 
   position:relative;
   text-align:center;
 }
