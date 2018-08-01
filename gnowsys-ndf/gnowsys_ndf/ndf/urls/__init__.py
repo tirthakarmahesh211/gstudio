@@ -32,10 +32,13 @@ else:
     login_template = 'registration/login.html'
     logout_template = 'registration/logout.html'
     login_instance_mastodon=mastodon_login()
+urlpatterns = []
 
-    
+if GSTUDIO_SITE_NAME != "metaStudio":
+    urlpatterns += patterns('',
+    url(r'^welcome/?', landing_page, name="landing_page"))
 
-urlpatterns = patterns('',
+urlpatterns += patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
     (r'^pref_lang/$', include('gnowsys_ndf.ndf.urls.languagepref')),
 
@@ -58,7 +61,7 @@ urlpatterns = patterns('',
     # url(r'^(?P<group_id>[^/]+)/mailclient[/]error[/](?P<error_obj>[\w-]+)$', 'gnowsys_ndf.ndf.views.mailclient.mailclient_error_display', name='mailclient_error_display'),
     
     url(r'^$', homepage, {"group_id": "home"}, name="homepage"),
-    url(r'^welcome/?', landing_page, name="landing_page"),
+    #url(r'^welcome/?', landing_page, name="landing_page"),
     url(r'^popular', get_analytics, name="get_analytics"),
     # Elastic Search
     # url(r'^esearch/advanced/?', get_triples, name="get_triples"),

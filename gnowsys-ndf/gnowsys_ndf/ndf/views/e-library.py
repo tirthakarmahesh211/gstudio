@@ -330,6 +330,20 @@ if GSTUDIO_ELASTIC_SEARCH:
 			datavisual.append({"name":"Collections","count": collection_pages_cur.count()})
 		datavisual = json.dumps(datavisual)
 		
+		#all resources count
+		intercatives_count = intercatives_count.count()
+		applications_count = applications_count.count()
+		videos_count = videos_count.count()
+		audios_count = audios_count.count()
+		all_count = all_count.count()
+		images_count = images_count.count()
+		collection_pages_cur_count = collection_pages_cur.count()
+
+		if str(group_id) == "55ab34ff81fccb4f1d806025" or group_id == "home" and selfilters in (None,'',"") and search_text in (None,'',""):
+			# ebooks_count = ebooks_count.count()
+			all_count = all_count
+			images_count = images_count
+			collection_pages_cur_count = collection_pages_cur_count
 
 		return render_to_response(
 	        'ndf/resource_list.html',
@@ -341,26 +355,26 @@ if GSTUDIO_ELASTIC_SEARCH:
 									 #'ebook_pages': educationaluse_stats.get("eBooks", 0),
 									 # 'page_count': pageCollection.count(),
 									 # 'page_nodes':pageCollection
-									 'all_files_count':files_new.count(),
+									 'all_files_count':all_count,
 									 'file_pages': result_pages,
-									 'image_pages': images_count.count(),
-									 'interactive_pages': intercatives_count.count(),
+									 'image_pages': images_count,
+									 'interactive_pages': intercatives_count,
 									 'educationaluse_stats': json.dumps(educationaluse_stats),
 									 #'doc_pages': educationaluse_stats.get("Documents", 0),
 									 #'video_pages': educationaluse_stats.get("Videos", 0),
 									 #'audio_pages': educationaluse_stats.get("Audios", 0),
-									 'doc_pages': applications_count.count(),
-									 'video_pages': videos_count.count(),
-									 'audio_pages': audios_count.count(),
+									 'doc_pages': applications_count,
+									 'video_pages': videos_count,
+									 'audio_pages': audios_count,
 									 'collection_pages': results,
 									 'collection': collection_pages_cur,
 
-									 'collection_count': collection_pages_cur.count(),
+									 'collection_count': collection_pages_cur_count,
 									 'groupid': group_id, 'group_id':group_id,
 									 "datavisual":datavisual,
 									 #"GSTUDIO_ELASTIC_SEARCH":GSTUDIO_ELASTIC_SEARCH,
 									 "search_text":search_text,
-									 "file_pages_count":all_count.count()
+									 "file_pages_count":all_count
 									 },
 
 	        context_instance=RequestContext(request)
