@@ -76,17 +76,18 @@ def homepage(request, group_id):
             home_group_obj.author_set.append(request.user.id)
             home_group_obj.save(groupid=group_id)
         '''
-
-        if GSTUDIO_SITE_LANDING_PAGE == "home":
+        if GSTUDIO_SITE_NAME == "metaStudio":
+            return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": "welcome"}) )
+        elif GSTUDIO_SITE_LANDING_PAGE == "home":
             return HttpResponseRedirect( reverse('landing_page') )
-
         else:
             return HttpResponseRedirect( reverse('dashboard', kwargs={"group_id": request.user.id}) )
 
     else:
-        if GSTUDIO_SITE_LANDING_PAGE == "home":
+        if GSTUDIO_SITE_NAME == "metaStudio":
+            return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": "welcome"}) )
+        elif GSTUDIO_SITE_LANDING_PAGE == "home":
             return HttpResponseRedirect( reverse('landing_page') )
-
         else:
             return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": group_id}) )
 
@@ -208,8 +209,6 @@ def landing_page(request):
                                         },
                                         context_instance=RequestContext(request)
                                     )
-    elif GSTUDIO_SITE_NAME == "metaStudio":
-        return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": "welcome"}) )
     else:
         return HttpResponseRedirect( reverse('groupchange', kwargs={"group_id": "home"}) )
 
