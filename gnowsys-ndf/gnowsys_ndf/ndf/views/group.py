@@ -2111,7 +2111,6 @@ def group_dashboard(request, group_id=None):
 
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
-        redirect_to_course_content = True
         if any(group_type in group_member_of for group_type in redir_groups_type) and redirect_to_course_content:
             return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
 
