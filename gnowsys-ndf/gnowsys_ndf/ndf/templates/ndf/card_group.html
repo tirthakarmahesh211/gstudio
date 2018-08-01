@@ -8,7 +8,7 @@
 {% load get_member_of_list from es_tags %}
 
 {% if site.GSTUDIO_ELASTIC_SEARCH != True or site.TESTING_VARIABLE_FOR_ES == False %}
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 <style type="text/css">
 </style>
 <div class="unit_card-{{node.pk}}" style="position: relative;">
@@ -27,6 +27,8 @@
 
     {% if "base_unit" in node.member_of_names_list %}
     <div class="status-draft">DRAFT</div>
+    {% elif "announce_unit" in node.member_of_names_list %}
+    <div class="status-draft">Course</div>    
     {% elif "PartnerGroup" in node.member_of_names_list %}
     <div class="status-draft">Partner</div>
     {% elif "Group" in node.member_of_names_list %}

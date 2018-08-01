@@ -67,7 +67,7 @@
 
 {% include 'ndf/widget_user_access_modal.html' %}
 
-{% if site.SITE_NAME == "NROER" %}
+{% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
   <div class="activity_player_secondary_header activity_player_header sticky" style="margin-top:-7px;">
 
     <nav class="activity_player_secondary_header activity_player_header" data-topbar role="navigation" data-options="sticky_on: large">
@@ -78,7 +78,7 @@
 {% endif %}
 
 
-    {% if site.SITE_NAME == "NROER" %}
+    {% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
       <div class="small-1 columns end header_text_sm_block">
         <a title="Go back to Overview" href="{% url 'course_content' group_id  %}">
         <div class="header_icon_block prev_button">

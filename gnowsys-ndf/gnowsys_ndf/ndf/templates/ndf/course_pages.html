@@ -45,7 +45,7 @@
                 <li><a title="Edit Interaction Settings" class="edit-interaction">{% trans "Interaction Settings" %}</a></li>
                 {% if  "Info page" not in  type_of_list %}
                   <li>
-                    {% if site.SITE_NAME == 'NROER' %}
+                    {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
                       <a title="add admin page" class="add-admin-page">{% trans "Link Coordinator's page" %}</a>
                     {% else %}
                       <a title="add admin page" class="add-admin-page">{% trans "Link Teacher's page" %}</a>
@@ -117,7 +117,7 @@
             <button type="button" class="orange-button delete-activity right" title="Click on the checkbox on the files below to Delete"><i class="fa fa-trash"></i> {% trans "Delete" %}</button>
             {% endif %}
             {% if user.is_authenticated %}
-              {% if site.SITE_NAME == 'NROER' %}
+              {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
                 <a class="right orange-button-template" href="{% url 'create_course_page_info'  group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Cordinator's page" %}</a>
               {% else %}
                 <a class="right orange-button-template" href="{% url 'create_course_page_info'  group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Teacher's page" %}</a>

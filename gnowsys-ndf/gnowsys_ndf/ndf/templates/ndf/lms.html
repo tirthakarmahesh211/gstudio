@@ -2,7 +2,7 @@
 {% load ndf_tags %}
 {% get_site_variables as site %}
 {% block body_content %}
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 {% include 'ndf/lms_clix.html' %}
 {% else %}
 {% include 'ndf/lms_nroer.html' with title=title %}

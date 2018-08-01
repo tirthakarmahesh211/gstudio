@@ -27,7 +27,12 @@
         {% endif %}
       </div>
       <div class="banner_heading">
-        <span class="buddy_name uname-in-dashboard inner">{{user.username}}</span> <a class="user-profile-edit inner" style="z-index: 99; position: relative;"> <i class="fa fa-pencil"></i> {% trans "Edit Profile" %}</a>
+        <span class="buddy_name uname-in-dashboard inner">{{user.username}}</span>
+        {% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
+         <a class="user-profile-edit inner" style="z-index: 99; position: relative;"> 
+          <i class="fa fa-pencil"></i> {% trans "Edit Profile" %}</a>
+          }
+          {% endif %}
         <div class="profile-detail-widget-container">
           {% if auth_profile_exists %}
           {% include "ndf/widget_user_profile.html" with auth_attr=auth_attr %}
@@ -129,7 +134,7 @@
     <ul class="nav_menu_1">
       <li style="margin-left: 8px;">
 
-        {% if site.SITE_NAME == "NROER" %}
+        {%  if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
           <a href="{% url 'my_desk' request.user.id  %}" {% if title == "my desk" %} class="selected" {% endif %}><i class="fi-book-bookmark" style="font-size:20px;"></i> {% trans "My Workspaces" %}</a>
 
         {% else %}
@@ -139,7 +144,7 @@
 
 
      {# <li class=""><a {% if title == "my workspace" %} class="selected" {% endif %} href="{% url 'course_about' request.user.username  %}">{% trans "My WorkSpace" %}</a> </li> #} 
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
       <li class=""><a {% if title == "my performance" %} class="selected" {% endif %} href="{% url 'my_performance' request.user.id  %}"> <i class="fa fa-line-chart" aria-hidden="true"></i> {% trans "My Performance" %}</a> </li>
 {% else %}
       <li style="margin-left: 8px;"><a {% if title == "my performance" %} class="selected" {% endif %} href="{% url 'my_performance' request.user.id  %}"> <i class="fa fa-line-chart" aria-hidden="true"></i> {% trans "My Progress" %}</a> </li>
@@ -164,10 +169,10 @@
     </br>
 {% include 'ndf/widget_photo_upload.html' with url_name='my_desk' widget_for="group_banner" is_profile=True  no_update_btn=True node=node  groupid=group_id if_module=True is_mydesk=True %}
 <div class="small-12 columns group_sections_content">
-  {% if site.SITE_NAME == "NROER" %}
+  {% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
     {% if title == "my desk" %}
         <div class="row">
-          <h3> {% trans "My Workspace" %}</h3>
+          <h3 style="margin-left: 12px;"> {% trans "My Workspace" %}</h3>
             <ul class="small-block-grid-1 medium-block-grid-3 large-block-grid-3">
               <li class="card-image-wrapper">
                 {% if site.GSTUDIO_ELASTIC_SEARCH and site.TESTING_VARIABLE_FOR_ES %}
@@ -281,7 +286,7 @@
     }
 
   </script>
-{% if site.SITE_NAME != "NROER" %}
+{% if site.SITE_NAME != "NROER" or site.SITE_NAME == "metaStudio" %}
 </ul>
 </div>
 

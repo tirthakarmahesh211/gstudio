@@ -208,8 +208,8 @@ def nroer_groups(request, group_id, groups_category):
     group_nodes = node_collection.find({"_type":'Group',"name" : {"$in" : GSTUDIO_NROER_MENU }})
 
     lang_code = request.LANGUAGE_CODE
-    
-
+    if GSTUDIO_SITE_NAME == "metaStudio":
+      group_nodes = node_collection.find({"_type":"Group"})
     # print "=============", app_gst
     # group_nodes_count = group_nodes.count() if group_nodes else 0
     return render_to_response("ndf/partner.html",
