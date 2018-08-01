@@ -2111,10 +2111,10 @@ def group_dashboard(request, group_id=None):
 
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
-        check_site_name = True
-        if GSTUDIO_SITE_NAME == "metaStudio":
-            check_site_name = False
-        if any(group_type in group_member_of for group_type in redir_groups_type) and check_site_name:
+        redirect_to_course_content = True
+        if GSTUDIO_SITE_NAME == "metaStudio" and group_id == "welcome":
+            redirect_to_course_content = False
+        if any(group_type in group_member_of for group_type in redir_groups_type) and redirect_to_course_content:
             return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
 
         # Subgroups listing
