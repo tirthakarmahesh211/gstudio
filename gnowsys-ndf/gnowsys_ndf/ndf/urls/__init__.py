@@ -37,6 +37,9 @@ urlpatterns = []
 if GSTUDIO_SITE_NAME != "metaStudio":
     urlpatterns += patterns('',
     url(r'^welcome/?', landing_page, name="landing_page"))
+else:
+    urlpatterns += patterns('',
+    url(r'^home_page/?', landing_page, name="landing_page"))
 
 urlpatterns += patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
