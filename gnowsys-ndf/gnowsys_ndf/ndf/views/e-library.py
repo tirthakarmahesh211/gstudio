@@ -13,7 +13,7 @@ except ImportError:  # old pymongo
 	from pymongo.objectid import ObjectId
 
 ''' -- imports from application folders/files -- '''
-from gnowsys_ndf.settings import GAPPS
+from gnowsys_ndf.settings import GAPPS,GSTUDIO_SITE_NAME
 # from gnowsys_ndf.ndf.models import Node, GRelation,GSystemType,File,Triple
 from gnowsys_ndf.ndf.models import Node, GRelation,GSystemType, Triple
 from gnowsys_ndf.ndf.models import node_collection
