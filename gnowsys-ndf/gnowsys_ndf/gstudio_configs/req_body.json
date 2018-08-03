@@ -3,7 +3,7 @@
 		"index.mapping.total_fields.limit": 10000, 
 		"number_of_shards": 5,
 		"number_of_replicas": 2,
-        "index.mapping.ignore_malformed": true,
+	        "index.mapping.ignore_malformed": true,
 		"analysis": {
 			"analyzer": {
 				"trigram": {
@@ -65,7 +65,16 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
+				
 			}
 		},
 		"gattribute": {		
@@ -105,7 +114,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"grelation": {		
@@ -145,7 +162,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"buddy": {		
@@ -185,7 +210,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"benchmark": {		
@@ -225,7 +258,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"metatype": {		
@@ -265,7 +306,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"gsystemtype": {		
@@ -305,7 +354,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},		
 		"relationtype": {		
@@ -345,7 +402,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"attributetype": {		
@@ -385,7 +450,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"gsystem": {		
@@ -425,7 +498,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"group": {		
@@ -465,7 +546,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"toreducedocs": {		
@@ -505,7 +594,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"author": {		
@@ -545,7 +642,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"counter": {		
@@ -585,7 +690,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"image": {		
@@ -625,7 +738,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"audio": {		
@@ -665,7 +786,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"video": {		
@@ -705,7 +834,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"application": {		
@@ -745,7 +882,15 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		},
 		"reduceddocs": {
@@ -785,9 +930,18 @@
 							"analyzer": "trigram"
 						}
 					}
-				}
+				},
+				"last_update":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        },
+				"created_at":{
+               				"type":"date",
+			               "format":"dd/MM/yyyy HH:mm:ss:SSSSSS"
+			        }
 			}
 		}
+
 
     }
 }
