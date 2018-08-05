@@ -168,6 +168,12 @@ def results_search(request, group_id, page_no=1, return_only_dict = None):
 	context_to_return = {}
 	if GSTUDIO_ELASTIC_SEARCH == True :
 
+		if GSTUDIO_SITE_NAME != "NROER":
+			index = GSTUDIO_SITE_NAME+"_nodes"
+			index = index.lower()
+			print index
+		else:
+			index = "nodes"
 		temp=False
 		strconcat=''
 		group_id_str=group_id
@@ -234,7 +240,7 @@ def results_search(request, group_id, page_no=1, return_only_dict = None):
 				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('match', group_set=str(group_id))],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 
-			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+			search_result =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 			# search_result = search_result.filter('match', group_set=str(group_id))
 			# search_result = search_result.filter('match', member_of=GST_FILE1.hits[0].id)
 			# search_result = search_result.filter('match', access_policy='public')
