@@ -2080,7 +2080,7 @@ def group_dashboard(request, group_id=None):
     allow_to_join=[]
     selected = request.GET.get('selected','')
     redirect_to_course_content = True
-    if GSTUDIO_SITE_NAME == "metaStudio" and group_id == "welcome":
+    if GSTUDIO_SITE_NAME == "metaStudio" and str(group_id) == "welcome":
         print "home id"
         group_id = "home"
         redirect_to_course_content = False
@@ -2111,7 +2111,7 @@ def group_dashboard(request, group_id=None):
 
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
-        if any(group_type in group_member_of for group_type in redir_groups_type) :
+        if any(group_type in group_member_of for group_type in redir_groups_type) and redirect_to_course_content:
             return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
 
         # Subgroups listing
