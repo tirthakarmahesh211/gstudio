@@ -3379,7 +3379,7 @@ def get_breadcrumb(url):
 		except:
 			pass
 
-	print 'path : ', path
+	# print 'path : ', path
 	return {'path': path if (len(path) > 1) else []}
 
 
