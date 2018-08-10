@@ -385,7 +385,7 @@
 			</div>
 			{% endif %}
 
-			
+			{%comment%}
 			{% if is_gstaff %}
 			<!-- New SubGroup and PE-->
 			{%comment%}
@@ -399,6 +399,7 @@
 			</div>
 			{%endcomment%}
 			{% endif %}
+			{%endcomment%}
 		</div>
 		{% endif %}
 
@@ -420,8 +421,6 @@
 		            {% endif %}
 		                    <!-- Reveal Modals begin -->
 		                    <div id="firstModal" class="reveal-modal" data-reveal></div>
-					{% endcomment %}
-					{%comment%}
 							<a href="{% url 'program' groupid %}" class="tiny button radius left-btn-mod"><span>{% trans 'Programs' %}</span></a>
 					{%endcomment%}
 					<!-- Join/ Unsubscribe -->
@@ -456,8 +455,8 @@
 				<!-- Subscribe Users and Subscribe Admins buttons-->
 				{%comment%}
 				<div class="row btn-row">
-
                    <a data-reveal-id="manage_users_modal" class="tiny expand button radius mod-btn" href="{% url 'manage_users' group_id %}">Manage Members</a>                    
+					{%endcomment%}
 
                 <div id="manage_users_modal" class="reveal-modal large" data-reveal style="position:absolute;"> 
                     <div id="group_drawer">
