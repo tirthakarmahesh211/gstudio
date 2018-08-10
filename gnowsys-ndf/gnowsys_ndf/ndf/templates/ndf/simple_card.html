@@ -25,7 +25,6 @@
 
 <div class="small-12 columns">  
   <div class="row">
-    <div class="small-6 columns">
 <div class="scard-container" data-id="{{resource.pk}}">
  <div class="scard" data-mime-type="{{resource.if_file.mime_type}}" original-src="{% if 'video' in resource.if_file.mime_type   %}{{MEDIA_URL}}{{resource.if_file.mid.relurl}}{% else %}{{MEDIA_URL}}{{resource.if_file.original.relurl}}{% endif %}">
  {% if is_event %}
@@ -172,4 +171,4 @@
 </div>
 </div>
 <div>
-</div>
+
