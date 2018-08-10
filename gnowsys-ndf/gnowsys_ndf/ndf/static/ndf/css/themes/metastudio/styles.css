@@ -31881,3 +31881,14 @@ div.card.show {
   margin: 100px 0;
   padding: 40px 20px 0 20px;
 }
+
+/* line 8675, ../../../scss/_app_styles.scss */
+.filter-margin {
+  margin-left: 0px;
+}
+@media screen and (min-width: 321px) and (max-width: 850px) {
+  /* line 8675, ../../../scss/_app_styles.scss */
+  .filter-margin {
+    margin-left: 14px !important;
+  }
+}
