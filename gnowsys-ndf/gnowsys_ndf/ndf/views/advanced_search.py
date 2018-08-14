@@ -50,23 +50,43 @@ def search_detail(request,group_id,page_num=1):
 			group_name, group_id = get_group_name_id(group_id)
 
 		group_name_of_twist, group_id_of_twist = GSystemType.get_gst_name_id("Twist")
+		group_name_of_file, group_id_of_file = GSystemType.get_gst_name_id("File")
+		group_name_of_page, group_id_of_page = GSystemType.get_gst_name_id("Page")
 		chk_advanced_search = request.GET.get('chk_advanced_search',None)
 
 		if request.GET.get('field_list',None):
 			selected_field = request.GET.get('field_list',None)
 		else:
 			selected_field = "content"
+		english_lang = False
+		temp_list = []
+		if selected_field == "english_lang":
+			english_lang = True
+			print "english_lang"
+			q = Q('bool', must=[Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='en')],
+				should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)])	
+			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+			e_search_result = search_result.execute()
+			from langdetect import detect
 
-		q = Q('bool', must=[Q('match',group_set=str(group_id)),Q('match',access_policy='public'),~Q('exists',field=selected_field)],
-			should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id)],
-			must_not=[Q('match', member_of=GST_PAGE1.hits[0].id)])
-		search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
-		search_result = search_result.exclude('terms', name=['thumbnail','jpg','png','svg'])
+			for temp in e_search_result["hits"]["hits"]:
+				content_lang = temp["_source"].content
+				content_org_lang = temp["_source"].content_org
+				if detect(content_lang) == "hi" or detect(content_org_lang) == "hi":
+					print temp["_source"].id
+					temp_list.append(temp["_source"])
+					print temp_list
+		else:
+			q = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match',group_set=str(group_id)),Q('match',access_policy='public'),~Q('exists',field=selected_field)],
+			should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)])
+			# must_not=[Q('match', member_of=GST_PAGE1.hits[0].id)])
+			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+			# search_result = search_result.exclude('terms', name=['thumbnail','jpg','png','svg'])
+			print search_result.count()
 
 		if request.GET.get('field_list',None) == "true":
 
 			search_text = request.GET.get("search_text",None)
-
 			q = Q('bool', must=[Q('match', language='en'),Q('match', access_policy='public'),Q('match', group_set=str(group_id)),
 				Q('terms', content=[search_text])] )
 			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
@@ -74,7 +94,6 @@ def search_detail(request,group_id,page_num=1):
 		if_teaches = False
 		search_str_user=""
 		page_no = request.GET.get('page_no',None)
-
 		has_next = True
 		if search_result.count() <=20:
 			has_next = False
@@ -94,7 +113,7 @@ def search_detail(request,group_id,page_num=1):
 		paginator_search_result = None
 
 		if request.GET.get('field_list',None) == "attribute_type_set" or page_num > 1 :
-			temp = node_collection.find({'_type': 'GSystem','access_policy':'PUBLIC','member_of': { '$nin': [ObjectId(group_id_of_twist)] } ,'group_set':ObjectId(group_id)}).limit(1000)
+			temp = node_collection.find({"attribute_set.educationaluse":{'$in':["Audios","Videos","eBooks","Interactives","Images","Documents"]},'_type': 'GSystem','access_policy':'PUBLIC','member_of': { '$in': [ObjectId(group_id_of_file),ObjectId(group_id_of_page)] } ,'group_set':ObjectId(group_id)}).limit(1000)
 
 			lst = []
 			for each in temp:
@@ -107,6 +126,9 @@ def search_detail(request,group_id,page_num=1):
 			if_teaches = True
 			paginator_search_result = paginator.Paginator(search_result, page_num, 30)
 
-		return render_to_response('ndf/asearch.html', {"page_info":paginator_search_result,"page_no":page_no,"has_next":has_next,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'advanced_search':"true",'groupid':group_id,'group_id':group_id,'title':"advanced_search","search_curr":search_result,'field_list':selected_field,'chk_advanced_search':chk_advanced_search,'if_teaches':if_teaches},
+		if temp_list :
+			search_result = temp_list
+		print english_lang
+		return render_to_response('ndf/asearch.html', {"english_lang":english_lang,"page_info":paginator_search_result,"page_no":page_no,"has_next":has_next,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'advanced_search':"true",'groupid':group_id,'group_id':group_id,'title':"advanced_search","search_curr":search_result,'field_list':selected_field,'chk_advanced_search':chk_advanced_search,'if_teaches':if_teaches},
 					context_instance=RequestContext(request))
 
