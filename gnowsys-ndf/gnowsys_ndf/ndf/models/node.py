@@ -641,6 +641,22 @@ class Node(DjangoDocument):
                     if each_bcontrib not in self.contributors:
                         self.contributors.append(each_bcontrib)
 
+        if self:
+            if self.status in (None,"",''):
+                self.status = u"PUBLISHED"
+            if self.created_at in (None,"",'') :
+                if datetime.datetime.now():
+                    self.created_at = datetime.datetime.now()
+            if self.last_update in (None,"",'') :
+                if datetime.datetime.now():
+                    self.last_update = datetime.datetime.now()
+            if self.access_policy in (None,"",''):
+                self.access_policy = u'PUBLIC'
+            if "model_name" in self:
+                self.pop('model_name', None)
+            if "collection_name" in self:
+                self.pop('collection_name', None)
+            # print self
         super(Node, self).save(*args, **kwargs)
 
         # This is the save method of the node class.It is still not
