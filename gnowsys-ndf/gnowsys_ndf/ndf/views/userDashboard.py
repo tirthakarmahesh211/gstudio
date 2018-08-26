@@ -790,7 +790,7 @@ def my_desk(request, group_id,page_no=1):
     # for each in my_modules_cur:
     #     my_modules.append(each._id)
 
-    if GSTUDIO_SITE_NAME != "NROER":
+    if GSTUDIO_SITE_NAME != "NROER" and GSTUDIO_SITE_NAME != "metaStudio":
         from mongokit import paginator
         list_of_attr = ['first_name', 'last_name', 'enrollment_code', 'organization_name', 'educationallevel']
         auth_attr = auth_obj.get_attributes_from_names_list(list_of_attr)
@@ -821,6 +821,7 @@ def my_desk(request, group_id,page_no=1):
         my_workspaces = node_collection.find(query).sort('last_update', -1)
     
     else:
+        print "-==============================="
         my_workspaces= None
         if GSTUDIO_ELASTIC_SEARCH and TESTING_VARIABLE_FOR_ES:
 
@@ -867,6 +868,7 @@ def my_desk(request, group_id,page_no=1):
                     'page_info':my_units_page_cur,
                     # 'modules_cur': my_modules_cur
                     'workspaces_cur' : my_workspaces,
+                    'ws':True
                 },
                 context_instance=RequestContext(request)
         )
@@ -990,7 +992,8 @@ def my_performance(request, group_id, page_no=1):
                     # 'my_course_objs': my_course_objs,
                     'units_cur':my_units,
                     'my_perf_page_cur':group_page_cur,
-                    'auth_attr': auth_attr, 'auth_profile_exists': auth_profile_exists
+                    'auth_attr': auth_attr, 'auth_profile_exists': auth_profile_exists,
+                    'ws':True
                     # 'modules_cur': my_modules_cur
                 },
                 context_instance=RequestContext(request)

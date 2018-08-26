@@ -159,12 +159,11 @@ def search_query(request, group_id):
 
 
 @get_execution_time
-def results_search(request, group_id, page_no=1, return_only_dict = None):
+def results_search(request, group_id, page_no=1, return_only_dict = None,ws = False):
 	"""
 	This view returns the results for global search on all GSystems by name, tags and contents.
 	Only publicly accessible GSystems are returned in results.
 	"""
-	print group_id
 	context_to_return = {}
 	if GSTUDIO_ELASTIC_SEARCH == True :
 
@@ -177,6 +176,9 @@ def results_search(request, group_id, page_no=1, return_only_dict = None):
 		temp=False
 		strconcat=''
 		group_id_str=group_id
+		print ws
+		if group_id_str == "ws":
+			group_id ="home"
 		try:
 			group_id = ObjectId(group_id)
 		except:
@@ -199,16 +201,16 @@ def results_search(request, group_id, page_no=1, return_only_dict = None):
 		
 
 		q = Q('match',name=dict(query='File',type='phrase'))
-		GST_FILE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q)
+		GST_FILE = Search(using=es, index=index,doc_type="gsystemtype").query(q)
 		GST_FILE1 = GST_FILE.execute()
 		q = Q('match',name=dict(query='Page',type='phrase'))
-		GST_PAGE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q)
+		GST_PAGE = Search(using=es, index=index,doc_type="gsystemtype").query(q)
 		GST_PAGE1 = GST_PAGE.execute()
 		q = Q('match',name=dict(query='interactive_page',type='phrase'))
-		GST_IPAGE = Search(using=es, index="nodes",doc_type="gsystemtype").query(q)
+		GST_IPAGE = Search(using=es, index=index,doc_type="gsystemtype").query(q)
 		GST_IPAGE1 = GST_IPAGE.execute()
 		q = Q('match',name=dict(query='Jsmol',type='phrase'))
-		GST_JSMOL = Search(using=es, index="nodes",doc_type="gsystemtype").query(q)
+		GST_JSMOL = Search(using=es, index=index,doc_type="gsystemtype").query(q)
 		GST_JSMOL1 = GST_JSMOL.execute()
 		search_text = ""
 		if request.GET.get('search_text',None) in (None,''):
@@ -219,20 +221,19 @@ def results_search(request, group_id, page_no=1, return_only_dict = None):
 			search_result = search_result.exclude('terms', name=['thumbnail','jpg','png'])
 			search_str_user=""
 
+		elif request.GET.get('search_text',None) and group_id_str == "ws":
+			search_text = str(request.GET['search_text']).strip()
+			if GSTUDIO_SITE_NAME == "NROER":
+				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', access_policy='public')],
+                          should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
+			else:
+				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('match', group_set=str(group_id))],
+                          should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
+
+			search_result =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+
 		else:
 			search_text = str(request.GET['search_text']).strip()
-
-
-			# # if name != "on" and content != "on" and fields != "on":
-			# # 	q = MultiMatch(query=search_str_user, fields=['name', 'tags','content'])
-			# # else:	
-			# # 	temp = True
-			# # 	q = MultiMatch(query=search_str_user, fields=fields)
-				
-				
-			# 	for value in fields:
-			# 		value=value+"=on&"
-			# 		strconcat = strconcat + value
 			if GSTUDIO_SITE_NAME == "NROER":
 				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id))],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)

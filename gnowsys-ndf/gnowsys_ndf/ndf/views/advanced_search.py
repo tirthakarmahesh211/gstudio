@@ -55,6 +55,7 @@ def search_detail(request,group_id,page_num=1):
 
 		if request.GET.get('field_list',None):
 			selected_field = request.GET.get('field_list',None)
+			# print selected_field
 		else:
 			selected_field = "content"
 		english_lang = False
@@ -179,7 +180,8 @@ def search_detail(request,group_id,page_num=1):
 			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 			# search_result = search_result.exclude('terms', name=['thumbnail','jpg','png','svg'])
 			print search_result.count()
-
+		count = ""
+		count = search_result.count()
 		if request.GET.get('field_list',None) == "true":
 
 			search_text = request.GET.get("search_text",None)
@@ -221,6 +223,7 @@ def search_detail(request,group_id,page_num=1):
 			search_result = node_collection.find({ '_id': {'$in': lst} }).limit(1000)
 			if_teaches = True
 			paginator_search_result = paginator.Paginator(search_result, page_num, 30)
+			count = search_result.count()
 		# print temp_list
 		if temp_list :
 			# print "temp_list-----------------------------------"
@@ -228,6 +231,20 @@ def search_detail(request,group_id,page_num=1):
 		elif temp_list in (None,"",'',False,[]) and english_lang == True:
 			search_result = ""
 
-		return render_to_response('ndf/asearch.html', {"english_lang":english_lang,"page_info":paginator_search_result,"page_no":page_no,"has_next":has_next,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'advanced_search':"true",'groupid':group_id,'group_id':group_id,'title':"advanced_search","search_curr":search_result,'field_list':selected_field,'chk_advanced_search':chk_advanced_search,'if_teaches':if_teaches},
+
+		if selected_field == "content":
+			applied_filter_name = "The resources that do not have any description"
+		elif selected_field == "tags":
+			applied_filter_name = "The resources that do not have any tags"
+		elif selected_field == "location":
+			applied_filter_name = "The resources that do not have any location"
+		elif selected_field == "english_lang":
+			applied_filter_name = "The resources that are actually Hindi, but the language was set to English"
+		elif selected_field == "hindi_lang":
+			applied_filter_name = "The resources that have English description, but the resource is in Hindi language"
+		elif selected_field == "attribute_type_set":
+			applied_filter_name = "The resources that do not have 'teaches' relation set to any topic"
+
+		return render_to_response('ndf/asearch.html', {"applied_filter_name":applied_filter_name,"count":count,"english_lang":english_lang,"page_info":paginator_search_result,"page_no":page_no,"has_next":has_next,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'advanced_search':"true",'groupid':group_id,'group_id':group_id,'title':"advanced_search","search_curr":search_result,'field_list':selected_field,'chk_advanced_search':chk_advanced_search,'if_teaches':if_teaches},
 					context_instance=RequestContext(request))
 

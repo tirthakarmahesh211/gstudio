@@ -236,13 +236,13 @@ def explore_basecourses(request,page_no=1):
 
 @get_execution_time
 def explore_courses(request):
-
     # this will be announced tab
     title = 'courses'
     context_variable = {
                         'title': title, 
                         'group_id': group_id, 'groupid': group_id,
                         'modules_is_cur': True,
+                        'ws':True
                     }
     modules_sort_list = get_attribute_value(group_id, 'items_sort_list')
     all_modules = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)

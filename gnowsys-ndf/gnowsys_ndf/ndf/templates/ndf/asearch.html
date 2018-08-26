@@ -14,7 +14,7 @@
 	<select id="field_list" name="field_list">
 		<option value="content">The resources that do not have any description </option>
 		<option value="tags">The resources that do not have any tags </option>
-		<option value="location">he resources that do not have location </option>
+		<option value="location">The resources that do not have location </option>
 		<option value="english_lang">The resources that are actually Hindi, but the language was set to English</option>
 		<option value="hindi_lang">The resources that have English description, but the resource is in Hindi language</option>
 		<option value="attribute_type_set">The resources that do not have 'teaches' relation set to any topic</option>
@@ -26,6 +26,8 @@
 
 
 </form>
+		<h4> <b>Applied Filter is :</b> " {{applied_filter_name}} "</h4>
+	    <h4> <b>Total Resources Found : </b>{{ count }}</h4>
 
 {% endblock %}
 
@@ -34,7 +36,6 @@
 	{% block body_content %} 
 	<hr>
 	      <div id="results" width="100%" style="position:relative">
-	      
 	      
 	      </div>
 
