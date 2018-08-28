@@ -291,8 +291,7 @@ def parse_data_create_gsystem(json_file_path):
                     log_print(info_message)
                     info_message = "Name of resource : "  + a.name.encode('utf-8')
                     log_print(info_message)
-                    if a.attribute_set:
-                        if a.attribute_set.name_eng:
+                    if json_document.get("name_eng") :
                             info_message = "Name of resource in English: "  + json_document.get("name_eng")
                             log_print(info_message)
                     language = None
