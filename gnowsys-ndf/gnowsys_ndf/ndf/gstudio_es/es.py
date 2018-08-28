@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import *
-from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH ,GSTUDIO_ELASTIC_SEARCH_PROTOCOL,GSTUDIO_ELASTIC_SEARCH_SUPERUSER,GSTUDIO_ELASTIC_SEARCH_SUPERUSER_PASSWORD,GSTUDIO_ELASTIC_SEARCH_ALIAS,GSTUDIO_ELASTIC_SEARCH_PORT,GLITE_RCS_REPO_DIRNAME,GSTUDIO_ELASTIC_SEARCH_INDEX,TESTING_VARIABLE_FOR_ES
+from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH ,GSTUDIO_ELASTIC_SEARCH_PROTOCOL,GSTUDIO_ELASTIC_SEARCH_SUPERUSER,GSTUDIO_ELASTIC_SEARCH_SUPERUSER_PASSWORD,GSTUDIO_ELASTIC_SEARCH_ALIAS,GSTUDIO_ELASTIC_SEARCH_PORT,GLITE_RCS_REPO_DIRNAME,GSTUDIO_ELASTIC_SEARCH_INDEX,TESTING_VARIABLE_FOR_ES,GSTUDIO_SITE_NAME
 from gnowsys_ndf.ndf.models.base_imports import *
 from gnowsys_ndf.ndf.models.history_manager import HistoryManager
 #from gnowsys_ndf.ndf.models.node import *
@@ -155,9 +155,13 @@ class esearch:
             with open("/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/gstudio_configs/benchmarks.json") as benchmarks_body:
                 benchmarks_body = json.load(benchmarks_body)
             doc = json.dumps(django_document,cls=NodeJSONEncoder)
-
+            # print "00000000000000000000000000000000000000000000000"
+            # print doc
+            # print "00000000000000000000000000000000000000000000000"
             django_document = json.loads(doc)
-            print django_document
+            # print "================================================="
+            # print django_document
+            # print "================================================="
 
             django_document["id"] = django_document.pop("_id")
             django_document["type"] = django_document.pop("_type")
@@ -167,13 +171,17 @@ class esearch:
             for k in GSTUDIO_ELASTIC_SEARCH_INDEX:
                 for v in GSTUDIO_ELASTIC_SEARCH_INDEX[k]:
                     if django_document["type"] in v:
-                        index = k
+                        if GSTUDIO_SITE_NAME == "NROER":
+                            index = k
+                        else:
+                            index = GSTUDIO_SITE_NAME+"_"+k
                         index = index.lower()
                         break
 
-            print django_document["type"]
-            if django_document["type"] == "GSystem":
-                print django_document["id"]
+            # print django_document["type"]
+            if django_document["type"] == "GSystem" and GSTUDIO_SITE_NAME == "NROER":
+                # print django_document["id"]
+                # print "-------------------------------------------------------------"
                 es.index(index=index, doc_type="gsystem", id=django_document["id"], body=django_document)
                 #file_name.write(document["id"] + '\n')
                 if django_document["type"]=="GSystem":
