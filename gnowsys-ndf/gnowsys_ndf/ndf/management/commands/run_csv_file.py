@@ -287,7 +287,8 @@ def parse_data_create_gsystem(json_file_path):
             if True:
                 # print json_document.get("name")
                 if a:
-                    print "Mongo ObjectId:                                                                                                                                                                                      "+ a._id
+                    print "Mongo ObjectId:"+ str(a._id)
+                    print "Name of resource:" + a.name.encode('utf-8')
                     language = None
                     content = None
                     if a.content in (None,'',"") or a.content_org in (None,'',""):
