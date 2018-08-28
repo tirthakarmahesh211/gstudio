@@ -287,11 +287,13 @@ def parse_data_create_gsystem(json_file_path):
             if True:
                 # print json_document.get("name")
                 if a:
-                    print a._id
+                    print "Mongo ObjectId:                                                                                                                                                                                      "+ a._id
+                    language = None
+                    content = None
                     if a.content in (None,'',"") or a.content_org in (None,'',""):
                         # print a
                         # print a["_id"]
-                        print "==========================================content"
+                        print "=========================== Description ======================= "
                         boolean = True
                         # break;
                         # json_document.get("language")
@@ -301,24 +303,38 @@ def parse_data_create_gsystem(json_file_path):
                         # esearch.save_to_es(a)
                         count_for_desc = count_for_desc + 1
                         print count_for_desc
+                        print "============================================================"
+                        print "old metadata of content field is: "+ a.content.encode('utf-8')
+                        print "======================== OR ======================"
+                        print "old metadata of content_org field is: "+ a.content_org.encode('utf-8')
+                        print "=================================================="
+                        print "new metadata of content field is: "+ json_document.get("content_org").encode('utf-8')
+                        print "============================================================"
+                        print "new metadata of content_org field is: "+ json_document.get("content_org").encode('utf-8')
+                        print "============================================================"
                         content = True
                     if a.language[0] != json_document.get("language")[2:4]:
                         if a.language[0].lower() == "hi" or a.language[0].lower() == "en":
                             boolean = True
-                            print json_document.get("language")
-                            print a.language
+                            #print json_document.get("language")
+                            #print a.language
+                            print "========================= language ================================"
                             print "Old Metadata of language field is :"+ a.language[0]
+                            print "============================================================"
                             print "New Metadata of language field is :"+ json_document.get("language")[2:4]
+                            print "============================================================"
                             print "The language field is updated with " + a.language[0] + " to " + json_document.get("language")[2:4]
+                            print "==================================================================="
                             if json_document.get("language")[2:4].lower() == "en":
-                                # a.update({'$set': {'language': [u'en', u'English']}})
-                                a.update({'$set': {'language': ('en', 'English')}})
+                                a.update({'language': ['en', 'English']})
+                                # a.update({'$set': {'language': ('en', 'English')}})
                             elif json_document.get("language")[2:4].lower() == "hi":
-                                a.update({'$set': {'language': ('hi', 'Hindi')}})
+                                a.update({'language': ['hi', 'Hindi']})
+                                # a.update({'$set': {'language': ('hi', 'Hindi')}})
                             count_for_lang = count_for_lang + 1
                             language  = True
                             print count_for_lang
-                    if language or content : 
+                    if language or content :
                         a.save()
                         esearch.save_to_es(a)
                     break;
