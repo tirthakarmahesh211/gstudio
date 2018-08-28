@@ -287,45 +287,60 @@ def parse_data_create_gsystem(json_file_path):
             if True:
                 # print json_document.get("name")
                 if a:
-                    print "Mongo ObjectId:"+ str(a._id)
-                    print "Name of resource:" + a.name.encode('utf-8')
+                    info_message = "Mongo ObjectId : "+ str(a._id)
+                    log_print(info_message)
+                    info_message = "Name of resource : "  + a.name.encode('utf-8')
+                    log_print(info_message)
+                    if a.attribute_set:
+                        if a.attribute_set.name_eng:
+                            info_message = "Name of resource in English: "  + a.attribute_set.name_eng
+                            log_print(info_message)
                     language = None
                     content = None
                     if a.content in (None,'',"") or a.content_org in (None,'',""):
-                        # print a
-                        # print a["_id"]
-                        print "=========================== Description ======================= "
+                        info_message =  "=========================== Description ======================= "
+                        log_print(info_message)
                         boolean = True
-                        # break;
-                        # json_document.get("language")
                         a.update({"content":json_document.get("content_org")})
                         a.update({"content_org":json_document.get("content_org")})
-                        # a.save()
-                        # esearch.save_to_es(a)
                         count_for_desc = count_for_desc + 1
-                        print count_for_desc
-                        print "============================================================"
-                        print "old metadata of content field is: "+ a.content.encode('utf-8')
-                        print "======================== OR ======================"
-                        print "old metadata of content_org field is: "+ a.content_org.encode('utf-8')
-                        print "=================================================="
-                        print "new metadata of content field is: "+ json_document.get("content_org").encode('utf-8')
-                        print "============================================================"
-                        print "new metadata of content_org field is: "+ json_document.get("content_org").encode('utf-8')
-                        print "============================================================"
+                        # print count_for_desc
+                        info_message =  "============================================================"
+                        log_print(info_message)
+                        info_message = "old metadata of content field is: "+ a.content.encode('utf-8')
+                        log_print(info_message)
+                        info_message =  "======================== OR ======================"
+                        log_print(info_message)
+                        info_message = "old metadata of content_org field is: "+ a.content_org.encode('utf-8')
+                        log_print(info_message)
+                        info_message = "=================================================="
+                        log_print(info_message)
+                        info_message = "new metadata of content field is: "+ json_document.get("content_org").encode('utf-8')
+                        log_print(info_message)
+                        info_message = "============================================================"
+                        log_print(info_message)
+                        info_message = "new metadata of content_org field is: "+ json_document.get("content_org").encode('utf-8')
+                        log_print(info_message)
+                        info_message = "============================================================"
+                        log_print(info_message)
                         content = True
                     if a.language[0] != json_document.get("language")[2:4]:
                         if a.language[0].lower() == "hi" or a.language[0].lower() == "en":
                             boolean = True
-                            #print json_document.get("language")
-                            #print a.language
-                            print "========================= language ================================"
-                            print "Old Metadata of language field is :"+ a.language[0]
-                            print "============================================================"
-                            print "New Metadata of language field is :"+ json_document.get("language")[2:4]
-                            print "============================================================"
-                            print "The language field is updated with " + a.language[0] + " to " + json_document.get("language")[2:4]
-                            print "==================================================================="
+                            info_message = "========================= language ================================"
+                            log_print(info_message)
+                            info_message = "Old Metadata of language field is :"+ a.language[0]
+                            log_print(info_message)
+                            info_message = "============================================================"
+                            log_print(info_message)
+                            info_message = "New Metadata of language field is :"+ json_document.get("language")[2:4]
+                            log_print(info_message)
+                            info_message = "============================================================"
+                            log_print(info_message)
+                            info_message = "The language field is updated with " + a.language[0] + " to " + json_document.get("language")[2:4]
+                            log_print(info_message)
+                            info_message = "==================================================================="
+                            log_print(info_message)
                             if json_document.get("language")[2:4].lower() == "en":
                                 a.update({'language': ['en', 'English']})
                                 # a.update({'$set': {'language': ('en', 'English')}})
@@ -334,7 +349,6 @@ def parse_data_create_gsystem(json_file_path):
                                 # a.update({'$set': {'language': ('hi', 'Hindi')}})
                             count_for_lang = count_for_lang + 1
                             language  = True
-                            print count_for_lang
                     if language or content :
                         a.save()
                         esearch.save_to_es(a)
@@ -343,3 +357,7 @@ def parse_data_create_gsystem(json_file_path):
             break;
         # except:
         #     pass
+    info_message = count_for_lang +" resources that contains language field is updated"
+    log_print(info_message)
+    info_message = count_for_desc+ " resources that contains description field is updated"
+    log_print(info_message)
