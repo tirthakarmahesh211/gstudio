@@ -293,7 +293,7 @@ def parse_data_create_gsystem(json_file_path):
                     log_print(info_message)
                     if a.attribute_set:
                         if a.attribute_set.name_eng:
-                            info_message = "Name of resource in English: "  + a.attribute_set.name_eng
+                            info_message = "Name of resource in English: "  + json_document.get("name_eng")
                             log_print(info_message)
                     language = None
                     content = None
@@ -357,7 +357,7 @@ def parse_data_create_gsystem(json_file_path):
             break;
         # except:
         #     pass
-    info_message = count_for_lang +" resources that contains language field is updated"
+    info_message = str(count_for_lang) +" resources that contains language field is updated"
     log_print(info_message)
-    info_message = count_for_desc+ " resources that contains description field is updated"
+    info_message = str(count_for_desc) + " resources that contains description field is updated"
     log_print(info_message)
