@@ -311,9 +311,10 @@ def parse_data_create_gsystem(json_file_path):
                             print "New Metadata of language field is :"+ json_document.get("language")[2:4]
                             print "The language field is updated with " + a.language[0] + " to " + json_document.get("language")[2:4]
                             if json_document.get("language")[2:4].lower() == "en":
-                                a.update({'$set': {'language': [u'en', u'English']}})
+                                # a.update({'$set': {'language': [u'en', u'English']}})
+                                a.update({'$set': {'language': ('en', 'English')}})
                             elif json_document.get("language")[2:4].lower() == "hi":
-                                a.update({'$set': {'language': [u'hi', u'Hindi']}})
+                                a.update({'$set': {'language': ('hi', 'Hindi')}})
                             count_for_lang = count_for_lang + 1
                             language  = True
                             print count_for_lang
