@@ -125,6 +125,10 @@ def explore_groups(request,page_no=1):
     search_text = request.GET.get("search_text",None)
 
     if gstaff_access:
+        query = {'_type': 'Group', 'status': u'PUBLISHED',
+             'member_of': {'$in': [gst_group._id],
+             '$nin': [gst_course._id, gst_basecoursegroup._id, ce_gst._id, gst_course._id, gst_base_unit_id]},
+            }
         if search_text:
             search_text = ".*"+search_text+".*"
             query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
