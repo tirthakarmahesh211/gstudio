@@ -27,14 +27,20 @@ gst_base_unit_name, gst_base_unit_id = GSystemType.get_gst_name_id('base_unit')
 import urllib
 from gnowsys_ndf.ndf.gstudio_es.es import *
 if GSTUDIO_ELASTIC_SEARCH:
+    if GSTUDIO_SITE_NAME != "NROER":
+        index = GSTUDIO_SITE_NAME+"_nodes"
+        index = index.lower()
+        print index
+    else:
+        index = "nodes"
     q = Q('match',name=dict(query='File',type='phrase'))
-    file_gst = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+    file_gst = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
     q = Q('match',name=dict(query='announced_unit',type='phrase'))
-    announced_unit = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+    announced_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
     q = Q('match',name=dict(query='base_unit',type='phrase'))
-    base_unit = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+    base_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
 @get_execution_time
 def videoDashboard(request, group_id):
@@ -72,7 +78,7 @@ def videoDashboard(request, group_id):
             filter_query_dict = esearch.es_filters(filter_query_dict)
 
         q = Q('bool',must=[Q('match',type='group'),~Q('match',name='trash'),~Q('match',name='warehouse')],should=[~Q('match',member_of=announced_unit.hits[0].id),~Q('match',member_of=base_unit.hits[0].id),Q('match',author_set=request.user.id),Q('match',group_admin=request.user.id)],minimum_should_match=2)
-        all_workspaces=Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        all_workspaces=Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
         all_workspaces_count = all_workspaces.count()
         strconcat1 = ""
         for value in filter_query_dict:
@@ -82,7 +88,7 @@ def videoDashboard(request, group_id):
             q = eval("Q('bool', must=[Q('match', type='gsystem'),~Q('match', status='deleted'),Q('match', member_of=file_gst.hits[0].id),Q('match', if_file__mime_type='video'),Q('match', group_set=str(group_id)), Q('multi_match', query=search_text, fields=['content','name','tags']),"+strconcat1[:-1]+"])")
         else:
             q = eval("Q('bool', must=[Q('match', type='gsystem'),~Q('match', status='deleted'),Q('match', member_of=file_gst.hits[0].id),Q('match', if_file__mime_type='video'),Q('match', group_set=str(group_id)),"+strconcat1[:-1]+"])")
-        files_cur =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        files_cur =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
         files_cur_count = files_cur.count()
         variable = RequestContext(request, {'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'all_workspaces_count':all_workspaces_count,'all_workspaces':all_workspaces[0:all_workspaces_count],'files_cur': files_cur[0:files_cur_count],'groupid':group_id,'group_id':group_id })        
 
