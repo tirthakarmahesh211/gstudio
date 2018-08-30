@@ -31248,9 +31248,9 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
 @media screen and (min-width: 321px) and (max-width: 550px) {
   /* line 8029, ../../../scss/_app_styles.scss */
   .module_card {
-    height: 360px;
-    width: 320px;
-    margin: 5px;
+    height: 340px;
+    width: 300px;
+    margin: 5px 5px 5px 18px;
   }
 }
 /* line 8044, ../../../scss/_app_styles.scss */
@@ -31285,9 +31285,9 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
 @media screen and (min-width: 321px) and (max-width: 550px) {
   /* line 8056, ../../../scss/_app_styles.scss */
   .module_card .card_banner {
-    height: 165px;
-    width: 320px;
-    margin: 2px;
+    height: 140px;
+    width: 300px;
+    margin: 1px;
   }
 }
 /* line 8074, ../../../scss/_app_styles.scss */
@@ -31372,8 +31372,8 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
 @media screen and (min-width: 321px) and (max-width: 550px) {
   /* line 8142, ../../../scss/_app_styles.scss */
   .module_card .card_summary {
-    height: 195px;
-    width: 320px;
+    height: 200px;
+    width: 300px;
     margin: 2px;
   }
 }
@@ -31983,12 +31983,12 @@ div.card.show {
   padding: 40px 20px 0 20px;
 }
 
-/* line 8675, ../../../scss/_app_styles.scss */
+/* line 8734, ../../../scss/_app_styles.scss */
 .filter-margin {
   margin-left: 0px;
 }
 @media screen and (min-width: 321px) and (max-width: 850px) {
-  /* line 8675, ../../../scss/_app_styles.scss */
+  /* line 8734, ../../../scss/_app_styles.scss */
   .filter-margin {
     margin-left: 14px !important;
   }

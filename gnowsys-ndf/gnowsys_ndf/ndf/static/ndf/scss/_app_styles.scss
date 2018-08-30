@@ -8036,9 +8036,9 @@ $module-card-lines-to-show: 3;
     position: relative;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.15);
     @media screen and (min-width: 321px) and (max-width: 550px) {
-      height:360px;
-      width:320px;
-      margin:5px;
+      height:340px;
+      width:300px;
+      margin:5px 5px 5px 18px;
     }  
 
     &:hover {
@@ -8066,9 +8066,9 @@ $module-card-lines-to-show: 3;
         -webkit-transition: border-radius .2s;
         transition: border-radius .2s;
         @media screen and (min-width: 321px) and (max-width: 550px) {
-          height:165px;
-          width:320px;
-          margin:2px;
+          height:140px;
+          width:300px;
+          margin:1px;
         } 
 
         >img{
@@ -8149,8 +8149,8 @@ $module-card-lines-to-show: 3;
         border-color: #d5d5d5;
 
         @media screen and (min-width: 321px) and (max-width: 550px) {
-          height:195px;
-          width:320px;
+          height:200px;
+          width:300px;
           margin:2px;
         } 
         box-shadow: inset 2px 0px 13px -5px;
