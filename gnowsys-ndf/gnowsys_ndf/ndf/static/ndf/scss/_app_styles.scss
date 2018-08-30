@@ -8730,3 +8730,11 @@ div.card.show {
   margin: 100px 0;
   padding: 40px 20px 0 20px;
 }
+
+.filter-margin{
+      margin-left: 0px;
+
+    @media screen and (min-width: 321px) and (max-width: 850px) {
+      margin-left: 14px ! important;
+    } 
+}

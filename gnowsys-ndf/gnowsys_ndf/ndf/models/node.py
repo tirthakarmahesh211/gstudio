@@ -641,6 +641,22 @@ class Node(DjangoDocument):
                     if each_bcontrib not in self.contributors:
                         self.contributors.append(each_bcontrib)
 
+        if self:
+            if self.status in (None,"",''):
+                self.status = u"PUBLISHED"
+            if self.created_at in (None,"",'') :
+                if datetime.datetime.now():
+                    self.created_at = datetime.datetime.now()
+            if self.last_update in (None,"",'') :
+                if datetime.datetime.now():
+                    self.last_update = datetime.datetime.now()
+            if self.access_policy in (None,"",''):
+                self.access_policy = u'PUBLIC'
+            if "model_name" in self:
+                self.pop('model_name', None)
+            if "collection_name" in self:
+                self.pop('collection_name', None)
+            # print self
         super(Node, self).save(*args, **kwargs)
 
         # This is the save method of the node class.It is still not
@@ -833,7 +849,7 @@ class Node(DjangoDocument):
         return possible_attributes
 
 
-    def get_possible_relations(self, gsystem_type_id_or_list):
+    def get_possible_relations(self, gsystem_type_id_or_list,teaches=False):
         """Returns relation(s) of given node which belongs to either given
         single/list of GType(s).
 
@@ -902,7 +918,10 @@ class Node(DjangoDocument):
             if "_id" in self:
                 # If - node has key '_id'
                 from triple import triple_collection
-                relations = triple_collection.find({'_type': "GRelation", 'subject': self._id, 'status': u"PUBLISHED"})
+                if teaches:
+                    relations = triple_collection.find({'_type': "GRelation", 'subject': self._id})
+                else:
+                    relations = triple_collection.find({'_type': "GRelation", 'subject': self._id, 'status': u"PUBLISHED"})
                 for rel_obj in relations:
                     # rel_obj is of type - GRelation
                     # [subject(node._id), relation_type(RelationType),
@@ -998,7 +1017,7 @@ class Node(DjangoDocument):
         return node_collection.find({'_id': {'$in': [r.right_subject for r in self.get_relation(relation_type_name)]} })
 
 
-    def get_neighbourhood(self, member_of):
+    def get_neighbourhood(self, member_of,teaches=False):
         """Attaches attributes and relations of the node to itself;
         i.e. key's types to it's structure and key's values to itself
         """
@@ -1008,7 +1027,7 @@ class Node(DjangoDocument):
             self.structure[key] = value['data_type']
             self[key] = value['object_value']
 
-        relations = self.get_possible_relations(member_of)
+        relations = self.get_possible_relations(member_of,teaches)
         for key, value in relations.iteritems():
             self.structure[key] = value['subject_or_object_type']
             self[key] = value['subject_or_right_subject_list']

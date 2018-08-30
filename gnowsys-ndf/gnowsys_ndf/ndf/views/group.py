@@ -2080,8 +2080,10 @@ def group_dashboard(request, group_id=None):
     allow_to_join=[]
     selected = request.GET.get('selected','')
     redirect_to_course_content = True
+    ws = False
     if GSTUDIO_SITE_NAME == "metaStudio" and str(group_id) == "welcome":
         print "home id"
+        ws = True
         group_id = "home"
         redirect_to_course_content = False
     group_name,group_id = get_group_name_id(group_id)
@@ -2214,7 +2216,6 @@ def group_dashboard(request, group_id=None):
         if group_obj.edit_policy == "EDITABLE_MODERATED":# and group_obj._type != "Group":
             files_cur = node_collection.find({'group_set': ObjectId(group_obj._id), 
               '_type': {'$in': ["File","GSystem"]}})
-
         '''
         property_order_list = []
         if "group_of" in group_obj:
@@ -2250,6 +2251,7 @@ def group_dashboard(request, group_id=None):
                                                              'prof_pic_obj': profile_pic_image,
                                                              'old_profile_pics':old_profile_pics,
                                                              'group_obj': group_obj,
+                                                             'ws':ws
                                                             },context_instance=RequestContext(request)
                                 )
 
@@ -2399,6 +2401,7 @@ def group_dashboard(request, group_id=None):
                                                            'prof_pic_obj': profile_pic_image,
                                                            'old_profile_pics':old_profile_pics,
                                                            'group_obj': group_obj,
+                                                           'ws':ws
                                                           },context_instance=RequestContext(request)
                               )
 

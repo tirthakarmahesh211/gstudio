@@ -32,14 +32,20 @@ gst_base_unit_name, gst_base_unit_id = GSystemType.get_gst_name_id('base_unit')
 import urllib
 from gnowsys_ndf.ndf.gstudio_es.es import *
 if GSTUDIO_ELASTIC_SEARCH:
+    if GSTUDIO_SITE_NAME != "NROER":
+        index = GSTUDIO_SITE_NAME+"_nodes"
+        index = index.lower()
+        print index
+    else:
+        index = "nodes"
     q = Q('match',name=dict(query='File',type='phrase'))
-    file_gst = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+    file_gst = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
     q = Q('match',name=dict(query='announced_unit',type='phrase'))
-    announced_unit = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+    announced_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
     q = Q('match',name=dict(query='base_unit',type='phrase'))
-    base_unit = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+    base_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
 @get_execution_time
 def imageDashboard(request, group_id, image_id=None,page_no=1):
@@ -84,12 +90,12 @@ def imageDashboard(request, group_id, image_id=None,page_no=1):
 
         if image_id is None:
             q = Q('match',name=dict(query='Image',type='phrase'))
-            image_ins = Search(using=es, index="nodes",doc_type="gsystemtype").query(q).execute()
+            image_ins = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
 
             if image_ins:
                 image_id = str(image_ins.hits[0].id)
         q = Q('bool',must=[Q('match',type='group')],should=[~Q('match',member_of=announced_unit.hits[0].id),~Q('match',member_of=base_unit.hits[0].id)],minimum_should_match=1)
-        all_workspaces=Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        all_workspaces=Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
         all_workspaces_count = all_workspaces.count()
         strconcat1 = ""
         for value in filter_query_dict:
@@ -99,7 +105,7 @@ def imageDashboard(request, group_id, image_id=None,page_no=1):
             q = eval("Q('bool', must=[Q('match', type='gsystem'),~Q('match', status='deleted'),Q('match', member_of=file_gst.hits[0].id),Q('match', if_file__mime_type='image'),Q('match', group_set=str(group_id)), Q('multi_match', query=search_text, fields=['content','name','tags']),"+strconcat1[:-1]+"])")
         else:
             q = eval("Q('bool', must=[Q('match', type='gsystem'),~Q('match', status='deleted'),Q('match', member_of=file_gst.hits[0].id),Q('match', if_file__mime_type='image'),Q('match', group_set=str(group_id)),"+strconcat1[:-1]+"])")
-        files_cur =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        files_cur =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
         files_cur_count = files_cur.count()
 
         variable = RequestContext(request, {'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'all_workspaces_count':all_workspaces_count,'all_workspaces':all_workspaces[0:all_workspaces_count],'imageCollection': files_cur[0:files_cur_count],'already_uploaded':already_uploaded,'groupid':group_id,'group_id':group_id })

@@ -125,6 +125,10 @@ def explore_groups(request,page_no=1):
     search_text = request.GET.get("search_text",None)
 
     if gstaff_access:
+        query = {'_type': 'Group', 'status': u'PUBLISHED',
+             'member_of': {'$in': [gst_group._id],
+             '$nin': [gst_course._id, gst_basecoursegroup._id, ce_gst._id, gst_course._id, gst_base_unit_id]},
+            }
         if search_text:
             search_text = ".*"+search_text+".*"
             query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
@@ -236,13 +240,13 @@ def explore_basecourses(request,page_no=1):
 
 @get_execution_time
 def explore_courses(request):
-
     # this will be announced tab
     title = 'courses'
     context_variable = {
                         'title': title, 
                         'group_id': group_id, 'groupid': group_id,
                         'modules_is_cur': True,
+                        'ws':True
                     }
     modules_sort_list = get_attribute_value(group_id, 'items_sort_list')
     all_modules = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)

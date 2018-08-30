@@ -15,10 +15,11 @@
   </div>  
 {% endif %}
 
+
 <div class="row">
   <div class="small-12 medium-12 large-12 columns">
 <!-- Card -->
-<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-5 small-centered columns" >
+<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-5" >
 
   <!-- Existing card list-->
   {% for each_res in resource_type %}      
@@ -170,7 +171,6 @@
   {% include 'ndf/pagination.html' with urlname="paged_file_objs" first_arg=group_name_tag second_arg=filetype third_arg="" %}
 
 {% endif %}
-</div>
 
 <link rel="stylesheet" type="text/css" href="/static/ndf/bower_components/slick-carousel/slick/slick.css"/>
 <link rel="stylesheet" type="text/css" href="/static/ndf/css/open-sans-bold-font.css">

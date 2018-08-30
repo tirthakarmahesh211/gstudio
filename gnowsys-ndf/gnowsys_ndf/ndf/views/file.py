@@ -1477,7 +1477,8 @@ def file_detail(request, group_id, _id):
 
     group_name, group_id = get_group_name_id(group_id)
     file_node = node_collection.one({"_id": ObjectId(_id)})
-    file_node.get_neighbourhood(file_node.member_of)
+    teaches = True
+    file_node.get_neighbourhood(file_node.member_of,teaches)
     if file_node._type == "GSystemType":
       return file(request, group_id, _id)
 

@@ -189,7 +189,9 @@
 									<a class="close-reveal-modal">&#215;</a>
 								</div>
 							{% else %}
+								{% comment %}
 								<input type="button" class="tiny button radius mod-btn secondary disabled" title="{% trans 'You are not authorized for this action' %}" value="{% trans 'Cross Publish' %}">
+								{% endcomment %}
 							{% endif %}
 						{% endif %}
 						
@@ -385,10 +387,9 @@
 			</div>
 			{% endif %}
 
-			
+			{%comment%}
 			{% if is_gstaff %}
 			<!-- New SubGroup and PE-->
-			{%comment%}
 			<div class="row btn-row">
 						{% if is_partner_val %}
 							<a class="button tiny radius left-btn-mod" href="{% url 'create_group' group_object.pk %}?subgroup=True&partnergroup=True" title="Create New Sub Partner">{% trans "New Sub Partner" %} </a>
@@ -397,8 +398,8 @@
 	  					{% endif %}
 						<a href="{% url 'create_event_group' group_id 'ProgramEventGroup' %}" class="tiny button radius right-btn-mod" title="Create New Program">{% trans "New Program" %}</a>
 			</div>
-			{%endcomment%}
 			{% endif %}
+			{%endcomment%}
 		</div>
 		{% endif %}
 
@@ -458,6 +459,7 @@
 				<div class="row btn-row">
 
                    <a data-reveal-id="manage_users_modal" class="tiny expand button radius mod-btn" href="{% url 'manage_users' group_id %}">Manage Members</a>                    
+					{%endcomment%}
 
                 <div id="manage_users_modal" class="reveal-modal large" data-reveal style="position:absolute;"> 
                     <div id="group_drawer">
@@ -465,7 +467,7 @@
                     </div>
                     <a class="close-reveal-modal">&#215;</a>
                 </div>
-                {%endcomment%}          
+                          
 
 				</div>
 

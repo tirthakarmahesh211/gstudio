@@ -1914,7 +1914,7 @@ def get_group_type(group_id, user):
                 # If Group is not found with either given ObjectId or name in the database
                 # Then compare with a given list of names as these were used in one of the urls
                 # And still no match found, throw error
-                if g_id not in ["popular","online", "i18n", "raw", "r", "m", "t", "new", "mobwrite", "admin", "benchmarker", "accounts", "Beta", "welcome", "explore"]:
+                if g_id not in ["ws","popular","online", "i18n", "raw", "r", "m", "t", "new", "mobwrite", "admin", "benchmarker", "accounts", "Beta", "welcome", "explore"]:
                     error_message = "\n Something went wrong: Either url is invalid or such group/user doesn't exists !!!\n"
                     raise Http404(error_message)
 
@@ -2373,7 +2373,8 @@ def check_is_gstaff(groupid, user):
 
   if cache_key in cache:
     return cache.get(cache_key)
-
+  if groupid == "ws":
+  	groupid ="home"
   groupid = groupid if groupid else 'home'
 
   try:

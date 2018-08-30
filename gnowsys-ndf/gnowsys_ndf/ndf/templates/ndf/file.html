@@ -292,7 +292,7 @@ margin-top:5px !important;
 
 
 {% block body_content %}
-  <div class="large-4 columns repository-title top-gap">
+  <div class="large-4 columns repository-title top-gap filter-margin">
       {% if app_gst.altnames and app_gst.altnames != "None" %}
          {% trans app_gst.altnames %}
       {% else %}
@@ -300,9 +300,9 @@ margin-top:5px !important;
       {% endif%}
   </div>
   {% if lang_code == "hi" %}
-      <div class="large-8 columns repository-desc top-gap">{% trans "Homogeneous collections of resources" %}</div>
+      <div class="large-8 columns repository-desc top-gap filter-margin">{% trans "Homogeneous collections of resources" %}</div>
   {% else %}    
-      <div class="large-8 columns repository-desc top-gap">{{app_gst.content_org|default_if_none:""|safe}}</div>
+      <div class="large-8 columns repository-desc top-gap filter-margin">{{app_gst.content_org|default_if_none:""|safe}}</div>
   {% endif %}  
     
   {% if title == "E-Library" %}
