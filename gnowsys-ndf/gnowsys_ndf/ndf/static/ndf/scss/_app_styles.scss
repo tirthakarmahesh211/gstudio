@@ -5361,7 +5361,7 @@ $unit-card-lines-to-show: 3;
     padding: 15px;
     margin: 10px;
     @media only screen and (max-width: 420px) {
-      margin-left: 25px;
+      margin-left: 22px;
     }
     border-radius: 5px;
     font-size: $unit-card-font-size;
@@ -8038,7 +8038,7 @@ $module-card-lines-to-show: 3;
     @media screen and (min-width: 321px) and (max-width: 550px) {
       height:340px;
       width:300px;
-      margin:5px 5px 5px 18px;
+      margin:5px 5px 5px 20px;
     }  
 
     &:hover {
@@ -8066,9 +8066,9 @@ $module-card-lines-to-show: 3;
         -webkit-transition: border-radius .2s;
         transition: border-radius .2s;
         @media screen and (min-width: 321px) and (max-width: 550px) {
-          height:140px;
+          height:160px;
           width:300px;
-          margin:1px;
+          margin:0.1px;
         } 
 
         >img{
@@ -8149,9 +8149,9 @@ $module-card-lines-to-show: 3;
         border-color: #d5d5d5;
 
         @media screen and (min-width: 321px) and (max-width: 550px) {
-          height:200px;
+          height:180px;
           width:300px;
-          margin:2px;
+          margin:0.1px;
         } 
         box-shadow: inset 2px 0px 13px -5px;
         -webkit-transition: left .4s ease-in-out;

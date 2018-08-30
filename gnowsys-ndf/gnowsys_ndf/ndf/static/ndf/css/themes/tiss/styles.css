@@ -28641,7 +28641,7 @@ ul.authoring-tab > li > a.selected, ul.authoring-tab > li > a:hover {
 @media only screen and (max-width: 420px) {
   /* line 5357, ../../../scss/_app_styles.scss */
   .unit_card {
-    margin-left: 25px;
+    margin-left: 22px;
   }
 }
 /* line 5374, ../../../scss/_app_styles.scss */
@@ -31250,7 +31250,7 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
   .module_card {
     height: 340px;
     width: 300px;
-    margin: 5px 5px 5px 18px;
+    margin: 5px 5px 5px 20px;
   }
 }
 /* line 8044, ../../../scss/_app_styles.scss */
@@ -31285,9 +31285,9 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
 @media screen and (min-width: 321px) and (max-width: 550px) {
   /* line 8056, ../../../scss/_app_styles.scss */
   .module_card .card_banner {
-    height: 140px;
+    height: 160px;
     width: 300px;
-    margin: 1px;
+    margin: 0.3px;
   }
 }
 /* line 8074, ../../../scss/_app_styles.scss */
@@ -31360,7 +31360,7 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
   vertical-align: middle;
   border-style: solid;
   border-width: 1px 1px 1px 0px;
-  border-radius: 0px 7px 7px 0px;
+  border-radius: 15px 7px 7px 0px;
   border-color: #d5d5d5;
   box-shadow: inset 2px 0px 13px -5px;
   -webkit-transition: left .4s ease-in-out;
@@ -31372,9 +31372,9 @@ ul.horizontal_tabs_gstudio > li.sub_group_action:hover ul {
 @media screen and (min-width: 321px) and (max-width: 550px) {
   /* line 8142, ../../../scss/_app_styles.scss */
   .module_card .card_summary {
-    height: 200px;
+    height: 180px;
     width: 300px;
-    margin: 2px;
+    margin: 0.3px;
   }
 }
 /* line 8162, ../../../scss/_app_styles.scss */
