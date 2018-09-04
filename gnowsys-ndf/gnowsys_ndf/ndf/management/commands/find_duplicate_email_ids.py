@@ -55,19 +55,19 @@ log_list.append(script_start_str)
 log_error_rows = []
 log_error_rows.append(script_start_str)
 
-file_gst = node_collection.one({'_type': 'GSystemType', "name": "File"})
-auth_gst = node_collection.one({'_type': u'GSystemType', 'name': u'Author'})
-home_group = node_collection.one({"name": "home", "_type": "Group"})
-warehouse_group = node_collection.one({"name": 'warehouse', "_type": "Group"})
-theme_gst = node_collection.one({'_type': 'GSystemType', "name": "Theme"})
-theme_item_gst = node_collection.one({'_type': 'GSystemType', "name": "theme_item"})
-topic_gst = node_collection.one({'_type': 'GSystemType', "name": "Topic"})
-twist_gst = node_collection.one({'_type': 'GSystemType', 'name': 'Twist'})
-rel_resp_at = node_collection.one({'_type': 'AttributeType', 'name': 'release_response'})
-thr_inter_type_at = node_collection.one({'_type': 'AttributeType', 'name': 'thread_interaction_type'})
-has_thread_rt = node_collection.one({"_type": "RelationType", "name": u"has_thread"})
-has_thumbnail_rt = node_collection.one({'_type': "RelationType", 'name': u"has_thumbnail"})
-discussion_enable_at = node_collection.one({"_type": "AttributeType", "name": "discussion_enable"})
+# file_gst = node_collection.one({'_type': 'GSystemType', "name": "File"})
+# auth_gst = node_collection.one({'_type': u'GSystemType', 'name': u'Author'})
+# home_group = node_collection.one({"name": "home", "_type": "Group"})
+# warehouse_group = node_collection.one({"name": 'warehouse', "_type": "Group"})
+# theme_gst = node_collection.one({'_type': 'GSystemType', "name": "Theme"})
+# theme_item_gst = node_collection.one({'_type': 'GSystemType', "name": "theme_item"})
+# topic_gst = node_collection.one({'_type': 'GSystemType', "name": "Topic"})
+# twist_gst = node_collection.one({'_type': 'GSystemType', 'name': 'Twist'})
+# rel_resp_at = node_collection.one({'_type': 'AttributeType', 'name': 'release_response'})
+# thr_inter_type_at = node_collection.one({'_type': 'AttributeType', 'name': 'thread_interaction_type'})
+# has_thread_rt = node_collection.one({"_type": "RelationType", "name": u"has_thread"})
+# has_thumbnail_rt = node_collection.one({'_type': "RelationType", 'name': u"has_thumbnail"})
+# discussion_enable_at = node_collection.one({"_type": "AttributeType", "name": "discussion_enable"})
 
 class Command(BaseCommand):
 
@@ -78,9 +78,9 @@ class Command(BaseCommand):
         duplicate_email_id_list = []
         duplicate_email_id_count = 0
         print "Processing.............."
+        i = 0
         for each in total_users:
             try:
-                print ".."
                 print each.email
                 if each:
                     if each.email:
@@ -88,10 +88,13 @@ class Command(BaseCommand):
                         user_info = node_collection.find_one({"email":each.email})
                         # if user_info.count() > 1:
             except:
+                i= i + 1
                 print "DUPLICATE EMAIL ID FOOUND"
                 # print duplicate_email_id_list
                 duplicate_email_id_list.append(each.email)
                 duplicate_email_id_count = duplicate_email_id_count + 1
                 print each.email
+                if i > 1:
+                    break;
         print total_users.count()
         print duplicate_email_id_count
