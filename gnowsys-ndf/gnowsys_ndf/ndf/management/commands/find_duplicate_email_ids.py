@@ -40,6 +40,7 @@ from gnowsys_ndf.ndf.views.methods import create_grelation, create_gattribute, g
 from gnowsys_ndf.ndf.management.commands.create_theme_topic_hierarchy import add_to_collection_set
 from gnowsys_ndf.ndf.views.tasks import convertVideo
 from gnowsys_ndf.ndf.gstudio_es.es import *
+from gnowsys_ndf.settings import GSTUDIO_SITE_NAME
 ##############################################################################
 
 SCHEMA_ROOT = os.path.join(os.path.dirname(__file__), "schema_files")
@@ -55,46 +56,43 @@ log_list.append(script_start_str)
 log_error_rows = []
 log_error_rows.append(script_start_str)
 
-# file_gst = node_collection.one({'_type': 'GSystemType', "name": "File"})
-# auth_gst = node_collection.one({'_type': u'GSystemType', 'name': u'Author'})
-# home_group = node_collection.one({"name": "home", "_type": "Group"})
-# warehouse_group = node_collection.one({"name": 'warehouse', "_type": "Group"})
-# theme_gst = node_collection.one({'_type': 'GSystemType', "name": "Theme"})
-# theme_item_gst = node_collection.one({'_type': 'GSystemType', "name": "theme_item"})
-# topic_gst = node_collection.one({'_type': 'GSystemType', "name": "Topic"})
-# twist_gst = node_collection.one({'_type': 'GSystemType', 'name': 'Twist'})
-# rel_resp_at = node_collection.one({'_type': 'AttributeType', 'name': 'release_response'})
-# thr_inter_type_at = node_collection.one({'_type': 'AttributeType', 'name': 'thread_interaction_type'})
-# has_thread_rt = node_collection.one({"_type": "RelationType", "name": u"has_thread"})
-# has_thumbnail_rt = node_collection.one({'_type': "RelationType", 'name': u"has_thumbnail"})
-# discussion_enable_at = node_collection.one({"_type": "AttributeType", "name": "discussion_enable"})
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        total_users = node_collection.find({"_type":"Author"})
-        print total_users.count()
-        duplicate_email_id_list = []
-        duplicate_email_id_count = 0
-        print "Processing.............."
-        i = 0
-        for each in total_users:
-            try:
-                print each.email
-                if each:
+        if GSTUDIO_SITE_NAME == "NROER":
+            all_users=[]
+            with open("/home/docker/code/gstudio/gnowsys-ndf/email_ids.log", 'a+') as log_file:
+                for each in User.objects.all():
                     if each.email:
-                        # print each.email
-                        user_info = node_collection.find_one({"email":each.email})
-                        # if user_info.count() > 1:
-            except:
-                i= i + 1
-                print "DUPLICATE EMAIL ID FOOUND"
-                # print duplicate_email_id_list
-                duplicate_email_id_list.append(each.email)
-                duplicate_email_id_count = duplicate_email_id_count + 1
-                print each.email
-                if i > 1:
-                    break;
-        print total_users.count()
-        print duplicate_email_id_count
+                        all_users.append(each.email)
+                        log_file.writelines(each.email)
+                        log_file.writelines("\n")
+
+        if GSTUDIO_SITE_NAME != "NROER":
+            total_users = node_collection.find({"_type":"Author"})
+            print total_users.count()
+            duplicate_email_id_list = []
+            duplicate_email_id_count = 0
+            print "Processing.............."
+            i = 0
+            for each in total_users:
+                try:
+                    print each.email
+                    if each:
+                        if each.email:
+                            # print each.email
+                            user_info = node_collection.find_one({"email":each.email})
+                            # if user_info.count() > 1:
+                except:
+                    i= i + 1
+                    print "DUPLICATE EMAIL ID FOOUND"
+                    # print duplicate_email_id_list
+                    duplicate_email_id_list.append(each.email)
+                    duplicate_email_id_count = duplicate_email_id_count + 1
+                    print each.email
+                    if i > 1:
+                        break;
+            print total_users.count()
+            print duplicate_email_id_count
