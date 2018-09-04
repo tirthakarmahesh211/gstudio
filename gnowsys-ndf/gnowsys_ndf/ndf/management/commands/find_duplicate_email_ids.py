@@ -70,7 +70,23 @@ class Command(BaseCommand):
                         log_file.writelines(each.email)
                         log_file.writelines("\n")
 
-        if GSTUDIO_SITE_NAME != "NROER":
+        with open("/home/docker/code/gstudio/gnowsys-ndf/email_ids.log") as log_file:
+            content = log_file.readlines()
+            content = [x.strip() for x in content]
+            print content
+        c = 0
+        for each in content:
+            print each
+                user_count=User.objects.filter(email=each).count()
+                if user_count > 1:
+                    with open("/home/docker/code/gstudio/gnowsys-ndf/duplicate_email_ids.log") as log_file:
+                        log_file.writelines(each)
+                        log_file.writelines("\n")
+                        c = c +1 
+
+        print c
+
+        if GSTUDIO_SITE_NAME != "NROER" and False:
             total_users = node_collection.find({"_type":"Author"})
             print total_users.count()
             duplicate_email_id_list = []
