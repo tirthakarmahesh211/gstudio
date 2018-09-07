@@ -214,6 +214,20 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 		GST_JSMOL1 = GST_JSMOL.execute()
 		search_text = ""
 		trash_groupid = node_collection.find_one({"name":"Trash"})
+
+		search_text = str(request.GET['search_text']).strip()
+		# q  = Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author")
+		# # s = q.suggest('my_suggestion1', search_text, term={'field': 'content'}).suggest('my_suggestion2', search_text, term={'field': 'content'}).suggest('my_suggestion4', search_text, term={'field': 'altnames'})
+		# s = q.suggest('my_suggestion', search_text, term={'field': 'content'})
+		# response = s.execute()
+		# print response.suggest.my_suggestion
+		# if response.suggest.my_suggestion[0].options:
+		# 	print "============================= if block"
+		# 	print response.suggest.my_suggestion
+		# 	print response.suggest.my_suggestion[0].options[0].text
+			# print(response.suggest.my_suggestion4)
+			# print(response.suggest.my_suggestion4[0].options[0].text)
+
 		if request.GET.get('search_text',None) in (None,''):
 
 			q = Q('bool', must=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', str(group_id)),~Q('exists',field='content')])
@@ -223,8 +237,9 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 			search_str_user=""
 
 		elif request.GET.get('search_text',None) and group_id_str == "ws":
-			search_text = str(request.GET['search_text']).strip()
+
 			if GSTUDIO_SITE_NAME == "NROER":
+				print "search nroer"
 				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', access_policy='public')],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 			else:
@@ -234,9 +249,10 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 			search_result =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 
 		else:
-			search_text = str(request.GET['search_text']).strip()
+			# search_text = str(request.GET['search_text']).strip()
 			if GSTUDIO_SITE_NAME == "NROER":
-				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id))],
+
+				q = Q('bool', must=[ Q('bool',should=[Q('match',name=dict(query=search_text,type='phrase')),Q('match',altnames=dict(query=search_text,type='phrase')),Q('match',content_org=dict(query=search_text,type='phrase')),Q('match',content=dict(query=search_text,type='phrase')),Q('match',tags=dict(query=search_text,type='phrase'))]),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id))],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 			else:
 				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name','tags','content_org','altnames']),Q('match', group_set=str(group_id))],
@@ -247,7 +263,7 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 			# search_result = search_result.filter('match', member_of=GST_FILE1.hits[0].id)
 			# search_result = search_result.filter('match', access_policy='public')
 			# search_result = search_result.exclude('terms', name=['thumbnail','jpg','png'])
-		
+			print search_result.count()
 		has_next = True
 		if search_result.count() <=20:
 			has_next = False
