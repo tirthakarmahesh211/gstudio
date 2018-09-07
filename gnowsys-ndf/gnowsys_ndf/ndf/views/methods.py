@@ -1023,10 +1023,10 @@ def get_drawers(group_id, nid=None, nlist=[], page_no=1, checked=None, **kwargs)
                 {'_type': 'GSystemType', 'name': 'File'})
             Quiz = node_collection.one(
                 {'_type': "GSystemType", 'name': "Quiz"})
-            drawer = node_collection.find({'_type': {'$in': [u"GSystem", u"File"]},
+            drawer = node_collection.find({'_type': {'$in': [u"GSystem"]},
                                            '_id': {'$nin': filtering}, 'group_set': {'$all': [ObjectId(group_id)]},
-                                           'member_of': {'$in': [Page._id, File._id, Quiz._id]}
-                                           })
+                                           'member_of': {'$in': [topic_GST._id]}
+                                           }).sort('name', 1)
     if checked != "RelationType" and checked != "CourseUnits":
         paged_resources = paginator.Paginator(drawer, page_no, 10)
         drawer.rewind()
