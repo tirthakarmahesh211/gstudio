@@ -11,19 +11,19 @@
 {% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 	{% include 'ndf/explore_secondary_header.html' %}
 {% endif %}
-<div class="medium-12 columns">
+<div class="medium-12 small-12 columns">
 
-	<div class="medium-2 columns thumbnail_style">
+	<div class="medium-2 small-12 columns thumbnail_style">
 	{% include 'ndf/widget_photo_upload.html' with url_name='module_detail' widget_for="group_banner" is_banner=True  no_update_btn=True node=node  groupid=group_id if_module=True %}
 	</div>
 
-		<div class="small-10 columns title-strip strip">
+		<div class="medium-10 small-12 small-centered columns title-strip strip">
 
-			<div class="small-11 columns">
+			<div class="small-10 columns">
 				<h7 class="text-button-blue"><i>{% trans "Name: " %}</h7></i><strong> {{node.name}} </strong><br/>
 				<h7 class="text-button-blue"><i>{% trans "Description: " %}</i></h7> {{node.content|default:'No description added yet.'|safe}}
 			</div>
-			<div class="small-1 columns" style="margin-top:25px;">
+			<div class="small-2 columns" style="margin-top:25px;">
 		         <div class="right course_actions">
           		{% if is_gstaff   %}
 		            <span data-dropdown="course-settings-drop" aria-controls="course-settings-drop" aria-expanded="false" class="tiny radius right" style="margin-top: -25px;position:absolute;margin-left:-50px;" data-options="align:left">

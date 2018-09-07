@@ -215,7 +215,7 @@ def nroer_groups(request, group_id, groups_category):
     return render_to_response("ndf/partner.html",
                           {'group_nodes': group_nodes, "groups_category": groups_category,
                            #'group_nodes_count': group_nodes_count,
-                          'app_gst': app_gst,
+                           'app_gst': app_gst,
                            'groupid': group_id, 'group_id': group_id,
                            'GSTUDIO_NROER_MENU':GSTUDIO_NROER_MENU,
                            'lang_code': lang_code

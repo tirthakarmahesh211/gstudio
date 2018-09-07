@@ -730,7 +730,7 @@ def search_drawer(request, group_id):
           node.reload()
 
         search_drawer = node_collection.find({'_type': {'$in' : [u"GSystem", u"File"]},
-                                        'member_of':{'$in':[Page._id,File._id,Quiz._id]},
+                                        'member_of':{'$in':[topic_GST._id]},
                                         '$and': [
                                           {'name': {'$regex': str(search_name), '$options': "i"}},
                                           {'group_set': {'$all': [ObjectId(group_id)]} }

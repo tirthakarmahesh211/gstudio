@@ -2202,6 +2202,7 @@ def course_content(request, group_id):
     group_name  = group_obj.name
     allow_to_join = get_group_join_status(group_obj)
     template = 'ndf/gcourse_event_group.html'
+    print "hi..."
     unit_structure =  get_course_content_hierarchy(group_obj,request.LANGUAGE_CODE)
     visited_nodes = []
     if 'BaseCourseGroup' in group_obj.member_of_names_list:

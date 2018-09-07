@@ -1414,6 +1414,10 @@ aside#help{
  p {
     margin:0px;
     padding:10px;
+    @media screen and (min-width: 321px) and (max-width: 550px) {
+      padding: 3px;
+    }  
+
   }
 
 .scard-image {
@@ -5357,7 +5361,7 @@ $unit-card-lines-to-show: 3;
     padding: 15px;
     margin: 10px;
     @media only screen and (max-width: 420px) {
-      margin-left: 25px;
+      margin-left: 22px;
     }
     border-radius: 5px;
     font-size: $unit-card-font-size;
@@ -5571,7 +5575,7 @@ $unit-card-lines-to-show: 3;
 
 .icon-widget{
     font-size:20px;
-     @media only screen and (max-width: 320px) {
+     @media only screen and (max-width: 420px) {
       font-size:12px;
     }
 
@@ -5582,7 +5586,10 @@ $unit-card-lines-to-show: 3;
 /* module detail css */
 
 .thumbnail_style{
-    margin-left: -30px;
+    margin-left: -25px;
+    @media only screen and (max-width: 420px) {
+      margin-left: 0px;
+    }
 }
 
 .strip{
@@ -7406,7 +7413,7 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
     @media only screen and (max-width: 360px) {
       min-height: 20px;
     }
-    margin-left: 0px;
+    margin-left: -15px;
 }
 
 .widget_video{
@@ -7687,7 +7694,7 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
     background-color:#fff;
     color: $primary-blue;
     >p{
-        margin-left: 81px;
+        margin-left: 20px;
         padding: 0px 0px 0px 1px;
         font-family: OpenSans-Semibold;
         font-size: 20px;
@@ -7695,6 +7702,16 @@ $ah_2_background_color_hover: rgba(244, 244, 244, 0.3);;
     >a{
         padding: 0px 85px 3px 0px;
     }
+}
+
+.lms_explore_head{
+  height:50px;
+  >p{
+      margin-left: 20px;
+      padding: 0px 0px 0px 1px;
+      font-family: OpenSans-Semibold;
+      font-size: 20px;
+  }
 }
 
 .lms_explore_back_unit{
@@ -8018,6 +8035,11 @@ $module-card-lines-to-show: 3;
     border-radius: 5px;
     position: relative;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.15);
+    @media screen and (min-width: 321px) and (max-width: 550px) {
+      height:340px;
+      width:300px;
+      margin:5px 5px 5px 20px;
+    }  
 
     &:hover {
         box-shadow: 0px 0px 17px rgba(0, 0, 0, 0.68);
@@ -8025,6 +8047,9 @@ $module-card-lines-to-show: 3;
 
     &>div {
         display: table-cell;
+         @media screen and (min-width: 321px) and (max-width: 550px) {
+          display: inline-block;
+         }
         height: 290px;
     }
 
@@ -8040,6 +8065,11 @@ $module-card-lines-to-show: 3;
         z-index: 3;
         -webkit-transition: border-radius .2s;
         transition: border-radius .2s;
+        @media screen and (min-width: 321px) and (max-width: 550px) {
+          height:160px;
+          width:300px;
+          margin:0.1px;
+        } 
 
         >img{
             height:100%;
@@ -8081,6 +8111,12 @@ $module-card-lines-to-show: 3;
         text-align: center;
         margin: 0px auto;
         letter-spacing: 1px;
+
+        @media screen and (min-width: 321px) and (max-width: 550px) {
+          font-size: 21px;
+          font-weight: 500;
+          letter-spacing: 0.9px;
+        } 
     }
 
     &.animated_card {
@@ -8111,6 +8147,12 @@ $module-card-lines-to-show: 3;
         border-width: 1px 1px 1px 0px;
         border-radius: 0px 7px 7px 0px;
         border-color: #d5d5d5;
+
+        @media screen and (min-width: 321px) and (max-width: 550px) {
+          height:180px;
+          width:300px;
+          margin:0.1px;
+        } 
         box-shadow: inset 2px 0px 13px -5px;
         -webkit-transition: left .4s ease-in-out;
         transition: left .4s ease-in-out;
@@ -8133,6 +8175,9 @@ $module-card-lines-to-show: 3;
             p {
                 margin-bottom: 7px;
                 font-size: $module-card-font-size;
+                @media screen and (min-width: 321px) and (max-width: 550px) {
+                  padding: 3px;
+                } 
             }
             .ellipsis {
                 width: 245px;
