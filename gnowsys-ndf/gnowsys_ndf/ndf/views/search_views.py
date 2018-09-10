@@ -216,17 +216,23 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 		trash_groupid = node_collection.find_one({"name":"Trash"})
 
 		search_text = str(request.GET['search_text']).strip()
-		# q  = Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author")
-		# # s = q.suggest('my_suggestion1', search_text, term={'field': 'content'}).suggest('my_suggestion2', search_text, term={'field': 'content'}).suggest('my_suggestion4', search_text, term={'field': 'altnames'})
-		# s = q.suggest('my_suggestion', search_text, term={'field': 'content'})
-		# response = s.execute()
-		# print response.suggest.my_suggestion
-		# if response.suggest.my_suggestion[0].options:
-		# 	print "============================= if block"
-		# 	print response.suggest.my_suggestion
-		# 	print response.suggest.my_suggestion[0].options[0].text
-			# print(response.suggest.my_suggestion4)
-			# print(response.suggest.my_suggestion4[0].options[0].text)
+		user_entered_text = search_text
+		q  = Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author")
+		# s = q.suggest('my_suggestion1', search_text, term={'field': 'content'}).suggest('my_suggestion2', search_text, term={'field': 'content'}).suggest('my_suggestion4', search_text, term={'field': 'altnames'})
+		s = q.suggest('my_suggestion', search_text, term={'field': 'content'})
+		response = s.execute()
+
+		search_instead = request.GET.get('search_instead',False)
+		if response.suggest.my_suggestion and not search_instead:
+			search_instead = False
+			i = 0
+			if i > 0:
+				i = len(response.suggest.my_suggestion)
+
+			for each in response.suggest.my_suggestion:
+				if response.suggest.my_suggestion[i].options:
+					search_text = search_text.replace(response.suggest.my_suggestion[i].text,response.suggest.my_suggestion[i].options[0].text)
+				i = i + 1
 
 		if request.GET.get('search_text',None) in (None,''):
 
@@ -284,10 +290,10 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 			#elif temp <= search_result.count():
 			#	has_next = False
 		if temp:
-			return render_to_response('ndf/search_page.html', {'has_next':has_next,'page_no':page_no,'search_curr':search_result ,'search_text':search_text,'group_id':group_id,'groupid':group_id,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'fields':strconcat},
+			return render_to_response('ndf/search_page.html', {'search_instead':search_instead,'user_entered_text':user_entered_text,'suggest':search_text,'has_next':has_next,'page_no':page_no,'search_curr':search_result ,'search_text':search_text,'group_id':group_id,'groupid':group_id,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'fields':strconcat},
 				context_instance=RequestContext(request))
 		else:
-			return render_to_response('ndf/search_page.html', {'has_next':has_next,'page_no':page_no,'search_curr':search_result ,'search_text':search_text,'group_id':group_id,'groupid':group_id,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH},
+			return render_to_response('ndf/search_page.html', {'search_instead':search_instead,'user_entered_text':user_entered_text,'suggest':search_text,'has_next':has_next,'page_no':page_no,'search_curr':search_result ,'search_text':search_text,'group_id':group_id,'groupid':group_id,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH},
 				context_instance=RequestContext(request))
 
 

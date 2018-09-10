@@ -27,8 +27,14 @@
 
 <hr>
       <div id="results" width="100%" style="position:relative">
+      {% if search_instead %}
+      <h3>Searching results for {{search_text}}</h3>
       
+      {% else %}
+      <h3>Searching results for {{suggest}}</h3>
+      <h3>Search instead for <a href="?search_text={{user_entered_text}}&search_instead=True"> {{user_entered_text}}</a></h3>
       
+      {% endif %}
       </div>
 <div class="infinite-container">
   <span class="infinite-item">
