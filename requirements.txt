@@ -72,3 +72,5 @@ Mastodon.py==1.0.1
 ndg-httpsclient==0.4.4
 elasticsearch==6.1.1
 elasticsearch-dsl==6.1.0
+langdetect
+beautifulsoup4
