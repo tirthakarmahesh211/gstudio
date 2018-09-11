@@ -168,6 +168,7 @@
             </label>
             </div>
         </div>
+        {% comment %}
         <div class="row">
             <div class="small-12 medium-10 large-10 columns">
             <label>
@@ -190,7 +191,12 @@
             </label>
             </div>
         </div>
+        {% endcomment %}
 
+        <h3>Select Topic:</h3>
+        <div id="teaches_drawer">
+            
+        </div>    
         <div class="row">
             <div class="small-12 medium-10 large-10 columns">
                 <label style="text-transform: none!important;">
@@ -321,7 +327,57 @@
 </div>
 
 <script type="text/javascript">
+$(document).ready(function(){
 
+        $.ajax({
+            type: "POST",
+            url: "{% url 'drawer_widget' 'home' %}",
+            datatype: "html",
+            data:{
+                node_id: "{{node.pk}}",
+                field: "teaches",
+                app: "{{title}}",
+                page_no: 1,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function cnt(data) {
+                // for activating div for filling the returned data from ajax according to clicked element and deactivate other div's
+                $("div.contents").css("display", "none");
+                $("#panel-teaches").css("display", "block");
+                // For highlighting current clicked element
+                $("dl.select > dd").removeClass("active")
+                $(".teaches_tab").addClass("active")
+                // To fill the drawer with returned data from ajax
+                $("#teaches_drawer").html(data);
+                // console.log(data)
+                $("#save-node").css("display", "block");
+
+                $(".next_prev").click(function() {
+
+                    // alert(this.name);
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'drawer_widget' 'home' %}",
+                        datatype: "html",
+                        data:{
+                            field: "teaches",
+                            node_id: '{{node.pk}}',
+                            app:"{{title}}",
+                            page_no: this.name,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(data) {
+                            cnt(data)
+                        }
+
+                    });
+
+                });
+
+            }
+        });
+
+});
     $(".add-asset-content").click(function(){
         $(".asset-content-area").removeClass("hide")
         $(".delete-asset-content").css('display', 'none')
