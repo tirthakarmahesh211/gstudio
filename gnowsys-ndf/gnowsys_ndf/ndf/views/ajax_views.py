@@ -480,6 +480,12 @@ def drawer_widget(request, group_id):
     nlist = []
     node = None
 
+
+    try:
+      group_id = ObjectId(group_id) 
+    except: 
+      group_name, group_id = get_group_name_id(group_id)
+
     node_id = request.POST.get("node_id", '')
     field = request.POST.get("field", '')
     app = request.POST.get("app", '')
