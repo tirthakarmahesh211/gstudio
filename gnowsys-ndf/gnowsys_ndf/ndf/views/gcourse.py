@@ -3704,14 +3704,27 @@ def assets(request, group_id, asset_id=None,page_no=1):
     group_obj = get_group_name_id(group_id, get_obj=True)
     asset_gst_name, asset_gst_id = GSystemType.get_gst_name_id("Asset")
     from gnowsys_ndf.settings import GSTUDIO_NO_OF_OBJS_PP
-
+    print "assets list"
+    print request.POST.get('teaches_list', '')
     #template = 'ndf/gevent_base.html'
     template = 'ndf/lms.html'
     if asset_id:
         asset_obj = node_collection.one({'_id': ObjectId(asset_id)})
         asset_content_list = get_relation_value(ObjectId(asset_obj._id),'has_assetcontent')
+        teaches_list = get_relation_value(ObjectId(asset_obj._id),'teaches',False,True)
         # topic_gst_name, topic_gst_id = GSystemType.get_gst_name_id("Topic")
-        
+        print "============================================"
+        print teaches_list
+        print "============================================"
+        topic_list = []
+        if teaches_list["grel_id"]:
+            for each in teaches_list["grel_id"]:
+                each_relation = triple_collection.find_one({"_id":ObjectId(each)})
+                print each_relation.right_subject
+                each_topic = node_collection.find_one({"_id":ObjectId(each_relation.right_subject)})
+                # print each_topic.name
+                topic_list.append(each_topic.name)
+                print topic_list
         asset_nodes = node_collection.find({'member_of': {'$in': [asset_gst_id]},
             'group_set': {'$all': [ObjectId(group_id)]}}).sort('last_update', -1)
         # topic_nodes = node_collection.find({'member_of': {'$in': [topic_gst_id]}})
@@ -3722,7 +3735,8 @@ def assets(request, group_id, asset_id=None,page_no=1):
             'group_id': group_id, 'groupid': group_id,
             'title':'asset_detail','asset_obj':asset_obj,
             'asset_nodes':asset_nodes,'asset_content_list':asset_content_list,
-            'group_obj':group_obj, 'group_name':group_obj.name
+            'group_obj':group_obj, 'group_name':group_obj.name,
+            'topic_list':topic_list
         }
 
 
