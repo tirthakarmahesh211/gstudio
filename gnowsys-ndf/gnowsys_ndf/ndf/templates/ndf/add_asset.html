@@ -38,6 +38,11 @@
                 <div class="small-12 columns "><label>Description: </label>
                   <i>{{asset_obj.content|default:'No description added yet.'|safe|striptags}}</i>
                 </div>
+                <div class="small-12 columns "><label>Topic's: </label>
+                    {% for each in topic_list %}
+                    <i>{{each|default:'No Topics added yet.'|safe|striptags}},</i>
+                    {% endfor %}
+                </div>
             </div>
             
         <div class="small-12 medium-6 large-4 columns right margin-right-50">
@@ -268,6 +273,9 @@
                 <label>{% trans "Enter File Description" %} <br/>
                     <textarea rows="6" cols="2" class="small-12 columns" placeholder="Enter File Description" id="asset_content_desc"></textarea>
                 </label>
+                        <h3>Select Topic:</h3>
+        <div id="teaches_drawer">
+        </div>
                     <button type="button" class="orange-button right" id="upload_asset"  onclick="save_form()"  style="margin-right: -3px;">{% trans "Upload" %}</button>
                 </div>
             </div>
@@ -328,6 +336,8 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+
+
 
         $.ajax({
             type: "POST",
@@ -497,6 +507,41 @@ $(document).ready(function(){
            // $('.save-asset').attr('disabled',true);
     })
     $( ".save-asset" ).click(function(event) {
+        console.log("==========save-asset===================")
+
+        pn_arr = []
+        cn_arr = []
+        md_arr = [] //for adding module
+        tch_arr=[]  // for teaches
+        assess_arr=[] // for assesses
+        console.log("---------------------")
+        console.log(tch_arr)
+        $(".node_id").each(function (){
+            if ($(this).parent(".bullet-item").parent("#prior_node_drawer2").attr("id") == "prior_node_drawer2") {
+                pn_arr.push($(this).val());
+            }
+
+            if ($(this).parent(".bullet-item").parent("#collection_drawer2").attr("id") == "collection_drawer2") {
+                cn_arr.push($(this).val());
+            }
+
+            if ($(this).parent(".bullet-item").parent("#module_drawer2").attr("id") == "module_drawer2") {
+                md_arr.push($(this).val());
+            }
+            if ($(this).parent(".bullet-item").parent("#teaches_drawer2").attr("id") == "teaches_drawer2") {
+                tch_arr.push($(this).val());
+            }
+            if ($(this).parent(".bullet-item").parent("#assesses_drawer2").attr("id") == "assesses_drawer2") {
+                assess_arr.push($(this).val());
+            }
+        });
+
+        $("#prior_node_list").val(pn_arr);
+        $("#collection_list").val(cn_arr) ;
+        $("#module_list").val(md_arr);
+        $("#teaches_list").val(tch_arr);
+        console.log(tch_arr)
+        $("#assesses_list").val(assess_arr);
         updateAllTags();
         coll_arr = []
 
@@ -545,6 +590,7 @@ $(document).ready(function(){
         asset_name = $("#asset-name").val();
         asset_disp_name = $("#asset-disp-name").val();
         asset_description = $("#asset-descid").val();
+        teaches_list = $("#teaches_list").val();
         var asset_id = $(this).attr('data-asset_id');
            
          if (asset_name != '' && asset_description != ''){
@@ -561,7 +607,8 @@ $(document).ready(function(){
                         "is_raw_material": is_raw_material,
                         //'coll_arr':coll_arr,
                         'title' :"{{title}}",
-                        'access_check':access_check
+                        'access_check':access_check,
+                        'teaches_list':teaches_list
                         // "asset_objective":asset_objective
                     },
                   url: "{% url 'create_edit_asset' group_id %}",
@@ -664,7 +711,7 @@ $(document).ready(function(){
           else
           {
             $.unblockUI();
-            alert('An error occurred!');
+            //alert('An error occurred!');
           }
         };
 
@@ -718,7 +765,38 @@ $( ".view-metadata" ).click(function(event) {
     {% endif %}
    $( ".createAsset" ).click(function() {
                    var asset_id = $(this).attr('data-asset_id');
+                           pn_arr = []
+        cn_arr = []
+        md_arr = [] //for adding module
+        tch_arr=[]  // for teaches
+        assess_arr=[] // for assesses
+        console.log("---------------------")
+        console.log(tch_arr)
+        $(".node_id").each(function (){
+            if ($(this).parent(".bullet-item").parent("#prior_node_drawer2").attr("id") == "prior_node_drawer2") {
+                pn_arr.push($(this).val());
+            }
 
+            if ($(this).parent(".bullet-item").parent("#collection_drawer2").attr("id") == "collection_drawer2") {
+                cn_arr.push($(this).val());
+            }
+
+            if ($(this).parent(".bullet-item").parent("#module_drawer2").attr("id") == "module_drawer2") {
+                md_arr.push($(this).val());
+            }
+            if ($(this).parent(".bullet-item").parent("#teaches_drawer2").attr("id") == "teaches_drawer2") {
+                tch_arr.push($(this).val());
+            }
+            if ($(this).parent(".bullet-item").parent("#assesses_drawer2").attr("id") == "assesses_drawer2") {
+                assess_arr.push($(this).val());
+            }
+        });
+
+        $("#prior_node_list").val(pn_arr);
+        $("#collection_list").val(cn_arr) ;
+        $("#module_list").val(md_arr);
+        $("#teaches_list").val(tch_arr);
+        $("#assesses_list").val(assess_arr);
                    $.ajax({
                              type: "GET",
                              url: "{% url 'add_asset' group_id %}",
