@@ -356,6 +356,18 @@ This will not be used because now only existing activities will be added.
 
 <div id="select-activity-page" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" data-lesson-id="">
     <h3>{% trans "Choose Activity" %}</h3>
+
+    <form>
+    <div class="large-12 columns">
+      <div class="row collapse">
+        <div class="small-6 columns">
+          <input id="search-activity-page" type="text" placeholder="Please enter activity page text">
+        </div>
+      </div>
+    </div>
+    </form>
+  
+
     <div id="activity-container"></div>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
@@ -448,6 +460,15 @@ This will not be used because now only existing activities will be added.
     //         ]
     //     }
     // ];
+
+    $(document).ready(function(){
+      $("#search-activity-page").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#activity-container .activity_card").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
 
     var course_data = {{unit_structure|safe}};
 
