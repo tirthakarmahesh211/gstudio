@@ -14,8 +14,7 @@
                     <dl class="accordion course-lessons" data-accordion role="tablist">
                     </dl>
                 
-                {% if site.SITE_NAME == "NROER"%}
-                    {{title}}
+                {% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
                     {% if title == "unit_authoring" %}
                     <a class="button-hollow-grey add-lesson add-lesson-top-margin" data-reveal-id="add-lesson-reveal">
                     {% if not unit_obj.project_config.section_name %}{% trans "Add Section" %}{% else %}{% trans 'Add' %} {{unit_obj.project_config.section_name}} {% endif %}
@@ -43,7 +42,7 @@
                             <a  class="view-help-page right orange-button-template" data-current-activity-id="" > View Help page</a>
                             {% endcomment %}
 
-                            {% if title != "lesson_player" %}
+                            {% if title != "lesson_player" or  is_gstaff  %}
                             <a style="margin-top:10px!important; margin-right:27px;" class="save_edit_activity right orange-button-template" data-current-activity-id="" > {% trans "Edit" %} </a>
                             {% endif %}
                         </div>   
@@ -90,7 +89,7 @@
                 -->
 
                 <div id="scstyle">
-                    <div id="activity-content">
+                    <div id="activity-content" style="margin-left: 3px;">
                         <!-- selected activities content will go here (JS) -->
                     </div>
                 </div>
@@ -455,7 +454,7 @@ This will not be used because now only existing activities will be added.
                 <li id="activity-{{id}}" data-name="{{name}}">
                     <a class="entity-title">{{name}}
                         <div class="right edit_entity buddy_margin">
-                            <i class="fi-list right"></i>
+                            
                         </div>
                     </a>
                 </li>
