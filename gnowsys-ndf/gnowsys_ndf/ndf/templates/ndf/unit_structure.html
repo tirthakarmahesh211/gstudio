@@ -14,9 +14,12 @@
                     <dl class="accordion course-lessons" data-accordion role="tablist">
                     </dl>
                 
-                {% if site.SITE_NAME == "NROER" %}
+                {% if site.SITE_NAME == "NROER"%}
+                    {{title}}
+                    {% if title == "unit_authoring" %}
                     <a class="button-hollow-grey add-lesson add-lesson-top-margin" data-reveal-id="add-lesson-reveal">
                     {% if not unit_obj.project_config.section_name %}{% trans "Add Section" %}{% else %}{% trans 'Add' %} {{unit_obj.project_config.section_name}} {% endif %}
+                    {% endif %}
                     </a>
                 {% else %}
                     <a class="button-hollow-grey add-lesson add-lesson-top-margin" data-reveal-id="add-lesson-reveal">
@@ -39,7 +42,10 @@
                             <a  class="view-admin-page right orange-button-template" data-current-activity-id="" > View Teacher's page</a>
                             <a  class="view-help-page right orange-button-template" data-current-activity-id="" > View Help page</a>
                             {% endcomment %}
+
+                            {% if title != "lesson_player" %}
                             <a style="margin-top:10px!important; margin-right:27px;" class="save_edit_activity right orange-button-template" data-current-activity-id="" > {% trans "Edit" %} </a>
+                            {% endif %}
                         </div>   
                      <!-- commenting following as activities now will be created/edited
                      from activity area -->
@@ -376,7 +382,7 @@ This will not be used because now only existing activities will be added.
 <!-- END of all modals div's -->
 
 
-
+{% if title != "lesson_player" %}
 {% verbatim %}
 <!-- Handlebar Templates for the course tree -->
 <script id="lesson-template" type="text/x-handlebars-template">
@@ -413,7 +419,7 @@ This will not be used because now only existing activities will be added.
                 </li>
                 {{/each}}
                 <li>
-                    <div class="custom_dropdown">
+                    <div class="custom_dropdown">   
                         <a data-reveal-id="select-activity-page" class="add_existing_activity inner"><u>Add from Activities</u></a> | 
                         <a data-reveal-id="select-activity-page" class="add_quizitem inner"><u>Add Question</u></a>
 
@@ -435,8 +441,38 @@ This will not be used because now only existing activities will be added.
 </dd>
 </script>
 {% endverbatim %}
+{% else %}
+{% verbatim %}
+<!-- Handlebar Templates for the course tree -->
+<script id="lesson-template" type="text/x-handlebars-template">
+    <dd class="accordion-navigation active" data-lesson-ele="lesson-accordion-{{id}}">
+        <a href="#lesson-{{id}}" class="entity-title" id="lesson-accordion" data_lesson_name="{{name}}"  data_lesson_language="{{language}}">
+            {{name}}
+        </a>
+        <div id="lesson-{{id}}" class="content lesson-container">
+            <ul class="course-activities">
+                {{#each activities}}
+                <li id="activity-{{id}}" data-name="{{name}}">
+                    <a class="entity-title">{{name}}
+                        <div class="right edit_entity buddy_margin">
+                            <i class="fi-list right"></i>
+                        </div>
+                    </a>
+                </li>
+            </li>
+                {{/each}}   
+                <li>
+
+                </li>        
 
 
+            </ul>
+        </div>
+    </dd>
+</script>
+{% endverbatim %}
+
+{% endif %}
 
 <!-- Javascript operations -->
 <script type="text/javascript">
