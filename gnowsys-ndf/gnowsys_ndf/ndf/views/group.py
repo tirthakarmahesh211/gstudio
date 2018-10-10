@@ -2086,7 +2086,7 @@ def group_dashboard(request, group_id=None):
         ws = True
         group_id = "home"
         redirect_to_course_content = False
-    group_name,group_id = get_group_name_id(group_id)
+    # group_name,group_id = get_group_name_id(group_id)
 
     group_obj = get_group_name_id(group_id, get_obj=True)
     try:
@@ -2094,6 +2094,7 @@ def group_dashboard(request, group_id=None):
             raise Http404("Group Not Found")
         forbid_private_group(request, group_obj)
         group_id = group_obj._id
+        group_name = group_obj.name
         group_member_of = group_obj.member_of_names_list
 
         # Redirection based on Group type
