@@ -5,11 +5,16 @@
 <script type="text/javascript" src="/static/ndf/bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
 {% endblock head %}
 
-<div class="row course_creator" {% if title == 'unit_authoring' %} class="small-10 columns" style="margin-left:150px; width:79.4%" {% endif %}>
-    <div class="small-12 columns">
+<div class="row">
+  
+  <div class="large-10 small-12 medium-10 medium-offset-1 large-offset-1 columns">
+
+<div class="row course_creator" {% if title == 'unit_authoring' %} class="small-10 columns" {% endif %}>
+    <div class="small-12 large-12 medium-12 columns">
         <div class="course_editor ">
 
             <!-- Left PANEL -->
+
             <div class="course_tree">
                     <dl class="accordion course-lessons" data-accordion role="tablist">
                     </dl>
@@ -89,7 +94,7 @@
                 -->
 
                 <div id="scstyle">
-                    <div id="activity-content" style="margin-left: 3px;">
+                    <div id="activity-content" style="margin-left: 15px;">
                         <!-- selected activities content will go here (JS) -->
                     </div>
                 </div>
@@ -129,6 +134,8 @@
     </div>
 </div>
 </div>
+</div>
+
 
 
 <!-- OVERLAY / REVEAL-MODALS -->
@@ -460,7 +467,7 @@ This will not be used because now only existing activities will be added.
                 </li>
             </li>
                 {{/each}}   
-                <li>
+                <li style="display:none;">
 
                 </li>        
 
