@@ -2379,7 +2379,7 @@ def group_dashboard(request, group_id=None):
     print default_template
   # print "\n\n blog_pages.count------",blog_pages
     if alternate_template:
-        return HttpResponseRedirect( reverse('course_content', kwargs={"group_id": group_id}) )
+        return HttpResponseRedirect( reverse('lesson_player', kwargs={"group_id": group_id, 'player_title':'lesson_player'}))
         print alternate_template    
     else:
         return render_to_response([alternate_template,default_template] ,{'node': group_obj, 'groupid':group_id,
