@@ -2086,7 +2086,7 @@ def group_dashboard(request, group_id=None):
         ws = True
         group_id = "home"
         redirect_to_course_content = False
-    group_name,group_id = get_group_name_id(group_id)
+    # group_name,group_id = get_group_name_id(group_id)
 
     group_obj = get_group_name_id(group_id, get_obj=True)
     try:
@@ -2094,6 +2094,7 @@ def group_dashboard(request, group_id=None):
             raise Http404("Group Not Found")
         forbid_private_group(request, group_obj)
         group_id = group_obj._id
+        group_name = group_obj.name
         group_member_of = group_obj.member_of_names_list
 
         # Redirection based on Group type
@@ -2114,7 +2115,7 @@ def group_dashboard(request, group_id=None):
         redir_groups_type = ["base_unit", "CourseEventGroup", \
                     "BaseCourseGroup", "announced_unit", "Group"]
         if any(group_type in group_member_of for group_type in redir_groups_type) and redirect_to_course_content:
-            return HttpResponseRedirect(reverse('course_content', kwargs={'group_id': group_id}))
+            return HttpResponseRedirect(reverse('lesson_player', kwargs={'group_id': group_id, 'player_title':'lesson_player'}))
 
         # Subgroups listing
         if group_obj and group_obj.post_node:
@@ -2379,7 +2380,7 @@ def group_dashboard(request, group_id=None):
     print default_template
   # print "\n\n blog_pages.count------",blog_pages
     if alternate_template:
-        return HttpResponseRedirect( reverse('course_content', kwargs={"group_id": group_id}) )
+        return HttpResponseRedirect( reverse('lesson_player', kwargs={"group_id": group_id, 'player_title':'lesson_player'}))
         print alternate_template    
     else:
         return render_to_response([alternate_template,default_template] ,{'node': group_obj, 'groupid':group_id,

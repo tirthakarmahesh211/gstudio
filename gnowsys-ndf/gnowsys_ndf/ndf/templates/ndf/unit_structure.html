@@ -5,18 +5,25 @@
 <script type="text/javascript" src="/static/ndf/bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
 {% endblock head %}
 
-<div class="row course_creator" {% if title == 'unit_authoring' %} class="small-10 columns" style="margin-left:150px; width:79.4%" {% endif %}>
-    <div class="small-12 columns">
+<div class="row">
+  
+  <div class="large-10 small-12 medium-10 medium-offset-1 large-offset-1 columns">
+
+<div class="row course_creator" {% if title == 'unit_authoring' %} class="small-10 columns" {% endif %}>
+    <div class="small-12 large-12 medium-12 columns">
         <div class="course_editor ">
 
             <!-- Left PANEL -->
+
             <div class="course_tree">
                     <dl class="accordion course-lessons" data-accordion role="tablist">
                     </dl>
                 
-                {% if site.SITE_NAME == "NROER" %}
+                {% if site.SITE_NAME == "NROER" or site.SITE_NAME == "metaStudio" %}
+                    {% if title == "unit_authoring" %}
                     <a class="button-hollow-grey add-lesson add-lesson-top-margin" data-reveal-id="add-lesson-reveal">
                     {% if not unit_obj.project_config.section_name %}{% trans "Add Section" %}{% else %}{% trans 'Add' %} {{unit_obj.project_config.section_name}} {% endif %}
+                    {% endif %}
                     </a>
                 {% else %}
                     <a class="button-hollow-grey add-lesson add-lesson-top-margin" data-reveal-id="add-lesson-reveal">
@@ -32,14 +39,17 @@
                     <!-- Right panel Header -->
                     <div class="actvity-editor-header editor-header activity-editor-header-top" id="actvity-editor-headerid">
                         <div class="left header-left activity-name-label row">
-                            <span class="activity-name"><!-- Activity Name --></span>
+                            <span class="activity-name" style="margin-left: 10px;"><!-- Activity Name --></span>
                         </div>
                         <div class="row">
                             {% comment %}
                             <a  class="view-admin-page right orange-button-template" data-current-activity-id="" > View Teacher's page</a>
                             <a  class="view-help-page right orange-button-template" data-current-activity-id="" > View Help page</a>
                             {% endcomment %}
+
+                            {% if title != "lesson_player" or  is_gstaff  %}
                             <a style="margin-top:10px!important; margin-right:27px;" class="save_edit_activity right orange-button-template" data-current-activity-id="" > {% trans "Edit" %} </a>
+                            {% endif %}
                         </div>   
                      <!-- commenting following as activities now will be created/edited
                      from activity area -->
@@ -84,7 +94,7 @@
                 -->
 
                 <div id="scstyle">
-                    <div id="activity-content">
+                    <div id="activity-content" style="margin-left: 20px;">
                         <!-- selected activities content will go here (JS) -->
                     </div>
                 </div>
@@ -124,6 +134,8 @@
     </div>
 </div>
 </div>
+</div>
+
 
 
 <!-- OVERLAY / REVEAL-MODALS -->
@@ -356,6 +368,18 @@ This will not be used because now only existing activities will be added.
 
 <div id="select-activity-page" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog" data-lesson-id="">
     <h3>{% trans "Choose Activity" %}</h3>
+
+    <form>
+    <div class="large-12 columns">
+      <div class="row collapse">
+        <div class="small-6 columns">
+          <input id="search-activity-page" type="text" placeholder="Please enter activity page name">
+        </div>
+      </div>
+    </div>
+    </form>
+  
+
     <div id="activity-container"></div>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
 </div>
@@ -364,7 +388,7 @@ This will not be used because now only existing activities will be added.
 <!-- END of all modals div's -->
 
 
-
+{% if title != "lesson_player" %}
 {% verbatim %}
 <!-- Handlebar Templates for the course tree -->
 <script id="lesson-template" type="text/x-handlebars-template">
@@ -401,7 +425,7 @@ This will not be used because now only existing activities will be added.
                 </li>
                 {{/each}}
                 <li>
-                    <div class="custom_dropdown">
+                    <div class="custom_dropdown">   
                         <a data-reveal-id="select-activity-page" class="add_existing_activity inner"><u>Add from Activities</u></a> | 
                         <a data-reveal-id="select-activity-page" class="add_quizitem inner"><u>Add Question</u></a>
 
@@ -423,8 +447,38 @@ This will not be used because now only existing activities will be added.
 </dd>
 </script>
 {% endverbatim %}
+{% else %}
+{% verbatim %}
+<!-- Handlebar Templates for the course tree -->
+<script id="lesson-template" type="text/x-handlebars-template">
+    <dd class="accordion-navigation active" data-lesson-ele="lesson-accordion-{{id}}">
+        <a href="#lesson-{{id}}" class="entity-title" id="lesson-accordion" data_lesson_name="{{name}}"  data_lesson_language="{{language}}">
+            {{name}}
+        </a>
+        <div id="lesson-{{id}}" class="content lesson-container">
+            <ul class="course-activities">
+                {{#each activities}}
+                <li id="activity-{{id}}" data-name="{{name}}">
+                    <a class="entity-title">{{name}}
+                        <div class="right edit_entity buddy_margin">
+                            
+                        </div>
+                    </a>
+                </li>
+            </li>
+                {{/each}}   
+                <li style="display:none;">
+
+                </li>        
 
 
+            </ul>
+        </div>
+    </dd>
+</script>
+{% endverbatim %}
+
+{% endif %}
 
 <!-- Javascript operations -->
 <script type="text/javascript">
@@ -448,6 +502,15 @@ This will not be used because now only existing activities will be added.
     //         ]
     //     }
     // ];
+
+    $(document).ready(function(){
+      $("#search-activity-page").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#activity-container .activity_card").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
 
     var course_data = {{unit_structure|safe}};
 
