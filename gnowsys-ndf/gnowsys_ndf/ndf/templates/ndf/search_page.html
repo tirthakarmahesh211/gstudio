@@ -44,8 +44,11 @@
           {% for each in search_curr %}
             <li class="card-image-wrapper" >
             {% if GSTUDIO_ELASTIC_SEARCH == True %}
-              
+                {% if each.type == "Group" %}
+                {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="course_about" first_arg=each.id %}
+                {% else %}
                 {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each.id %}
+                {% endif %}
               </span>
             {% else %}
               {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each%}
