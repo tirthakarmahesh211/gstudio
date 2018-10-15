@@ -212,6 +212,10 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 		q = Q('match',name=dict(query='Jsmol',type='phrase'))
 		GST_JSMOL = Search(using=es, index=index,doc_type="gsystemtype").query(q)
 		GST_JSMOL1 = GST_JSMOL.execute()
+		q = Q('match',name=dict(query='Group',type='phrase'))
+		GST_GROUP = Search(using=es, index=index,doc_type="gsystemtype").query(q)
+		GST_GROUP1 = GST_GROUP.execute()
+
 		search_text = ""
 		trash_groupid = node_collection.find_one({"name":"Trash"})
 
@@ -246,10 +250,10 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 
 			if GSTUDIO_SITE_NAME == "NROER":
 				print "search nroer"
-				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content^2','name^4','tags^3','content_org','altnames^5']),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', access_policy='public')],
+				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name^4','tags^3','altnames^5']),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', access_policy='public')],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 			else:
-				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content^2','name^4','tags^3','content_org','altnames^5']),~Q('match', group_set=str(trash_groupid))],
+				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content','name^4','tags^3','altnames^5']),~Q('match', group_set=str(trash_groupid))],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 
 			search_result =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
@@ -261,8 +265,8 @@ def results_search(request, group_id, page_no=1, return_only_dict = None,ws = Fa
 				q = Q('bool', must=[ Q('bool',should=[Q('match',name=dict(query=search_text,type='phrase')),Q('match',altnames=dict(query=search_text,type='phrase')),Q('match',content_org=dict(query=search_text,type='phrase')),Q('match',content=dict(query=search_text,type='phrase')),Q('match',tags=dict(query=search_text,type='phrase'))]),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match', group_set=str(group_id))],
                           should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 			else:
-				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['content^2','name^4','tags^3','content_org','altnames^5']),Q('match', group_set=str(group_id))],
-                          should=[Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
+				q = Q('bool', must=[Q('multi_match', query=search_text, fields=['name.trigram^10','altnames.trigram^12','name^16','tags^2','altnames^20','content'])],
+                          should=[Q('match',member_of=GST_GROUP1.hits[0].id),Q('match',member_of=GST_FILE1.hits[0].id),Q('match',member_of=GST_IPAGE1.hits[0].id),Q('match',member_of=GST_JSMOL1.hits[0].id),Q('match',member_of=GST_PAGE1.hits[0].id)],minimum_should_match=1)
 
 			search_result =Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 			# search_result = search_result.filter('match', group_set=str(group_id))
