@@ -43,14 +43,15 @@ def index_docs(all_docs,index,doc_type):
 
         document = json.loads(doc)  # convert JSON string to a python dictionary
         # doc = json.dumps(document) #convert python dictionary to JSON string
-        document["id"] = document.pop("_id")
-        document["type"] = document.pop("_type")
+        if document.get("_id") and document.get("_type"):
+            document["id"] = document.pop("_id")
+            document["type"] = document.pop("_type")
 
-        #for docs in doc_type:
-        print document["type"]
-        #print document
-        doc_type = document["type"].lower()
-        es.index(index=index, doc_type=doc_type, id=document["id"], body=document)
+            #for docs in doc_type:
+            print document["type"]
+            #print document
+            doc_type = document["type"].lower()
+            es.index(index=index, doc_type=doc_type, id=document["id"], body=document)
 
         k += 1
 
@@ -100,7 +101,7 @@ def main():
         if GSTUDIO_SITE_NAME == "NROER":
             index_lower = index.lower()
         else:
-            index_lower = GSTUDIO_SITE_NAME.lower()+"_"+index_lower
+            index_lower = GSTUDIO_SITE_NAME.lower()+"_"+index.lower()
         print index_lower
         if (not es.indices.exists(index_lower)):
             if (index_lower.find("triples") != -1):
