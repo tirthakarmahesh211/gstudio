@@ -13,7 +13,7 @@
 	   CKEDITOR.plugins.addExternal('addJhapp',basePath+'ndf/js/ckPlugins/addJhapp/','plugin.js');
 	   CKEDITOR.plugins.addExternal('mathjax',basePath+'ndf/bower_components/ckeditor/plugins/mathjax/','plugin.js');
 	   CKEDITOR.plugins.addExternal('font',basePath+'ndf/bower_components/ckeditor/plugins/font/','plugin.js');
-	   CKEDITOR.plugins.addExternal('youtube','/static/ndf/bower_components/ckeditor-youtube-plugin/youtube/','plugin.js');
+	   CKEDITOR.plugins.addExternal('youtube',basePath+'/static/ndf/bower_components/ckeditor-youtube-plugin/youtube/','plugin.js');
 	   CKEDITOR.plugins.addExternal('find',basePath+'ndf/bower_components/ckeditor/plugins/find/','plugin.js');
 	   CKEDITOR.plugins.addExternal('smiley',basePath+'ndf/bower_components/ckeditor/plugins/smiley/','plugin.js');
 	})
