@@ -29,7 +29,7 @@
             </div>
 
             <div class="small-5 medium-5 columns">
-                <h4 class="page-name">{% firstof activity_node.altnames activity_node.name %}</h4>
+                <h4 class="page-name">{% if site.SITE_NAME == "metaStudio" %} {% firstof activity_node.name activity_node.altnames %} {% else %}{% firstof activity_node.altnames activity_node.name %} {% endif %}</h4>
             </div>
               
             {% check_is_gstaff groupid request.user as is_gstaff %}
@@ -96,7 +96,7 @@
                       <img src="/static/ndf/images/asset.png">
                   </div>
                   <div class="asset_text">
-                      <div class="asset_title">{% firstof each.altnames|truncatechars:25 each.name|truncatechars:25 %}</div>
+                      <div class="asset_title">{% if site.SITE_NAME == "metaStudio" %} {% firstof each.name|truncatechars:25 each.altnames|truncatechars:25 %} {% else %}{% firstof each.altnames|truncatechars:25 each.name|truncatechars:25 %} {% endif %} </div>
                       <div class="asset_desc">{{each.content|striptags|truncatechars:25}}</div>
 
                   </div>
