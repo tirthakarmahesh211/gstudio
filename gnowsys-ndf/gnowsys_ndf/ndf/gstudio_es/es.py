@@ -149,7 +149,7 @@ class esearch:
     @staticmethod
     def save_to_es(django_document):
         try:
-            print "called to save_to_es method"
+            # print "called to save_to_es method"
             with open("/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/gstudio_configs/req_body.json") as req_body:
                 request_body = json.load(req_body)
             with open("/home/docker/code/gstudio/gnowsys-ndf/gnowsys_ndf/gstudio_configs/benchmarks.json") as benchmarks_body:
@@ -202,7 +202,7 @@ class esearch:
                 es.index(index="gsystem", doc_type=doc_type, id=django_document["id"], body=django_document)
 
             else:
-                print django_document["id"]
+                # print django_document["id"]
                 if (not es.indices.exists("benchmarks")):
                     res = es.indices.create(index="benchmarks", body=benchmarks_body)
 
