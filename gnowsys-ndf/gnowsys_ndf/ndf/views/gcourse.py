@@ -1858,7 +1858,7 @@ def unsubscribe_from_group(request, group_id):
             mail_content = "'This is to inform you that "+ \
             "you have been unsubscribed from group: '" + group_obj.name+ "'"
             user_obj = User.objects.get(id=user_id)
-            set_notif_val(request, group_obj._id, mail_content, activ, user_obj)
+            # set_notif_val(request, group_obj._id, mail_content, activ, user_obj)
         except Exception as e:
             print "\n Unable to send notifications ",e
         return HttpResponse(json.dumps(response_dict))
@@ -1882,7 +1882,7 @@ def enroll_to_course(request, group_id):
         mail_content = "'This is to inform you that "+ \
         "you have been subscribed to group: '" + group_obj.name+ "'"
         user_obj = User.objects.get(id=userid)
-        set_notif_val(request, group_obj._id, mail_content, activ, user_obj)
+        # set_notif_val(request, group_obj._id, mail_content, activ, user_obj)
 
     response_dict = {"success": False}
     if request.is_ajax() and request.method == "POST":
@@ -2325,7 +2325,7 @@ def course_notebook(request, group_id, node_id=None, tab="my-notes"):
         else:
             tab = 'all-notes'
 
-
+            
         if notebook_obj and not create_flag:
             # return HttpResponseRedirect(reverse('course_notebook_tab_note', 
                 # kwargs={'group_id': group_id, "node_id": notebook_obj.pk, 'tab': tab}))
@@ -3792,12 +3792,19 @@ def assetcontent_detail(request, group_id, asset_id,asst_content_id,page_no=1):
     group_obj = get_group_name_id(group_id, get_obj=True)
     # print group_id,asset_id,asst_content_id
     asset_content_list = get_relation_value(ObjectId(asset_obj._id),'has_assetcontent')
+    topic_list = []
+    if asst_content_id:
+        teaches_list = get_relation_value(ObjectId(asst_content_id),'teaches',False,True)
+        # topic_gst_name, topic_gst_id = GSystemType.get_gst_name_id("Topic")
+        if teaches_list["grel_id"]:
+            for each in teaches_list["grel_node"]:
+                topic_list.append(each.name)
     template = 'ndf/lms.html'
     assetcontent_page_info = paginator.Paginator(asset_content_list['grel_node'], page_no, GSTUDIO_NO_OF_OBJS_PP)
     context_variables = {
             'asset_content_list':asset_content_list,'group_id':group_obj._id,'group_name':group_obj.name,
             'groupid':group_obj._id,'node':assetcontent_obj,'asset_obj':asset_obj,
-            'title':"asset_content_detail",'group_obj':group_obj,'assetcontent_page_info':assetcontent_page_info
+            'title':"asset_content_detail",'group_obj':group_obj,'assetcontent_page_info':assetcontent_page_info,'topic_list':topic_list
         }
     if request.user.is_authenticated():
         # Counter.add_visit_count.delay(resource_obj_or_id=file_obj._id.__str__(),
@@ -4172,6 +4179,7 @@ def _get_unit_hierarchy(unit_group_obj,lang="en"):
 
 @get_execution_time
 def widget_page_create_edit(request, group_id, node_id=None):
+    print "sssssssssssssssss"
     node_id = request.GET.get('node_id', None)
     detail_url = request.GET.get('detail_url',)
     editor_type = request.GET.get('editor_type', 'GeneralToolbar')
