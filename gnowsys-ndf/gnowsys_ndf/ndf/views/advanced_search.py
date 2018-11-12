@@ -60,13 +60,22 @@ def search_detail(request,group_id,page_num=1):
 			selected_field = "content"
 		english_lang = False
 		temp_list = []
+		edu_subject = request.GET.get('edu_subject',None)
+		# print "====================================================="
+		# print edu_subject
+		# print "====================================================="
 		if selected_field == "english_lang":
 			english_lang = True
 			from bs4 import BeautifulSoup
 			print "english_lang"
-			q = Q('bool', must=[Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='en')],
-				should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)]
-				,minimum_should_match=1)
+			if edu_subject:
+				q = Q('bool', must=[Q('match',attribute_set__educationalsubject=edu_subject),Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='en')],
+					should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)]
+					,minimum_should_match=1)
+			else:
+				q = Q('bool', must=[Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='en')],
+					should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)]
+					,minimum_should_match=1)
 			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 			page_no = request.GET.get('page_no',None)
 			has_next = True
@@ -120,9 +129,14 @@ def search_detail(request,group_id,page_num=1):
 			english_lang = True
 			from bs4 import BeautifulSoup
 			print "hindi_lang"
-			q = Q('bool', must=[Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='hi')],
-				should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)]
-				,minimum_should_match=1)
+			if edu_subject:
+				q = Q('bool', must=[Q('match',attribute_set__educationalsubject=edu_subject),Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='hi')],
+					should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)]
+					,minimum_should_match=1)
+			else:
+				q = Q('bool', must=[Q('match',group_set=str(group_id)),Q('match',access_policy='public'),Q('match',language='hi')],
+					should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)]
+					,minimum_should_match=1)
 			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 			page_no = request.GET.get('page_no',None)
 			has_next = True
@@ -174,8 +188,12 @@ def search_detail(request,group_id,page_num=1):
 
 		else:
 			print "else block"
-			q = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match',group_set=str(group_id)),Q('match',access_policy='public'),~Q('exists',field=selected_field)],
-			should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)])
+			if edu_subject:
+				q = Q('bool', must=[Q('match',attribute_set__educationalsubject=edu_subject),Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match',group_set=str(group_id)),Q('match',access_policy='public'),~Q('exists',field=selected_field)],
+				should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)])
+			else:
+				q = Q('bool', must=[Q('terms',attribute_set__educationaluse=['documents','images','audios','videos','interactives','ebooks']),Q('match',group_set=str(group_id)),Q('match',access_policy='public'),~Q('exists',field=selected_field)],
+				should=[Q('match', member_of=GST_FILE1.hits[0].id),Q('match', member_of=GST_IPAGE1.hits[0].id),Q('match', member_of=GST_PAGE1.hits[0].id)])
 			# must_not=[Q('match', member_of=GST_PAGE1.hits[0].id)])
 			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 			# search_result = search_result.exclude('terms', name=['thumbnail','jpg','png','svg'])
@@ -185,8 +203,12 @@ def search_detail(request,group_id,page_num=1):
 		if request.GET.get('field_list',None) == "true":
 
 			search_text = request.GET.get("search_text",None)
-			q = Q('bool', must=[Q('match', language='en'),Q('match', access_policy='public'),Q('match', group_set=str(group_id)),
-				Q('terms', content=[search_text])] )
+			if edu_subject:
+				q = Q('bool', must=[Q('match',attribute_set__educationalsubject=edu_subject),Q('match', language='en'),Q('match', access_policy='public'),Q('match', group_set=str(group_id)),
+					Q('terms', content=[search_text])] )
+			else:
+				q = Q('bool', must=[Q('match', language='en'),Q('match', access_policy='public'),Q('match', group_set=str(group_id)),
+					Q('terms', content=[search_text])] )
 			search_result =Search(using=es, index="nodes",doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
 
 		if_teaches = False
