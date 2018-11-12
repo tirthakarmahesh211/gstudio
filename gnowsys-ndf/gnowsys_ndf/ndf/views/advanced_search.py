@@ -267,6 +267,6 @@ def search_detail(request,group_id,page_num=1):
 		elif selected_field == "attribute_type_set":
 			applied_filter_name = "The resources that do not have 'teaches' relation set to any topic"
 
-		return render_to_response('ndf/asearch.html', {"applied_filter_name":applied_filter_name,"count":count,"english_lang":english_lang,"page_info":paginator_search_result,"page_no":page_no,"has_next":has_next,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'advanced_search':"true",'groupid':group_id,'group_id':group_id,'title':"advanced_search","search_curr":search_result,'field_list':selected_field,'chk_advanced_search':chk_advanced_search,'if_teaches':if_teaches},
+		return render_to_response('ndf/asearch.html', {"edu_subject":edu_subject,"applied_filter_name":applied_filter_name,"count":count,"english_lang":english_lang,"page_info":paginator_search_result,"page_no":page_no,"has_next":has_next,'GSTUDIO_ELASTIC_SEARCH':GSTUDIO_ELASTIC_SEARCH,'advanced_search':"true",'groupid':group_id,'group_id':group_id,'title':"advanced_search","search_curr":search_result,'field_list':selected_field,'chk_advanced_search':chk_advanced_search,'if_teaches':if_teaches},
 					context_instance=RequestContext(request))
 

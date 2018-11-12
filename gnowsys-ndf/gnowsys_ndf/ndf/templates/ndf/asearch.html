@@ -20,8 +20,9 @@
 		<option value="attribute_type_set">The resources that do not have 'teaches' relation set to any topic</option>
 
 	</select>
-	<p>Select subject:</p>
 	<select id="edu_subject" name="edu_subject">
+	{% if edu_subject %}
+		<option value="edu_subject">{{edu_subject}}</option>
 		<option value="Language">Language</option>
 		<option value="Mathematics">Mathematics</option>
 		<option value="Environmental Studies">Environmental Studies</option>
@@ -41,6 +42,28 @@
 		<option value="Accountancy">Accountancy</option>
 		<option value="Art">Art</option>
 		<option value="Education">Education</option>
+	{% else %}
+		<option value="">Select subject</option>
+		<option value="Language">Language</option>
+		<option value="Mathematics">Mathematics</option>
+		<option value="Environmental Studies">Environmental Studies</option>
+		<option value="Science">Science</option>
+		<option value="Chemistry">Chemistry</option>
+		<option value="Physics">Physics</option>
+		<option value="Biology">Biology</option>
+		<option value="Social Science">Social Science</option>
+		<option value="History">History</option>
+		<option value="Geography">Geography</option>
+		<option value="Political Science">Political Science</option>
+		<option value="Economics">Economics</option>
+		<option value="Sociology">Sociology</option>
+		<option value="Psychology">Psychology</option>
+		<option value="Commerce">Commerce</option>
+		<option value="Business Studies">Business Studies</option>
+		<option value="Accountancy">Accountancy</option>
+		<option value="Art">Art</option>
+		<option value="Education">Education</option>
+	{% endif %}
 	</select>
 	<button type="submit" value="search"> Search </button>
 	<input type="hidden" name="chk_advanced_search" value="true">
