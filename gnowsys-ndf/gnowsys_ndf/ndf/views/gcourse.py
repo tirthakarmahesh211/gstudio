@@ -45,7 +45,7 @@ from gnowsys_ndf.settings import GSTUDIO_NOTE_CREATE_POINTS, GSTUDIO_QUIZ_CORREC
 from gnowsys_ndf.ndf.views.trash import trash_resource
 from gnowsys_ndf.ndf.views.translation import get_lang_node,get_trans_node_list,get_course_content_hierarchy, get_unit_hierarchy
 from gnowsys_ndf.ndf.views.assessment_analytics import user_assessment_results
-
+from django.views.decorators.csrf import csrf_exempt
 
 GST_COURSE = node_collection.one({'_type': "GSystemType", 'name': "Course"})
 course_gst_name, course_gst_id = GSystemType.get_gst_name_id("Course")
@@ -3942,8 +3942,12 @@ def course_pages(request, group_id, page_id=None,page_no=1):
                                 context_instance = RequestContext(request)
     )
 
-@login_required
+#@login_required
+@csrf_exempt
 def save_course_page(request, group_id):
+    if request.method=="POST":
+        if request.POST.get("group_id"):
+            group_id= request.POST.get("group_id")
     group_obj = get_group_name_id(group_id, get_obj=True)
     group_id = group_obj._id
     group_name = group_obj.name
@@ -3951,7 +3955,6 @@ def save_course_page(request, group_id):
     if tags:
         tags = json.loads(tags)
     else:
-
         tags = []    
     #template = 'ndf/gevent_base.html'
     template = 'ndf/lms.html'
@@ -3963,6 +3966,7 @@ def save_course_page(request, group_id):
         alt_name = request.POST.get("alt_name", "")
         content = request.POST.get("content_org", None)
         node_id = request.POST.get("node_id", "")
+        api_call = request.POST.get("api_call",False)
         if node_id:
             page_obj = node_collection.one({'_id': ObjectId(node_id)})
             if page_obj.altnames != alt_name:
@@ -4013,7 +4017,13 @@ def save_course_page(request, group_id):
         page_obj.name = unicode(name)
         page_obj.content = unicode(content)
         page_obj.created_by = request.user.id
+        if request.POST.get("created_by"):
+            page_obj.created_by = int(request.POST.get("created_by"))
         page_obj.save(groupid=group_id)
+        if api_call == "true":
+            page_obj.pop('collection_name', None)
+            page_obj.pop('model_name', None)
+            return HttpResponse(json.dumps(page_obj,cls=NodeJSONEncoder),content_type="application/json")
         return HttpResponseRedirect(reverse("view_course_page",
          kwargs={'group_id': group_id, 'page_id': page_obj._id}))
 
