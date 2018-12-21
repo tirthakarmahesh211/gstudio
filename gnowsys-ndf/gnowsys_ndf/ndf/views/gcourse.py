@@ -41,7 +41,7 @@ from gnowsys_ndf.ndf.views.ajax_views import *
 from gnowsys_ndf.ndf.views.analytics_methods import *
 from gnowsys_ndf.ndf.views.methods import create_gattribute, create_grelation, create_task, delete_grelation, node_thread_access, get_group_join_status, delete_node, forbid_private_group
 from gnowsys_ndf.notification import models as notification
-from gnowsys_ndf.settings import GSTUDIO_NOTE_CREATE_POINTS, GSTUDIO_QUIZ_CORRECT_POINTS, GSTUDIO_COMMENT_POINTS, GSTUDIO_FILE_UPLOAD_POINTS
+from gnowsys_ndf.settings import GSTUDIO_NOTE_CREATE_POINTS, GSTUDIO_QUIZ_CORRECT_POINTS, GSTUDIO_COMMENT_POINTS, GSTUDIO_FILE_UPLOAD_POINTS, GSTUDIO_ELASTIC_SEARCH
 from gnowsys_ndf.ndf.views.trash import trash_resource
 from gnowsys_ndf.ndf.views.translation import get_lang_node,get_trans_node_list,get_course_content_hierarchy, get_unit_hierarchy
 from gnowsys_ndf.ndf.views.assessment_analytics import user_assessment_results
@@ -61,7 +61,11 @@ page_gst_name, page_gst_id = GSystemType.get_gst_name_id("Page")
 blog_page_gst_name, blog_page_gst_id = GSystemType.get_gst_name_id('Blog page')
 interactive_page_gst_name, interactive_page_gst_id = GSystemType.get_gst_name_id('interactive_page')
 app = GST_COURSE
-
+if GSTUDIO_SITE_NAME != "NROER":
+    index = GSTUDIO_SITE_NAME+"_nodes"
+    index = index.lower()
+else:
+    index = "nodes"
 @get_execution_time
 def course(request, group_id, course_id=None):
     """
@@ -3894,8 +3898,8 @@ def create_edit_asset_page(request, group_id, asset_id, page_id=None ):
                                 context_variables,
                                 context_instance = RequestContext(request)
     )
-
-@get_execution_time
+@csrf_exempt
+#@get_execution_time
 def course_pages(request, group_id, page_id=None,page_no=1):
     from gnowsys_ndf.settings import GSTUDIO_NO_OF_OBJS_PP
     group_obj = get_group_name_id(group_id, get_obj=True)
@@ -3908,35 +3912,54 @@ def course_pages(request, group_id, page_id=None,page_no=1):
             'group_id': group_id, 'groupid': group_id, 'group_name':group_name,
             'group_obj': group_obj, 'title': 'course_pages',
             'editor_view': True, 'activity_node': None, 'all_pages': None}
+    if not GSTUDIO_ELASTIC_SEARCH:
+        if page_id:
+            node_obj = node_collection.one({'_id': ObjectId(page_id)})
 
-    if page_id:
-        node_obj = node_collection.one({'_id': ObjectId(page_id)})
+            rt_translation_of = Node.get_name_id_from_type('translation_of', 'RelationType', get_obj=True)
 
-        rt_translation_of = Node.get_name_id_from_type('translation_of', 'RelationType', get_obj=True)
-
-        other_translations_grels = triple_collection.find({
+            other_translations_grels = triple_collection.find({
                             '_type': u'GRelation',
                             'subject': ObjectId(page_id),
                             'relation_type': rt_translation_of._id,
                             'right_subject': {'$nin': [node_obj._id]}
                         })
-        other_translations = node_collection.find({'_id': {'$in': [r.right_subject for r in other_translations_grels]} })
+            other_translations = node_collection.find({'_id': {'$in': [r.right_subject for r in other_translations_grels]} })
 
-        context_variables.update({'activity_node': node_obj, 'hide_breadcrumbs': True,'other_translations':other_translations})
-        context_variables.update({'editor_view': False})
+            context_variables.update({'activity_node': node_obj, 'hide_breadcrumbs': True,'other_translations':other_translations})
+            context_variables.update({'editor_view': False})
 
 
-    else:
-        activity_gst_name, activity_gst_id = GSystemType.get_gst_name_id("activity")
-        all_pages = node_collection.find({'member_of':
+        else:
+            activity_gst_name, activity_gst_id = GSystemType.get_gst_name_id("activity")
+            all_pages = node_collection.find({'member_of':
                     {'$in': [page_gst_id, activity_gst_id,interactive_page_gst_id] }, 'group_set': group_id,
                     'type_of': {'$ne': [blog_page_gst_id]}
                     # 'content': {'$regex': 'clix-activity-styles.css', '$options': 'i'}
                     }).sort('last_update',-1)
-        course_pages_info = paginator.Paginator(all_pages, page_no, GSTUDIO_NO_OF_OBJS_PP)
-        context_variables.update({'editor_view': False, 'all_pages': all_pages,'course_pages_info':course_pages_info})
-    # print "----==========---------================"
-    # print context_variables
+            course_pages_info = paginator.Paginator(all_pages, page_no, GSTUDIO_NO_OF_OBJS_PP)
+            context_variables.update({'editor_view': False, 'all_pages': all_pages,'course_pages_info':course_pages_info})
+            # print "----==========---------================"
+            # print context_variables
+    else:
+        q = Q('match',name=dict(query='activity',type='phrase'))
+        activity = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        activity_gst_id = activity.hits[0].id
+
+        q = Q('match',name=dict(query='Page',type='phrase'))
+        page = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+        
+        q = Q('match',name=dict(query='interactive_page',type='phrase'))
+        interactive_page = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('match',name=dict(query='Blog page',type='phrase'))
+        blog_page = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('bool', must=[Q('match', group_set=str(group_id))],should=[Q('match',member_of=activity.hits[0].id),Q('match',member_of=page.hits[0].id),Q('match',member_of=interactive_page.hits[0].id)],minimum_should_match=1)
+        course_pages_info = Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        return HttpResponse(course_pages_info,content_type="application/json")
+
     return render_to_response(template,
                                 context_variables,
                                 context_instance = RequestContext(request)
