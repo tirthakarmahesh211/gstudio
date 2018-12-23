@@ -46,7 +46,8 @@ from gnowsys_ndf.ndf.views.trash import trash_resource
 from gnowsys_ndf.ndf.views.translation import get_lang_node,get_trans_node_list,get_course_content_hierarchy, get_unit_hierarchy
 from gnowsys_ndf.ndf.views.assessment_analytics import user_assessment_results
 from django.views.decorators.csrf import csrf_exempt
-
+from gnowsys_ndf.ndf.gstudio_es.es import ELASTIC_SEARCH_HOSTNAME
+import requests
 GST_COURSE = node_collection.one({'_type': "GSystemType", 'name': "Course"})
 course_gst_name, course_gst_id = GSystemType.get_gst_name_id("Course")
 
@@ -3899,7 +3900,7 @@ def create_edit_asset_page(request, group_id, asset_id, page_id=None ):
                                 context_instance = RequestContext(request)
     )
 @csrf_exempt
-#@get_execution_time
+@get_execution_time
 def course_pages(request, group_id, page_id=None,page_no=1):
     from gnowsys_ndf.settings import GSTUDIO_NO_OF_OBJS_PP
     group_obj = get_group_name_id(group_id, get_obj=True)
@@ -3912,7 +3913,8 @@ def course_pages(request, group_id, page_id=None,page_no=1):
             'group_id': group_id, 'groupid': group_id, 'group_name':group_name,
             'group_obj': group_obj, 'title': 'course_pages',
             'editor_view': True, 'activity_node': None, 'all_pages': None}
-    if not GSTUDIO_ELASTIC_SEARCH:
+
+    if not request.POST.get("api_call",False):
         if page_id:
             node_obj = node_collection.one({'_id': ObjectId(page_id)})
 
@@ -3955,10 +3957,14 @@ def course_pages(request, group_id, page_id=None,page_no=1):
 
         q = Q('match',name=dict(query='Blog page',type='phrase'))
         blog_page = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
-
-        q = Q('bool', must=[Q('match', group_set=str(group_id))],should=[Q('match',member_of=activity.hits[0].id),Q('match',member_of=page.hits[0].id),Q('match',member_of=interactive_page.hits[0].id)],minimum_should_match=1)
-        course_pages_info = Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
-        return HttpResponse(course_pages_info,content_type="application/json")
+        #print(group_id)
+        #print(activity.hits[0].id)
+        #print(page.hits[0].id)
+        #print(interactive_page.hits[0].id)
+        #q = Q('bool', must=[Q('match', group_set=str(group_id))],should=[Q('match',member_of=activity.hits[0].id),Q('match',member_of=page.hits[0].id),Q('match',member_of=interactive_page.hits[0].id)],minimum_should_match=1)
+        #course_pages_info = Search(using=es, index=index,doc_type="gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author").query(q)
+        response = requests.post(ELASTIC_SEARCH_HOSTNAME+"nodes/gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author/_search",data=json.dumps({"query": {"bool" : {"must" : {"term" : { "group_set" : str(group_id) } },"should" : [{ "term" : { "member_of" : page.hits[0].id } },{ "term" : { "member_of" : activity.hits[0].id } },{ "term" : { "member_of" : interactive_page.hits[0].id } }],"minimum_should_match" : 1}}}),headers={"Content-Type": "application/json"})
+        return HttpResponse(response,content_type="application/json")
 
     return render_to_response(template,
                                 context_variables,
@@ -4119,7 +4125,8 @@ def load_content_data(request, group_id):
       "hide_breadcrumbs": True, 'expand_content':True
     },context_instance=RequestContext(request))
 
-@get_execution_time
+#@get_execution_time
+@csrf_exempt
 def delete_activity_page(request, group_id):
     activity_id_list = request.POST.getlist('delete_files_list[]', '')
     activity_id = request.POST.get('activity_id', '')
