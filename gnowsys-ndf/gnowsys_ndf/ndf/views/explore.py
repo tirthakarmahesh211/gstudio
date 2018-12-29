@@ -31,8 +31,8 @@ from gnowsys_ndf.ndf.templatetags.ndf_tags import check_is_gstaff, get_attribute
 from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH
 # from gnowsys_ndf.ndf.views.methods import get_group_name_id
 # from gnowsys_ndf.ndf.views.methods import get_node_common_fields, parse_template_data, get_execution_time, delete_node, replicate_resource
-
-
+from django.views.decorators.csrf import csrf_exempt
+from gnowsys_ndf.ndf.gstudio_es.es import *
 gst_course = node_collection.one({'_type': "GSystemType", 'name': "Course"})
 gst_basecoursegroup = node_collection.one({'_type': "GSystemType", 'name': "BaseCourseGroup"})
 ce_gst = node_collection.one({'_type': "GSystemType", 'name': "CourseEventGroup"})
@@ -43,7 +43,12 @@ group_id = node_collection.one({'_type': "Group", 'name': "home"})._id
 gst_module_name, gst_module_id = GSystemType.get_gst_name_id('Module')
 gst_base_unit_name, gst_base_unit_id = GSystemType.get_gst_name_id('base_unit')
 at_items_sort_list = node_collection.one({'_type': "AttributeType", 'name': "items_sort_list"})
-
+import requests
+if GSTUDIO_SITE_NAME != "NROER":
+    index = GSTUDIO_SITE_NAME+"_nodes"
+    index = index.lower()
+else:
+    index = "nodes"
 @get_execution_time
 def explore(request):
     return HttpResponseRedirect(reverse('explore_courses', kwargs={}))
@@ -103,7 +108,7 @@ def explore_courses(request,page_no=1):
         context_variable,
         context_instance=RequestContext(request))
 '''
-
+@csrf_exempt
 @get_execution_time
 def explore_groups(request,page_no=1):
     title = 'workspaces'
@@ -123,29 +128,47 @@ def explore_groups(request,page_no=1):
              '$nin': [gst_course._id, gst_basecoursegroup._id, ce_gst._id, gst_course._id, gst_base_unit_id]},
             }
     search_text = request.GET.get("search_text",None)
-
-    if gstaff_access:
-        query = {'_type': 'Group', 'status': u'PUBLISHED',
+    if not request.POST.get("api_call",False):
+        if gstaff_access:
+            query = {'_type': 'Group', 'status': u'PUBLISHED',
              'member_of': {'$in': [gst_group._id],
              '$nin': [gst_course._id, gst_basecoursegroup._id, ce_gst._id, gst_course._id, gst_base_unit_id]},
             }
-        if search_text:
-            search_text = ".*"+search_text+".*"
-            query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
+            if search_text:
+                search_text = ".*"+search_text+".*"
+                query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}]
             ,'group_type': {'$in': [u'PUBLIC', u'PRIVATE']}})
+            else:
+                query.update({'group_type': {'$in': [u'PUBLIC', u'PRIVATE']}})
         else:
-            query.update({'group_type': {'$in': [u'PUBLIC', u'PRIVATE']}})
-    else:
-        if search_text:
-            search_text = ".*"+search_text+".*"
-            query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],
+            if search_text:
+                search_text = ".*"+search_text+".*"
+                query.update({'$or':[{'altnames':{'$regex' : search_text, '$options' : 'i'}},{'name':{'$regex' : search_text, '$options' : 'i'}}],
                 'group_type': u'PUBLIC'})
-        else:
-            query.update({'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST},
+            else:
+                query.update({'name': {'$nin': GSTUDIO_DEFAULT_GROUPS_LIST},
                     'group_type': u'PUBLIC'})
-    group_cur = node_collection.find(query).sort('last_update', -1)
+        group_cur = node_collection.find(query).sort('last_update', -1)
 
-    grp_page_cur = paginator.Paginator(group_cur, page_no, GSTUDIO_NO_OF_OBJS_PP)
+        grp_page_cur = paginator.Paginator(group_cur, page_no, GSTUDIO_NO_OF_OBJS_PP)
+    else:
+        q = Q('match',name=dict(query='Group',type='phrase'))
+        group= Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('match',name=dict(query='Course',type='phrase'))
+        course = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+        
+        q = Q('match',name=dict(query='BaseCourseGroup',type='phrase'))
+        basecoursegroup = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('match',name=dict(query='CourseEventGroup',type='phrase'))
+        courseeventgroup = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('match',name=dict(query='base_unit',type='phrase'))
+        base_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+        print GSTUDIO_DEFAULT_GROUPS_LIST
+        response = requests.post(ELASTIC_SEARCH_HOSTNAME+"nodes/gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author/_search",data=json.dumps({"query": {"bool" : {"must" : [{"term" : { "type" : "group" } },{"term" : { "status" : "published" } },{"term" : { "member_of" : group.hits[0].id } }],"should" : [{ "term" : { "access_policy" : "public" } }],"must_not":{"terms":{"name": ['home', 'trash', 'desk', 'help', 'warehouse']}},"minimum_should_match" : 1}}}),headers={"Content-Type": "application/json"})
+        return HttpResponse(response,content_type="application/json")
     context_variable = {'title': title, 'groups_cur': group_cur, 'card': 'ndf/card_group.html',
                         'group_id': ObjectId(group_id), 'groupid': group_id,'grp_page_cur': grp_page_cur}
 
@@ -237,7 +260,7 @@ def explore_basecourses(request,page_no=1):
     #     "ndf/explore.html",
     #     context_variable,
     #     context_instance=RequestContext(request))
-
+@csrf_exempt
 @get_execution_time
 def explore_courses(request):
     # this will be announced tab
@@ -248,6 +271,9 @@ def explore_courses(request):
                         'modules_is_cur': True,
                         'ws':True
                     }
+    if request.POST.get("api_call",False):
+        
+
     modules_sort_list = get_attribute_value(group_id, 'items_sort_list')
     all_modules = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)
     if modules_sort_list:
