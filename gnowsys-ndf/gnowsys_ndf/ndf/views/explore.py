@@ -272,7 +272,19 @@ def explore_courses(request):
                         'ws':True
                     }
     if request.POST.get("api_call",False):
-        
+        q = Q('match',name=dict(query='CourseEventGroup',type='phrase'))
+        courseeventgroup = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('match',name=dict(query='announced_unit',type='phrase'))
+        announced_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+
+        q = Q('match',name=dict(query='Module',type='phrase'))
+        module = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+        #print module.hits[0].id
+        #print "===================="
+        #print GSTUDIO_DEFAULT_GROUPS_LIST
+        response = requests.post(ELASTIC_SEARCH_HOSTNAME+"nodes/gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author/_search",data=json.dumps({"size":1000,"query": {"bool" : {"must" : [{"term" : { "status" : "published" } }],"should" : [{"term":{"member_of":module.hits[0].id}}],"must_not":{"terms":{"name": ['home', 'trash', 'desk', 'help', 'warehouse']}},"minimum_should_match" : 1}}}),headers={"Content-Type": "application/json"})
+        return HttpResponse(response,content_type="application/json")
 
     modules_sort_list = get_attribute_value(group_id, 'items_sort_list')
     all_modules = node_collection.find({'member_of': gst_module_id ,'status':'PUBLISHED'}).sort('last_update', -1)
