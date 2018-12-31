@@ -176,8 +176,8 @@ def explore_groups(request,page_no=1):
         "ndf/explore_2017.html",
         context_variable,
         context_instance=RequestContext(request))
-
-@login_required
+@csrf_exempt
+#@login_required
 @get_execution_time
 def explore_basecourses(request,page_no=1):
 
@@ -209,32 +209,39 @@ def explore_basecourses(request,page_no=1):
                                     'status': u'PUBLISHED'
                                 }).sort('last_update', -1)
     '''
-    gstaff_access = check_is_gstaff(group_id,request.user)
+    if not request.POST.get("api_call",False):
+        
+        gstaff_access = check_is_gstaff(group_id,request.user)
 
-    query = {'_type': 'Group', 'status': u'PUBLISHED',
+        query = {'_type': 'Group', 'status': u'PUBLISHED',
              'member_of': {'$in': [gst_base_unit_id]},
             }
 
-    if gstaff_access:
-        query.update({'group_type': u'PRIVATE'})
-    else:
-        query.update({'group_type': u'PUBLIC'})
-        if request.user.is_authenticated():
-            query.update({'$and': [{'group_type': u'PRIVATE'},
+        if gstaff_access:
+            query.update({'group_type': u'PRIVATE'})
+        else:
+            query.update({'group_type': u'PUBLIC'})
+            if request.user.is_authenticated():
+                query.update({'$and': [{'group_type': u'PRIVATE'},
                                         {'created_by': request.user.id}]})
-    ce_cur = node_collection.find(query).sort('last_update', -1)
+        ce_cur = node_collection.find(query).sort('last_update', -1)
 
 
 
-    ce_page_cur = paginator.Paginator(ce_cur, page_no, GSTUDIO_NO_OF_OBJS_PP)
-    # print ce_cur.count()
-    title = 'base courses'
-    context_variable = {
+        ce_page_cur = paginator.Paginator(ce_cur, page_no, GSTUDIO_NO_OF_OBJS_PP)
+        # print ce_cur.count()
+        title = 'base courses'
+        context_variable = {
                         'title': title, 'doc_cur': ce_cur,
                         'group_id': group_id, 'groupid': group_id,
                         'card': 'ndf/card_group.html', 'ce_page_cur':ce_page_cur
                     }
-
+    else:
+        q = Q('match',name=dict(query='base_unit',type='phrase'))
+        base_unit = Search(using=es, index=index,doc_type="gsystemtype").query(q).execute()
+        #print GSTUDIO_DEFAULT_GROUPS_LIST
+        response = requests.post(ELASTIC_SEARCH_HOSTNAME+"nodes/gsystemtype,gsystem,metatype,relationtype,attribute_type,group,author/_search",data=json.dumps({"query": {"bool" : {"must" : [{"term" : { "type" : "group" } },{"term" : { "status" : "published" } },{"term" : { "member_of" : base_unit.hits[0].id } }] }}}),headers={"Content-Type": "application/json"})
+        return HttpResponse(response,content_type="application/json")
 
     return render_to_response(
         # "ndf/explore.html", changed as per new Clix UI
