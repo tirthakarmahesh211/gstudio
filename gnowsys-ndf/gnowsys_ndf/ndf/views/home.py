@@ -173,6 +173,11 @@ def landing_page(request):
     
 
     if (GSTUDIO_SITE_LANDING_PAGE == "home") and (GSTUDIO_SITE_NAME == "NROER") or (GSTUDIO_SITE_NAME == "metaStudio"):
+
+        landing_page_news = node_collection.find_one({"tags": "newsandnotificationboard"})
+
+        if landing_page_news.content:
+            landing_page_news_content = landing_page_news.content
         return render_to_response(
                                 "ndf/landing_page_nroer.html",
                                 {
@@ -181,7 +186,8 @@ def landing_page(request):
                                     'groups_count':groups_count,
                                     'authors_count':authors_count,
                                     'files_count':files_count,
-                                    'discussion_count':discussion_count
+                                    'discussion_count':discussion_count,
+                                    'landing_page_news_content': landing_page_news_content
                                 },
                                 context_instance=RequestContext(request)
                             )
