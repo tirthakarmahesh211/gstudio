@@ -12,7 +12,7 @@ from gnowsys_ndf.settings import GSTUDIO_SITE_NAME
 
 trash_group = node_collection.one({'_type': 'Group', "name": u"Trash"});
 
-@get_execution_time
+#@get_execution_time
 def trash_resource(request,group_id,node_id):
 	'''
 	Delete Action.
@@ -20,8 +20,10 @@ def trash_resource(request,group_id,node_id):
 	Iff node's group_set is empty, send to Trash group.
 	'''
 
-
-	auth = node_collection.one({'_type': 'Author', 'name': unicode(request.user.username) })
+        if not request.POST.get("username"):
+                auth = node_collection.one({'_type': 'Author', 'name': unicode(request.user.username) })
+        else:
+                auth = node_collection.one({'_type': 'Author', 'name': unicode(request.POST.get("username")) })
 	gst_base_unit = node_collection.one({'_type': 'GSystemType', 'name': 'base_unit'})
 
 	node_obj = node_collection.find_one({"_id":ObjectId(node_id)})
