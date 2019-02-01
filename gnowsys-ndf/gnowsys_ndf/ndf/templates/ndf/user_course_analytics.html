@@ -2,9 +2,10 @@
 {% load multiply from simple_filters %}
 {% load get_group_object check_is_gstaff get_profile_full_name get_site_variables get_institute_name from ndf_tags %}
 {% get_site_variables as site %}
+{% comment %}
 {% get_profile_full_name user_id as req_user_full_name %}
 {% get_institute_name as institute_name %}
-
+{% endcomment %}
 <style type="text/css">
   .reveal-modal{
     color: black !important;
