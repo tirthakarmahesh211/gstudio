@@ -279,8 +279,8 @@
           "data_unit_id":data_unit_id
         },
         success: function(data){
-          $('.performaceReportModalData').html(data);
-          $('#performaceReportModal').foundation('reveal', 'open');
+          $('#show-overlay').html(data);
+          $('#show-overlay').foundation('reveal', 'open');
         },
       });
     }
