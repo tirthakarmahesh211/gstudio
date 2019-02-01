@@ -2183,7 +2183,7 @@ def _get_current_and_old_display_pics(group_obj):
                 {'_type': {'$in': ["GSystem", "File"]}, '_id': each["has_banner_pic"]}
             )
             break
-
+    has_banner_pic_rt = node_collection.one({'_type': 'RelationType', 'name': unicode('has_banner_pic') })
     all_old_prof_pics = triple_collection.find({'_type': "GRelation", "subject": group_obj._id, 'relation_type': has_banner_pic_rt._id, 'status': u"DELETED"})
     if all_old_prof_pics:
         for each_grel in all_old_prof_pics:
@@ -3520,7 +3520,7 @@ def course_analytics(request, group_id, user_id, render_template=False, get_resu
     analytics_data['group_name'] = group_obj.name
     analytics_data['group_id'] = group_obj._id
     analytics_data['groupid'] = group_obj._id
-    analytics_data['title'] = "course_analytics"
+    analytics_data['title'] = "progress_report"
     return render_to_response(template,
                                 analytics_data,
                                 context_instance = RequestContext(request)
@@ -3552,7 +3552,7 @@ def course_analytics_admin(request, group_id):
     allow_to_join = get_group_join_status(group_obj)
     context_variables = {
             'group_id': group_id, 'groupid': group_id, 'group_name':group_name,
-            'group_obj': group_obj, 'title': 'course_analytics', 'allow_to_join': allow_to_join,
+            'group_obj': group_obj, 'title': 'progress_report', 'allow_to_join': allow_to_join,
             'old_profile_pics':old_profile_pics, "prof_pic_obj": banner_pic_obj, "admin_analytics":  True,
             'admin_view': True
             }
