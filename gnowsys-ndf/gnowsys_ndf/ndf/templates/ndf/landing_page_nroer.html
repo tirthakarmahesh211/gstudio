@@ -154,6 +154,12 @@ article.columns{
             <img src="static/ndf/images/landing_pg_slides/Slider3.png" style="width:100%;">
         </div> -->
         <div class="slider-item">
+            <a href="https://www.mygov.in"><img src="static/ndf/images/landing_pg_slides/Pariksha_Pe_Charcha2.0.jpg" style="width:100%;"></a>
+        </div>
+        <div class="slider-item">
+            <img src="static/ndf/images/landing_pg_slides/nroer_new.jpg" style="width:100%;">
+        </div>
+        <div class="slider-item">
             <img src="static/ndf/images/landing_pg_slides/photo_2018-05-07_18-03-44.jpg" style="width:100%;">
         </div>
         <div class="slider-item">
@@ -162,9 +168,9 @@ article.columns{
         <div class="slider-item">
             <img src="static/ndf/images/landing_pg_slides/photo_2018-05-07_18-20-38.jpg" style="width:100%;">
         </div>
-        <div class="slider-item">
+<!--         <div class="slider-item">
             <img src="static/ndf/images/landing_pg_slides/photo_2018-05-07_18-04-14.jpg" style="width:100%;">
-        </div>
+        </div> -->
         <div class="slider-nav-container">
             <div class="slider-nav"></div>
         </div>    
@@ -222,12 +228,22 @@ article.columns{
 <!--         </div>
     </div> --> 
 
-    {{landing_page_news_content}}
+    <div class="large-8 medium-9 medium-centered columns" style="background: #d8dbdc; margin-top: 50px;">
+          <div class="row">
+            <span><h3  align="center" style="text-align: center; text-decoration: underline;text-decoration-color: green;">{% trans "News Board " %}</h3></span>
+                    <div style="font-size: 14px;">
+                        <div align="center" style="opacity: 10;">    
+                            {{landing_page_news_content}}
+                        </div>    
+                    </div>
+          </div>
+    </div>               
+        
 
     <div class="analytics-blog" style="margin-top: 50px;">
         <div class="large-8 medium-9 medium-centered columns" style="background: #d8dbdc;">
           <div class="row">
-            <span><h3 class="analytics" align="center">{% trans "Analytics" %}</h3></span>
+            <span><h3 class="analytics" align="center" style="text-align: center; text-decoration: underline;text-decoration-color: green;" >{% trans "Analytics" %}</h3></span>
                 <div class="medium-3 small-8 small-centered large-uncentered columns" >
                     <div class="panel" style="background-color: #ff8080; font-size: 16px;">
                         <div align="center" class="analytics-cards">    
