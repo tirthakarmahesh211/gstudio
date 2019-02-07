@@ -11,8 +11,11 @@
 
 		<div class="vidbak">
 		<video id="{{video_obj.pk}}" class="video-js vjs-skin-colors-clix vjs-big-play-button center widget_video" controls="controls" data-setup='{ "playbackRates": [0.5, 1, 1.5, 2] }'>
+		{% if video_obj.if_file.mid.relurl %}
+		<source src="{{MEDIA_URL}}{{video_obj.if_file.mid.relurl}}" type="video/webm" crossorigin="anonymous" preload="metadata" codecs="avc1.42E01E, mp4a.40.2"/>
+		{% else %}
 		<source src="{{MEDIA_URL}}{{video_obj.if_file.original.relurl}}" type="video/mp4" crossorigin="anonymous" preload="metadata" codecs="avc1.42E01E, mp4a.40.2"/>
-		 
+		{% endif %}
 		{% for each in subtitle_rel_node %}
 			{{each.relation_type_scope.alt_language}}
 			{{each.file_path}} 
