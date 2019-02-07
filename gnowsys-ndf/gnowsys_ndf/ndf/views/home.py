@@ -175,9 +175,9 @@ def landing_page(request):
     if (GSTUDIO_SITE_LANDING_PAGE == "home") and (GSTUDIO_SITE_NAME == "NROER") or (GSTUDIO_SITE_NAME == "metaStudio"):
         landing_page_news_content = None
         landing_page_news = node_collection.find_one({"tags": "newsandnotificationboard"})
-
-        if landing_page_news.content:
-            landing_page_news_content = landing_page_news.content
+        if landing_page_news:
+            if landing_page_news.content:
+                landing_page_news_content = landing_page_news.content
         return render_to_response(
                                 "ndf/landing_page_nroer.html",
                                 {
