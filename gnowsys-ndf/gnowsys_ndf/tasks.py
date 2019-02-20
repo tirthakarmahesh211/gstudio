@@ -147,3 +147,56 @@ def rcs_function(is_new,data_save_into_file,json_data,kew_args):
             # gets the last version no.
             rcsno = history_manager.get_current_version(self)
             node_collection.collection.update({'_id':self._id}, {'$set': {'snapshot'+"."+str(kew_args['groupid']):rcsno }}, upsert=False, multi=True)
+
+@app.task()
+def rcs_function_for_filehive_model(is_new,data_save_into_file,json_data,kew_args):
+    # storing Filehive JSON in RSC system:
+
+    history_manager = HistoryManager()
+    rcs_obj = RCS()
+    self=Map(json.loads(json_data))
+    from bson import json_util
+    json_data1 = json_util.loads(data_save_into_file)
+    kew_args = json.loads(kew_args)
+    if is_new:
+
+        # Create history-version-file
+        if history_manager.create_or_replace_json_file(self,data_save_into_file):
+            fp = history_manager.get_file_path(self)
+            if self.uploaded_at:
+                message = "This document (" + str(self.md5) + ") is created on " + self.uploaded_at
+                rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+            else:
+                message = "This document (" + str(self.md5) + ") is created on " + self.uploaded_at
+                rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+
+    else:
+        # Update history-version-file
+        fp = history_manager.get_file_path(self)
+
+        try:
+            rcs_obj.checkout(fp, otherflags="-f")
+
+        except Exception as err:
+            try:
+                if history_manager.create_or_replace_json_file(self,data_save_into_file):
+                    fp = history_manager.get_file_path(self)
+                    if self.uploaded_at:
+                        message = "This document (" + str(self.md5) + ") is re-created on " + self.uploaded_at
+                        rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+                    else:
+                        message = "This document (" + str(self.md5) + ") is re-created on " + self.uploaded_at
+                        rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+            except Exception as err:
+                print "\n DocumentError: This document (", self._id, ":", str(self.md5), ") can't be re-created!!!\n"
+                node_collection.collection.remove({'_id': self._id})
+                raise RuntimeError(err)
+
+        try:
+            if history_manager.create_or_replace_json_file(self,data_save_into_file):
+                message = "This document (" + str(self.md5) + ") is lastly updated on " + datetime.datetime.now().strftime("%d %B %Y")
+                rcs_obj.checkin(fp, 1, message.encode('utf-8'))
+
+        except Exception as err:
+            print "\n DocumentError: This document (", self._id, ":", str(self.md5), ") can't be updated!!!\n"
+            raise RuntimeError(err)
