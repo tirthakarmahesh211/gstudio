@@ -1,7 +1,9 @@
 from base_imports import *
 from history_manager import HistoryManager
 from gnowsys_ndf.ndf.gstudio_es.es import esearch
-from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH,GSTUDIO_ELASTIC_SEARCH_IN_FILEHIVE_CLASS
+from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH,GSTUDIO_ELASTIC_SEARCH_IN_FILEHIVE_CLASS,GSTUDIO_SITE_NAME
+from gnowsys_ndf.ndf.models.models_utils import NodeJSONEncoder,CustomNodeJSONEncoder
+from gnowsys_ndf.tasks import *
 
 
 @connection.register
@@ -358,8 +360,18 @@ class Filehive(DjangoDocument):
             self.uploaded_at = datetime.datetime.now()
 
         super(Filehive, self).save(*args, **kwargs)
-
-        self.rcs_function(self,is_new,*args,**kwargs)
+        if GSTUDIO_SITE_NAME == "NROER":
+            temp = self
+            temp.update({"collection_name":"Filehives"})
+            model_name = self._meta.model_name
+            temp.update({"model_name":model_name})
+            from bson import json_util
+            data_save_into_file = json.dumps(temp,cls=CustomNodeJSONEncoder)
+            json_data = json.dumps(temp,cls=NodeJSONEncoder)
+            kwargs = json.dumps(kwargs,cls=NodeJSONEncoder)
+            rcs_function_for_filehive_model.apply_async((is_new,data_save_into_file,json_data,kwargs), countdown=1)
+        else:
+            self.rcs_function(self,is_new,*args,**kwargs)
         # data save into ES...
         if GSTUDIO_ELASTIC_SEARCH_IN_FILEHIVE_CLASS == True:
             esearch.save_to_es(self)
