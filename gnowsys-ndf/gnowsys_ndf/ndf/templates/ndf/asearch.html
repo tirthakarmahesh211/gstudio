@@ -1,0 +1,135 @@
+{% extends "ndf/base.html" %}
+{% load i18n %}
+{% load ndf_tags %}
+{% block title %} {{title}} {% endblock %}
+{% block concern_information %}
+<script src="/static/ndf/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="/static/ndf/bower_components/waypoints/lib/shortcuts/infinite.min.js"></script>
+{% endblock %}
+{% block related_content %}
+
+<form {% if groupid %} action="{% url 'advanced_search' groupid %}" {% else %} action="" {% endif %}
+                       id="a_search_form" name="a_search_form" method="GET" >
+
+	<select id="field_list" name="field_list">
+		<option value="content">The resources that do not have any description </option>
+		<option value="tags">The resources that do not have any tags </option>
+		<option value="location">The resources that do not have location </option>
+		<option value="english_lang">The resources that are actually Hindi, but the language was set to English</option>
+		<option value="hindi_lang">The resources that have English description, but the resource is in Hindi language</option>
+		<option value="attribute_type_set">The resources that do not have 'teaches' relation set to any topic</option>
+
+	</select>
+	<select id="edu_subject" name="edu_subject">
+	{% if edu_subject %}
+		<option value="edu_subject">{{edu_subject}}</option>
+		<option value="Language">Language</option>
+		<option value="Mathematics">Mathematics</option>
+		<option value="Environmental Studies">Environmental Studies</option>
+		<option value="Science">Science</option>
+		<option value="Chemistry">Chemistry</option>
+		<option value="Physics">Physics</option>
+		<option value="Biology">Biology</option>
+		<option value="Social Science">Social Science</option>
+		<option value="History">History</option>
+		<option value="Geography">Geography</option>
+		<option value="Political Science">Political Science</option>
+		<option value="Economics">Economics</option>
+		<option value="Sociology">Sociology</option>
+		<option value="Psychology">Psychology</option>
+		<option value="Commerce">Commerce</option>
+		<option value="Business Studies">Business Studies</option>
+		<option value="Accountancy">Accountancy</option>
+		<option value="Art">Art</option>
+		<option value="Education">Education</option>
+	{% else %}
+		<option value="">Select subject</option>
+		<option value="Language">Language</option>
+		<option value="Mathematics">Mathematics</option>
+		<option value="Environmental Studies">Environmental Studies</option>
+		<option value="Science">Science</option>
+		<option value="Chemistry">Chemistry</option>
+		<option value="Physics">Physics</option>
+		<option value="Biology">Biology</option>
+		<option value="Social Science">Social Science</option>
+		<option value="History">History</option>
+		<option value="Geography">Geography</option>
+		<option value="Political Science">Political Science</option>
+		<option value="Economics">Economics</option>
+		<option value="Sociology">Sociology</option>
+		<option value="Psychology">Psychology</option>
+		<option value="Commerce">Commerce</option>
+		<option value="Business Studies">Business Studies</option>
+		<option value="Accountancy">Accountancy</option>
+		<option value="Art">Art</option>
+		<option value="Education">Education</option>
+	{% endif %}
+	</select>
+	<button type="submit" value="search"> Search </button>
+	<input type="hidden" name="chk_advanced_search" value="true">
+	<input type="hidden" name="search_text" value="ल">
+
+
+</form>
+		<h4> <b>Applied Filter is :</b> " {{applied_filter_name}} "</h4>
+	    <h4> <b>Total Resources Found : </b>{{ count }}</h4>
+
+{% endblock %}
+
+{% if chk_advanced_search %}
+
+	{% block body_content %} 
+	<hr>
+	      <div id="results" width="100%" style="position:relative">
+	      
+	      </div>
+
+		<div class="infinite-container">
+		  <span class="infinite-item">
+		    <div id="pages">
+		        <ul class="small-block-grid-5 medium-block-grid-3 large-block-grid-5" >
+
+		          {% for each in search_curr %}
+		            <li class="card-image-wrapper" >
+		            {% if GSTUDIO_ELASTIC_SEARCH == True and if_teaches != True %}
+		              
+		                {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each.id %}
+		              </span>
+		            {% else %}
+		              {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each.pk %}
+		            {%endif%}
+		            </li>
+		          {% endfor %}
+		        </ul>
+<!-- 		          {% if not search_curr %}
+		           <b> No results found  </b>
+		          {% endif %} -->
+		    </div>
+		  </span>
+		</div>
+		<div class="loading" style="display: none;">
+		  Loading...
+		</div>
+		{% if has_next and if_teaches != True %}
+		  <span class="infinite-more-link" href="?page_no={{page_no}}&field_list={{field_list}}&chk_advanced_search={{chk_advanced_search}}"></span>
+		{% else %}
+			  {% include 'ndf/pagination.html' with urlname="pagination_for_advanced_search" first_arg=group_name_tag second_arg="" third_arg="" %}
+		{% endif %}
+
+	<hr>
+
+	<script>
+	  var infinite = new Waypoint.Infinite({
+	    element: $('.infinite-container')[0],
+	    onBeforePageLoad: function () {
+	      $('.loading').show();
+	    },
+	    onAfterPageLoad: function ($items) {
+	      $('.loading').hide();
+	    }
+	  });
+	</script>
+
+	{% endblock %}
+{% endif%}
+

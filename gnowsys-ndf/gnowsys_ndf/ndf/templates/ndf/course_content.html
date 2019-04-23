@@ -1,4 +1,7 @@
+{% load ndf_tags %}
+{% get_site_variables as site %}
 <div class="course-content">
+  {% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio"  %}
     <button class="accordion-overview">Overview</button>
     <div class="panel">
          <div class="about-course  rows">            
@@ -136,16 +139,20 @@
           <br/>
       </div>
     {% endcomment %}
-
+{% endif %}
+    {%comment%}
     <div id="tree1">
     </div>
+    {%endcomment%}
 </div>
 
 <script type="text/javascript">
     iconMapping = {
-        'COMPLETED': 'fas fa-eye green',
-        'INPROGRESS': 'fas fa-eye orange',
-        'DEFAULT': 'fas fa-eye grey',
+        // 'COMPLETED': 'fas fa-eye green',
+        // 'INPROGRESS': 'fas fa-eye orange',
+        // 'DEFAULT': 'fas fa-eye grey',
+        'COMPLETED': 'fa-check-circle-o',
+        'INPROGRESS': 'fa-clock-o',
     }
 
     var acc = document.getElementsByClassName("accordion-overview");

@@ -3,6 +3,13 @@
 {% load i18n %}
 {% block title %}{% trans 'Search' %}{% endblock %}
 {% block concern_information %}
+<!--<script src="/static/ndf/js/jquery-3.1.1.min.js"></script>->
+<script src="/static/ndf/js/jquery.waypoints.min.js"></script>
+<script src="/static/ndf/js/infinite.min.js"></script>-->
+<script src="/static/ndf/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="/static/ndf/bower_components/waypoints/lib/shortcuts/infinite.min.js"></script>
+
+
     <div id="search_help" align="justify">
       <h3><strong>Search Help</strong></h3>
       <ul>
@@ -20,22 +27,47 @@
 
 <hr>
       <div id="results" width="100%" style="position:relative">
+      {% if search_instead %}
+      <h3>Searching results for {{search_text}}</h3>
       
+      {% else %}
+      <h3>Searching results for {{suggest}}</h3>
+      <h3>Search instead for <a href="?search_text={{user_entered_text}}&search_instead=True"> {{user_entered_text}}</a></h3>
       
-      </div>
-
-<div id="pages">
-    <ul class="small-block-grid-5 medium-block-grid-3 large-block-grid-5" >
-      {% for each in  search_curr %}
-        <li class="card-image-wrapper" >
-        {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each %}
-        </li>
-      {% endfor %}
-    </ul>
-      {% if not search_curr %}
-       <b> No results found  </b>
       {% endif %}
+      </div>
+<div class="infinite-container">
+  <span class="infinite-item">
+    <div id="pages">
+        <ul class="small-block-grid-5 medium-block-grid-3 large-block-grid-5" >
+
+          {% for each in search_curr %}
+            <li class="card-image-wrapper" >
+            {% if GSTUDIO_ELASTIC_SEARCH == True %}
+                {% if each.type == "Group" %}
+                {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="course_about" first_arg=each.id %}
+                {% else %}
+                {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each.id %}
+                {% endif %}
+              </span>
+            {% else %}
+              {% include 'ndf/simple_card.html' with  no_footer=True resource=each url_name="page_details" first_arg=groupid second_arg=each%}
+            {%endif%}
+            </li>
+          {% endfor %}
+        </ul>
+          {% if not search_curr %}
+           <b> No results found  </b>
+          {% endif %}
+    </div>
+  </span>
 </div>
+<div class="loading" style="display: none;">
+  Loading...
+</div>
+{% if has_next %}
+  <span class="infinite-more-link" href="?search_text={{search_text}}&page={{page_no}}&{{fields}}"></span>
+{% endif %}
 
 <hr>
    {% comment %} 
@@ -200,6 +232,18 @@
   }
 
 
+</script>
+
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+    }
+  });
 </script>
 
 

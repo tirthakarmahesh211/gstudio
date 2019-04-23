@@ -15,23 +15,26 @@
 </style>
 {% endblock %}
 
+{% block body_content %}
+{% get_list_of_fields activity_node.type_of "name" as type_of_list %}
 <!-- Handles Activity page detail and listing -->
 {% include 'ndf/widget_cross_publish.html' with node=activity_node %}
 
 {% if activity_node and not editor_view %}
     <div class="activity-detail-page">
+      <div class="small-12 medium-12 columns">
         <div class="row">
-            <div class="small-1 columns icon-widget" style="margin-top: 5.6px;">
+            <div class="small-1 medium-1 columns icon-widget" style="margin-top: 5.6px;">
             <a href="{% url 'course_pages' group_id %}"><i class="fa fa-chevron-left large" aria-hidden="true"></i></a>
             </div>
 
-            <div class="small-8 columns">
-                <h4 class="page-name">{% firstof activity_node.altnames activity_node.name %}</h4>
+            <div class="small-5 medium-5 columns">
+                <h4 class="page-name">{% if site.SITE_NAME == "metaStudio" %} {% firstof activity_node.name activity_node.altnames %} {% else %}{% firstof activity_node.altnames activity_node.name %} {% endif %}</h4>
             </div>
               
             {% check_is_gstaff groupid request.user as is_gstaff %}
             {% if activity_node.created_by == request.user.id or is_gstaff %}
-            <div class="small-3 columns right">
+            <div class="small-6 medium-3 medium-offset-2 columns right" style="margin-left: 200px";>
                 <span data-dropdown="activity-page-settings-drop" aria-controls="activity-page-settings-drop" aria-expanded="false" class="orange-button right">
                     {% trans "Actions" %} <i class="fa fa-chevron-down"></i>
                 </span>
@@ -40,20 +43,28 @@
                 <li><a href="{% url 'edit_course_page' group_id activity_node.pk %}">{% trans "Edit" %}</a></li>
                 <li><a title="Edit Content" class="edit_res_unit">{% trans " Edit Content" %}</a></li>
                 <li><a title="Edit Interaction Settings" class="edit-interaction">{% trans "Interaction Settings" %}</a></li>
-                {% if not activity_node.type_of %}
-                  <li><a title="add admin page" class="add-admin-page">{% trans "Link Teacher's page" %}</a></li>
+                {% if  "Info page" not in  type_of_list %}
+                  <li>
+                    {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
+                      <a title="add admin page" class="add-admin-page">{% trans "Link Coordinator's page" %}</a>
+                    {% else %}
+                      <a title="add admin page" class="add-admin-page">{% trans "Link Teacher's page" %}</a>
+                    {% endif %}
+                  </li>
                   <li><a title="add help page" class="add-help-page">{% trans "Link Help page" %}</a></li>
                 {% endif %}
-                <li><a class="crossPublish-{{activity_node.pk}}" title="Click to Cross Publish this Activty Page" ><i class="fa fa-external-link" aria-hidden="true"></i></a></li>
+                <li><a class="crossPublish-{{activity_node.pk}}" title="Click to Cross Publish this Activty Page" ><i class="fa fa-external-link" aria-hidden="true"></i>&nbsp;Cross Publish</a></li>
                 <li><a href="{% url 'all_translations' group_id activity_node.pk %}" target="_blank">{% trans "Alternate Language" %}</a></li>
                 
                 </ul>
             </div>
             {% endif %}
         </div>
+      </div>
 
          <div class="row">
-            <div class="small-8 columns left">
+          <div class="small-12 medium-12 columns left">
+            <div class="small-6 columns left">
                  {% if activity_node.tags %}
                     {% for tag in activity_node.tags %}
                             <small><label class="tag-ele" style="margin-top: 13px;">
@@ -61,10 +72,11 @@
                     {% endfor %} 
                 {% endif %}   
             </div>
-            <div class="small-4 columns right">
+            <div class="small-6 medium-3  columns right">
                 {% include 'ndf/rating.html' with node=activity_node %}
               
             </div>
+          </div>
         </div>
 
         <div class="row activity-detail-content">
@@ -84,7 +96,7 @@
                       <img src="/static/ndf/images/asset.png">
                   </div>
                   <div class="asset_text">
-                      <div class="asset_title">{% firstof each.altnames|truncatechars:25 each.name|truncatechars:25 %}</div>
+                      <div class="asset_title">{% if site.SITE_NAME == "metaStudio" %} {% firstof each.name|truncatechars:25 each.altnames|truncatechars:25 %} {% else %}{% firstof each.altnames|truncatechars:25 each.name|truncatechars:25 %} {% endif %} </div>
                       <div class="asset_desc">{{each.content|striptags|truncatechars:25}}</div>
 
                   </div>
@@ -96,6 +108,7 @@
     </div>
 
 
+
 {% else %}
     
         <div class="activity-sheet-actions">
@@ -104,12 +117,14 @@
             <button type="button" class="orange-button delete-activity right" title="Click on the checkbox on the files below to Delete"><i class="fa fa-trash"></i> {% trans "Delete" %}</button>
             {% endif %}
             {% if user.is_authenticated %}
-             <a class="right orange-button-template" href="{% url 'create_course_page' group_id %}"><i class="fi-plus"></i> {% trans "Add Activity page" %}</a>
-            {# <a class="right orange-button-template" href="{% url 'create_course_page_info'  group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Teacher's page" %}</a> #}
+              {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
+                <a class="right orange-button-template" href="{% url 'create_course_page_info'  group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Cordinator's page" %}</a>
+              {% else %}
+                <a class="right orange-button-template" href="{% url 'create_course_page_info'  group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Teacher's page" %}</a>
+              {% endif %}
+            <a class="right orange-button-template" href="{% url 'create_course_page' group_id %}"><i class="fi-plus"></i> {% trans "Add Activity page" %}</a>
             <a class="right orange-button-template" href="{% url 'create_course_page_info' group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Help page" %}</a>
             {% endif %}
-
-
             </div>
         </div>
     
@@ -123,10 +138,9 @@
         </div>
 
 
-
 {% endif %}
 {% include 'ndf/pagination.html' with urlname="course_pages_paged" first_arg=group_id page_info=course_pages_info  %}
-
+{% endblock %}
 <script type="text/javascript">
     $(".delete-activity").click(function(){
         var checked = $('.select-chkbox:checked').length;

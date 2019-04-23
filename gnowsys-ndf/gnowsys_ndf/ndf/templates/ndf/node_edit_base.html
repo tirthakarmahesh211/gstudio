@@ -605,7 +605,7 @@
       	</div>
     </div>
 
-    <div class="content contents" id="panel-assesses"  style="width:95%; dsplay:none;">
+    <div class="content contents" id="panel-assesses"  style="width:95%; display:none;">
   		<div class="row">
 			<div class="small-12 columns">
 	  			<div id="assesses_drawer">
@@ -1345,7 +1345,7 @@
 
 			{% get_site_name_from_settings as site_name %}
 
-			{%  if site_name == "NROER" and "File" in node.member_of_names_list %}
+			{%  if site_name == "NROER" or site.SITE_NAME == "metaStudio" and "File" in node.member_of_names_list %}
 	            if(educationallevel.selectedIndex == 0 || educationalsubject.selectedIndex ==0 || audience.selectedIndex == 0){
 	                    // $('#tabs').find('a[href="#tab2"]').trigger('click');
 	                    $('.meta_tab').trigger('click');

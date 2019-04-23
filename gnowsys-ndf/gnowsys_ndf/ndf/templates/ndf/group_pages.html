@@ -1,6 +1,6 @@
 {% for each in cursor %}
     <a href="#" class="{{card_class}}" data-id="{{each.pk}}" data-name="{{each.name}}" title="{{each.name}}">
-    <div class="small-12 medium-6 large-3 columns">
+    <div class="small-12 medium-6 large-3 columns activity_card">
 
         <div class="asset_tile">
             <div class="asset_preview">
@@ -13,8 +13,16 @@
                 {% endif %}
             </div>
             <div class="asset_text">
-                <div class="asset_title" title="{% firstof each.altnames each.name %}">{% firstof each.altnames|truncatechars:25 each.name|truncatechars:25 %}</div>
+                <div class="asset_title" title="{% firstof each.altnames each.name %}">
+                    {% if each.altnames %}
+                        {{ each.altnames }}
+                    {% else %}
+                        {{ each.name }}
+                    {% endif %}
+
+                {%comment%}{% firstof each.altnames|truncatechars:25 each.name|truncatechars:25 %}{%endcomment%}</div>
                 <!-- <div class="asset_desc">{{each.content|safe|truncatechars:25}}</div> -->
+                    
             </div>
         </div>
     </div>

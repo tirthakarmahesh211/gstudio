@@ -98,18 +98,21 @@
                     {% comment %}
                     <a {% if user_access_priv == "allow" %} class=" add-note-btn button radius" title="Create Note" {% else %} class="bef-note-btn button radius user_not_enrolled" {% endif %}><i class="fi-plus"></i></a>
                     {% endcomment %}
-
+                    {% if site.SITE_NAME == "NROER" %}
+                    <a {% if user_access_priv == "allow" %} class="add-note-btn button radius" title="Create Note" {% else %} class="bef-note-btn button radius user_not_enrolled" {% endif %}>Create New <i class="fi-plus"></i></a>
+                    {% else %}
                     <a {% if user_access_priv == "allow" %} class="add-note-btn" title="Create Note" {% else %} class="bef-note-btn button radius user_not_enrolled" {% endif %}><i class="fa fa-pencil"></i> {% trans "New" %} {% if 'Group' in group_object.member_of_names_list and 'base_unit' not in group_object.member_of_names_list %} {% trans "Blog" %} {% else %} {% trans "Note" %} {% endif %}</a>
                     {# <a class="add-note-btn"><i class="fi-plus"></i></a> #}
+                    {% endif %}
                     {% endif %}
                 </div>
             </div>
 
             <ul class="tabs" data-tab style="">
                 <li class="tab-title {% ifequal tab 'all-notes' %} active{% endifequal %}"><a href="#all-notes" title="Notes created by all">
-                {% if 'Group' in group_object.member_of_names_list and 'base_unit' not in group_object.member_of_names_list %}All Blogs {% else %} All Notes {% endif %} ({{blog_pages.count}})</a></li>
+                {% if 'Group' in group_object.member_of_names_list and 'base_unit' not in group_object.member_of_names_list %} Other's Posts {% else %} Other's Posts {% endif %} ({{blog_pages.count}})</a></li>
                 {% if user.is_authenticated %}
-                    <li class="tab-title {% ifequal tab 'my-notes' %} active{% endifequal %}"><a href="#my-notes" title="Notes created by me"> {% if 'Group' in group_object.member_of_names_list and 'base_unit' not in group_object.member_of_names_list %}My Blogs {% else %} My Notes {% endif %} ({{user_blogs.count}})</a></li>
+                    <li class="tab-title {% ifequal tab 'my-notes' %} active{% endifequal %}"><a href="#my-notes" title="Notes created by me"> {% if 'Group' in group_object.member_of_names_list and 'base_unit' not in group_object.member_of_names_list %} My Posts {% else %} My Posts {% endif %} ({{user_blogs.count}})</a></li>
                 {% endif %}
                 {% comment %}
                     <li class="tab-title"><a href="#my-drafts">My Drafts</a></li>

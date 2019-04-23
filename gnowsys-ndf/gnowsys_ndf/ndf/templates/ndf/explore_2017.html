@@ -24,6 +24,10 @@
 		{% if modules_is_cur %}
 			{% rewind_cursor all_modules as all_modules %}
 		{% endif %}
+		{% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
 		{% include "ndf/lms_explore.html" with title=title modules_node_sort_list=modules_node_sort_list %}
+		{% else %}
+		{% include "ndf/lms_explore.html" with title=title modules_node_sort_list=all_modules %}
+		{% endif %}
 	{% endif %}
 {% endblock body_content %}

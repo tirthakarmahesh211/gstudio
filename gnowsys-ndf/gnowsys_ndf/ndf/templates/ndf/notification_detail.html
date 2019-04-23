@@ -1,3 +1,4 @@
+
 {% extends "ndf/gbase.html" %}
 {% load i18n %}
 {% load ndf_tags %}
@@ -83,7 +84,7 @@
                   {% endif %}
             </div>
             <div class="small-14 columns">
-            {{each.created_by|get_username}}    {{each.activity}}
+            {{each.created_by|get_username}}  {{each.relation_set.0.assetcontent_of.0}}  {{each.activity}}
             </div>
         </div>
         <div style="
@@ -99,4 +100,3 @@
 {% endfor %}
     
 {% endblock body_content %}
-

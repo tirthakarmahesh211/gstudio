@@ -14,7 +14,7 @@ urlpatterns = patterns('gnowsys_ndf.ndf.views.unit',
                         # LESSON
                         # create
                         url(r'^/lesson/create/?$', 'lesson_create_edit', name='lesson_create_edit'),
-
+                        url(r'^/(?P<player_title>[\w-]+)$', 'unit_detail', name='lesson_player'),
 
                         # ACTIVITY
                         # create

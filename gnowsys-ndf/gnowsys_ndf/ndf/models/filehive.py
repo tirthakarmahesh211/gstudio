@@ -1,5 +1,10 @@
 from base_imports import *
 from history_manager import HistoryManager
+from gnowsys_ndf.ndf.gstudio_es.es import esearch
+from gnowsys_ndf.settings import GSTUDIO_ELASTIC_SEARCH,GSTUDIO_ELASTIC_SEARCH_IN_FILEHIVE_CLASS,GSTUDIO_SITE_NAME
+from gnowsys_ndf.ndf.models.models_utils import NodeJSONEncoder,CustomNodeJSONEncoder
+from gnowsys_ndf.tasks import *
+
 
 @connection.register
 class Filehive(DjangoDocument):
@@ -355,7 +360,25 @@ class Filehive(DjangoDocument):
             self.uploaded_at = datetime.datetime.now()
 
         super(Filehive, self).save(*args, **kwargs)
+        if GSTUDIO_SITE_NAME == "NROER":
+            temp = self
+            temp.update({"collection_name":"Filehives"})
+            model_name = self._meta.model_name
+            temp.update({"model_name":model_name})
+            from bson import json_util
+            data_save_into_file = json.dumps(temp,cls=CustomNodeJSONEncoder)
+            json_data = json.dumps(temp,cls=NodeJSONEncoder)
+            kwargs = json.dumps(kwargs,cls=NodeJSONEncoder)
+            rcs_function_for_filehive_model.apply_async((is_new,data_save_into_file,json_data,kwargs), countdown=1)
+        else:
+            self.rcs_function(self,is_new,*args,**kwargs)
+        # data save into ES...
+        if GSTUDIO_ELASTIC_SEARCH_IN_FILEHIVE_CLASS == True:
+            esearch.save_to_es(self)
 
+        # --- END of storing Filehive JSON in RSC system ---
+    # @task
+    def rcs_function(self,is_new,*args,**kwargs):
         # storing Filehive JSON in RSC system:
         history_manager = HistoryManager()
         rcs_obj = RCS()
@@ -365,8 +388,11 @@ class Filehive(DjangoDocument):
             # Create history-version-file
             if history_manager.create_or_replace_json_file(self):
                 fp = history_manager.get_file_path(self)
-                message = "This document (" + str(self.md5) + ") is created on " + self.uploaded_at.strftime("%d %B %Y")
-                rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+                if self.uploaded_at:
+                    message = "This document (" + str(self.md5) + ") is created on " + self.uploaded_at.strftime("%d %B %Y")
+                    rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+                else:
+                    pass
 
         else:
             # Update history-version-file
@@ -379,9 +405,11 @@ class Filehive(DjangoDocument):
                 try:
                     if history_manager.create_or_replace_json_file(self):
                         fp = history_manager.get_file_path(self)
-                        message = "This document (" + str(self.md5) + ") is re-created on " + self.uploaded_at.strftime("%d %B %Y")
-                        rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
-
+                        if self.uploaded_at:
+                            message = "This document (" + str(self.md5) + ") is re-created on " + self.uploaded_at.strftime("%d %B %Y")
+                            rcs_obj.checkin(fp, 1, message.encode('utf-8'), "-i")
+                        else:
+                            pass
                 except Exception as err:
                     print "\n DocumentError: This document (", self._id, ":", str(self.md5), ") can't be re-created!!!\n"
                     node_collection.collection.remove({'_id': self._id})
@@ -395,8 +423,6 @@ class Filehive(DjangoDocument):
             except Exception as err:
                 print "\n DocumentError: This document (", self._id, ":", str(self.md5), ") can't be updated!!!\n"
                 raise RuntimeError(err)
-
-        # --- END of storing Filehive JSON in RSC system ---
 
 
 filehive_collection = db["Filehives"].Filehive

@@ -269,7 +269,7 @@ factory_relation_types = [
     },
 
     {'has_thumbnail': {
-            'subject_type': ['Page', 'File','Jsmol'],
+            'subject_type': ['Page', 'File','Jsmol','interactive_page'],
             'object_type': ['File'],
             'inverse_name': 'thumbnail_of',
             'meta_type': 'factory_types',
@@ -297,6 +297,15 @@ factory_relation_types = [
             'object_cardinality': 100
         }
     },
+
+    {'has_prerequisite': {
+                'subject_type':['Topic'],
+                'object_type':['Topic'],
+                'inverse_name':'prerequisite_of',
+                'meta_type':'factory_types',
+                'object_cardinality': 100
+            }
+        },
 
 ]
 

@@ -1,9 +1,10 @@
 {% load i18n %}
+{% load get_latest_git_hash  from simple_filters %}
 {% load ndf_tags %}
 {% load get_latest_git_hash from  simple_filters %}
 
-{% block body_content %}
-
+/* responsive footer */
+.clearfix {clear: both;}
 
 <style type="text/css">
  .footer-clix1{
@@ -21,9 +22,6 @@
     z-index: -1;
     width: 100%!important;
 }
-
-
-
 </style>
 
 <footer class="footer">

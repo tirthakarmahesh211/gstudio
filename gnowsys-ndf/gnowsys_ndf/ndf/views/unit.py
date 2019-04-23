@@ -140,7 +140,7 @@ def unit_create_edit(request, group_id, unit_group_id=None):
         if blog_name:
             unit_node['project_config'].update( {"blog_name":blog_name})
         elif "base_unit" in unit_node.member_of_names_list or "announced_unit" in unit_node.member_of_names_list :
-            unit_node['project_config'].update( {"blog_name":"e-Notes"})
+            unit_node['project_config'].update( {"blog_name":"Blog"})
         else:
             unit_node['project_config'].update( {"blog_name":"blog Name"})
         
@@ -164,7 +164,7 @@ def unit_create_edit(request, group_id, unit_group_id=None):
 
 
 @get_execution_time
-def unit_detail(request, group_id):
+def unit_detail(request, group_id, player_title=None):
     '''
     detail of of selected units
     '''
@@ -177,8 +177,12 @@ def unit_detail(request, group_id):
     template = 'ndf/lms.html'
 
     # print unit_structure
+    if player_title:
+        title = 'lesson_player'
+    else:
+        title =  'unit_authoring'
     req_context = RequestContext(request, {
-                                'title': 'unit_authoring',
+                                'title': title,
                                 'hide_bannerpic': True,
                                 'group_id': unit_group_obj._id,
                                 'groupid': unit_group_obj._id,

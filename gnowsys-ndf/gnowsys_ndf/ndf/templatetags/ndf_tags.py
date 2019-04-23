@@ -37,7 +37,8 @@ from django.core.cache import cache
 from mongokit import IS
 
 ''' -- imports from application folders/files -- '''
-from gnowsys_ndf.settings import GAPPS as setting_gapps, GSTUDIO_DEFAULT_GAPPS_LIST, META_TYPE, CREATE_GROUP_VISIBILITY, GSTUDIO_SITE_DEFAULT_LANGUAGE,GSTUDIO_DEFAULT_EXPLORE_URL,GSTUDIO_EDIT_LMS_COURSE_STRUCTURE,GSTUDIO_WORKSPACE_INSTANCE
+from gnowsys_ndf.settings import GAPPS as setting_gapps, GSTUDIO_DEFAULT_GAPPS_LIST, META_TYPE, CREATE_GROUP_VISIBILITY, GSTUDIO_SITE_DEFAULT_LANGUAGE,GSTUDIO_DEFAULT_EXPLORE_URL,GSTUDIO_EDIT_LMS_COURSE_STRUCTURE,GSTUDIO_WORKSPACE_INSTANCE,GSTUDIO_SITE_LANDING_PAGE_LOGO,GSTUDIO_SITE_LANDING_PAGE_TEXT, GSTUDIO_SITE_LANDING_PAGE_BG, GSTUDIO_SITE_LOGIN_PAGE_LOGO,GSTUDIO_FOOTER_LINKS, LOGIN_WITH_MASTODON
+
 # from gnowsys_ndf.settings import GSTUDIO_SITE_LOGO,GSTUDIO_COPYRIGHT,GSTUDIO_GIT_REPO,GSTUDIO_SITE_PRIVACY_POLICY, GSTUDIO_SITE_TERMS_OF_SERVICE,GSTUDIO_ORG_NAME,GSTUDIO_SITE_ABOUT,GSTUDIO_SITE_POWEREDBY,GSTUDIO_SITE_PARTNERS,GSTUDIO_SITE_GROUPS,GSTUDIO_SITE_CONTACT,GSTUDIO_ORG_LOGO,GSTUDIO_SITE_CONTRIBUTE,GSTUDIO_SITE_VIDEO,GSTUDIO_SITE_LANDING_PAGE
 from gnowsys_ndf.settings import *
 try:
@@ -59,6 +60,7 @@ from django.contrib.sites.models import Site
 from gnowsys_ndf.ndf.node_metadata_details import schema_dict
 from django_mailbox.models import Mailbox
 import itertools
+from gnowsys_ndf.ndf.gstudio_es.es import *
 
 register = Library()
 at_apps_list = node_collection.one({
@@ -135,6 +137,10 @@ def get_site_variables():
 	site_var['INSTITUTE_ID'] = GSTUDIO_INSTITUTE_ID
 	site_var['HEADER_LANGUAGES'] = HEADER_LANGUAGES
 	site_var['GSTUDIO_DOC_FOOTER_TEXT'] = GSTUDIO_DOC_FOOTER_TEXT
+	#site_var['HEADER_LANGUAGES'] = HEADER_LANGUAGES
+	site_var['GSTUDIO_ELASTIC_SEARCH'] = GSTUDIO_ELASTIC_SEARCH
+	site_var['TESTING_VARIABLE_FOR_ES'] = TESTING_VARIABLE_FOR_ES
+	site_var['LOGIN_WITH_MASTODON'] = LOGIN_WITH_MASTODON
 
 	cache.set('site_var', site_var, 60 * 30)
 
@@ -414,7 +420,7 @@ def get_group_gapps(group_id=None):
 		# 		# print "\n", gapps_list,"\n"
 
 		# 		all_gapp_ids_list = [node_collection.one({'_id':ObjectId(g['_id'])}) for g in gapps_list]
-		# 		# print all_gapp_ids_list,">>>>>>>>>>\n\n works like prior_node"
+		# 		# print all_gapp_ids_list,"\n\n works like prior_node"
 		# 		return all_gapp_ids_list
 
 
@@ -606,7 +612,7 @@ def get_attribute_value(node_id, attr_name, get_data_type=False, use_cache=True)
 
 @get_execution_time
 @register.assignment_tag
-def get_relation_value(node_id, grel, return_single_right_subject=False):
+def get_relation_value(node_id, grel, return_single_right_subject=False,is_assetcontent=False):
 
     # import ipdb; ipdb.set_trace()
     try:
@@ -616,32 +622,38 @@ def get_relation_value(node_id, grel, return_single_right_subject=False):
             relation_type_node = node_collection.one({'_type': 'RelationType', 'name': unicode(grel) })
             if node and relation_type_node:
                 if relation_type_node.object_cardinality > 1:
-                    node_grel = triple_collection.find({'_type': "GRelation", "subject": node._id, 'relation_type': relation_type_node._id,'status':"PUBLISHED"})
-                    if node_grel:
-                        grel_val = []
-                        grel_id = []
-                        for each_node in node_grel:
-                            grel_val.append(each_node.right_subject)
-                            grel_id.append(each_node._id)
-                        grel_val_node_cur = node_collection.find({'_id':{'$in' : grel_val}})
-                        result_dict.update({"cursor": True})
-                        if return_single_right_subject:
-                            grel_val_node_cur = node_collection.find_one({'_id':{'$in' : grel_val}})
-                            result_dict.update({"cursor": False})
-                        # nodes = [grel_node_val for grel_node_val in grel_val_node_cur]
-                        # print "\n\n grel_val_node, grel_id == ",grel_val_node, grel_id
-                        result_dict.update({"grel_id": grel_id, "grel_node": grel_val_node_cur})
+					if is_assetcontent:
+					    node_grel = triple_collection.find({'_type': "GRelation", "subject": node._id, 'relation_type': relation_type_node._id})
+					else:
+						node_grel = triple_collection.find({'_type': "GRelation", "subject": node._id, 'relation_type': relation_type_node._id,'status':"PUBLISHED"})
+					if node_grel:
+						grel_val = []
+						grel_id = []
+						for each_node in node_grel:
+						    grel_val.append(each_node.right_subject)
+						    grel_id.append(each_node._id)
+						grel_val_node_cur = node_collection.find({'_id':{'$in' : grel_val}})
+						result_dict.update({"cursor": True})
+						if return_single_right_subject:
+						    grel_val_node_cur = node_collection.find_one({'_id':{'$in' : grel_val}})
+						    result_dict.update({"cursor": False})
+						# nodes = [grel_node_val for grel_node_val in grel_val_node_cur]
+						# print "\n\n grel_val_node, grel_id == ",grel_val_node, grel_id
+						result_dict.update({"grel_id": grel_id, "grel_node": grel_val_node_cur})
                 else:
-                    node_grel = triple_collection.one({'_type': "GRelation", "subject": node._id, 'relation_type': relation_type_node._id,'status':"PUBLISHED"})
-                    if node_grel:
-                        grel_val = list()
-                        grel_val = node_grel.right_subject
-                        grel_val = grel_val if isinstance(grel_val, list) else [ObjectId(grel_val)]
-                        grel_id = node_grel._id
-                        # grel_val_node = node_collection.one({'_id':ObjectId(grel_val)})
-                        grel_val_node = node_collection.find_one({'_id':{'$in': grel_val}})
-                        # returns right_subject of grelation and GRelation _id
-                        result_dict.update({"grel_id": grel_id, "grel_node": grel_val_node, "cursor": False})
+					if is_assetcontent:
+						node_grel = triple_collection.find({'_type': "GRelation", "subject": node._id, 'relation_type': relation_type_node._id})
+					else:
+						node_grel = triple_collection.one({'_type': "GRelation", "subject": node._id, 'relation_type': relation_type_node._id,'status':"PUBLISHED"})
+					if node_grel:
+						grel_val = list()
+						grel_val = node_grel.right_subject
+						grel_val = grel_val if isinstance(grel_val, list) else [ObjectId(grel_val)]
+						grel_id = node_grel._id
+						# grel_val_node = node_collection.one({'_id':ObjectId(grel_val)})
+						grel_val_node = node_collection.find_one({'_id':{'$in': grel_val}})
+						# returns right_subject of grelation and GRelation _id
+						result_dict.update({"grel_id": grel_id, "grel_node": grel_val_node, "cursor": False})
         # print "\n\nresult_dict === ",result_dict
         return result_dict
     except Exception as e:
@@ -1063,7 +1075,7 @@ def get_nroer_menu(request, group_name):
 				break
 
 		# print "selected_gapp : ", selected_gapp
-	if (selected_gapp == "partner") and (len(url_split) > 2) and (url_split[2] in ["Partners", "Groups"]):
+	if (selected_gapp == "partner") and (len(url_split) > 2) and (url_split[2] in ["Partners", "Workspaces"]):
 		top_menu_selected = url_split[2]
 
 	mapping = GSTUDIO_NROER_MENU_MAPPINGS
@@ -1080,7 +1092,7 @@ def get_nroer_menu(request, group_name):
 		# with help of sub_menu_selected get it's parent from GSTUDIO_NROER_MENU
 		top_menu_selected = [i.keys()[0] for i in GSTUDIO_NROER_MENU[1:] if sub_menu_selected in i.values()[0]][0]
 		# for Partners, "Curated Zone" should not appear
-		gapps = gapps[1:] if (top_menu_selected in ["Partners", "Groups"]) else gapps
+		gapps = gapps[1:] if (top_menu_selected in ["Partners", "Workspaces"]) else gapps
 
 	elif (len(url_split) >= 3) and ("nroer_groups" in url_split) and (url_split[2] in [i.keys()[0] for i in GSTUDIO_NROER_MENU[1:]]):
 		# print "top_menu_selected ", top_menu_selected
@@ -1091,7 +1103,7 @@ def get_nroer_menu(request, group_name):
 	nroer_menu_dict["gapps"] = gapps
 	nroer_menu_dict["top_menu_selected"] = top_menu_selected
 	nroer_menu_dict["mapping"] = mapping
-	nroer_menu_dict["top_menus"] = GSTUDIO_NROER_MENU[1:]
+	nroer_menu_dict["top_menus"] = GSTUDIO_NROER_MENU[1:2]
 
 	# print "nroer_menu_dict : ", nroer_menu_dict
 	return nroer_menu_dict
@@ -1531,6 +1543,10 @@ def get_url(groupid):
 			return 'show'
 		elif type_name.name == 'Task' or type_name.name == 'task_update_history':
 			return 'task_details'
+		elif type_name.name == 'Topic':
+			return 'topic_details'
+		elif type_name.name == 'Asset':
+			return 'asset_details'
 		elif type_name.name == 'File':
 			if (node.if_file.mime_type) == ("application/octet-stream"):
 				return 'video_detail'
@@ -1904,7 +1920,7 @@ def get_group_type(group_id, user):
                 # If Group is not found with either given ObjectId or name in the database
                 # Then compare with a given list of names as these were used in one of the urls
                 # And still no match found, throw error
-                if g_id not in ["online", "i18n", "raw", "r", "m", "t", "new", "mobwrite", "admin", "benchmarker", "accounts", "Beta", "welcome", "explore"]:
+                if g_id not in ["ws","popular","online", "i18n", "raw", "r", "m", "t", "new", "mobwrite", "admin", "benchmarker", "accounts", "Beta", "welcome", "explore"]:
                     error_message = "\n Something went wrong: Either url is invalid or such group/user doesn't exists !!!\n"
                     raise Http404(error_message)
 
@@ -2363,7 +2379,8 @@ def check_is_gstaff(groupid, user):
 
   if cache_key in cache:
     return cache.get(cache_key)
-
+  if groupid == "ws":
+  	groupid ="home"
   groupid = groupid if groupid else 'home'
 
   try:
@@ -3188,8 +3205,11 @@ def get_filters_data(gst_name, group_name_or_id='home'):
 			# print "================----"
 			at_set_key = 'attribute_set.' + k
 			group_obj = node_collection.one({"name":group_id,"_type":"Group"})
-			all_at_list = node_collection.find({at_set_key: {'$exists': True, '$nin': ['', 'None', []], },"group_set":ObjectId(group_obj._id) }).distinct(at_set_key)
-
+			if group_obj:
+				all_at_list = node_collection.find({at_set_key: {'$exists': True, '$nin': ['', 'None', []], },"group_set":ObjectId(group_obj._id) }).distinct(at_set_key)
+			else:
+				group_obj = node_collection.one({"name":group_id,"_type":"Author"})
+				all_at_list = node_collection.find({at_set_key: {'$exists': True, '$nin': ['', 'None', []], },"group_set":ObjectId(group_obj._id) }).distinct(at_set_key)
 			fvalue = all_at_list
 
 		filter_dict[k] = {
@@ -3258,16 +3278,16 @@ def get_sg_member_of(group_id):
 	Returns list of names of "member_of" of sub-groups.
 	- Takes group_id as compulsory and only argument.
 	'''
-
 	sg_member_of_list = []
 	# get all underlying groups
+
 	try:
 		group_id = ObjectId(group_id)
 	except:
 		group_id, group_name = get_group_name_id(group_id)
 
 	group_obj = node_collection.one({'_id': ObjectId(group_id)})
-	# print group_obj.name
+
 	# Fetch post_node of group
 	if group_obj:
 		if "post_node" in group_obj:
@@ -3890,11 +3910,11 @@ def get_download_filename(node, file_size_name='original'):
 		name = node.altnames if node.altnames else node.name
 		name = name.split('.')[0]
 		file_name = slugify(name)
+		name = name.encode('utf-8')
 
-		if extension:
-			file_name += extension
-
-		return file_name
+	if extension:
+		name+=extension
+		return name
 
 	else:
 		name = node.altnames if node.altnames else node.name
@@ -4121,6 +4141,22 @@ def get_default_discussion_lbl():
 @register.assignment_tag
 def get_gstudio_workspace_instance():
 	return GSTUDIO_WORKSPACE_INSTANCE
+@register.assignment_tag
+def get_gstudio_landing_page_logo():
+	return GSTUDIO_SITE_LANDING_PAGE_LOGO
+@register.assignment_tag
+def get_gstudio_landing_page_text():
+	return GSTUDIO_SITE_LANDING_PAGE_TEXT
+@register.assignment_tag
+def get_gstudio_landing_page_bg():
+	return GSTUDIO_SITE_LANDING_PAGE_BG
+@register.assignment_tag
+def get_gstudio_login_page_logo():
+	return GSTUDIO_SITE_LOGIN_PAGE_LOGO
+
+@register.assignment_tag
+def get_gstudio_footer_links():
+	return GSTUDIO_FOOTER_LINKS
 
 @register.assignment_tag
 def get_topic_nodes(node_id):
@@ -4217,6 +4253,7 @@ def get_module_enrollment_status(request, module_obj):
 @get_execution_time
 @register.filter
 def get_unicode_lang(lang_code):
+
     try:
         return get_language_tuple(lang_code)[1]
     except Exception as e:
@@ -4230,7 +4267,6 @@ def get_header_lang(lang):
         if lang in each_lang:
             return each_lang[1]
     return lang
-
 
 @get_execution_time
 @register.assignment_tag
@@ -4272,3 +4308,132 @@ def get_name_by_node_id(node_id):
 @register.assignment_tag
 def get_institute_name():
 	return GSTUDIO_INSTITUTE_NAME
+
+#convert 13 digit number to slash date format 
+
+@get_execution_time
+@register.filter
+def convert_date_string_to_date(your_timestamp):
+
+	date = str(datetime.datetime.fromtimestamp( your_timestamp / 1000))
+
+	temp1 = date[8:10]
+	temp2 = date[5:7]
+	temp3 = date[0:4]
+	date = temp1 + "/"+ temp2 +"/"+ temp3
+
+	return date
+
+
+@get_execution_time
+@register.filter
+def cal_length(string):
+	return len(str(string))
+
+@get_execution_time
+@register.assignment_tag
+def get_member_of_list(node_ids):
+
+	from gnowsys_ndf.ndf.models.gsystem_type import GSystemType
+	temp_list =[]
+	for each in node_ids:
+		node_obj = node_collection.find_one({"_id":ObjectId(each)})
+		if node_obj:
+			temp_list.append(node_obj.name)
+	if node_obj:
+		return temp_list
+	else:
+		return None
+
+
+@get_execution_time
+@register.filter
+def join_with_commas(obj_list):
+    """Takes a list of objects and returns their unicode representations,
+    seperated by commas and with 'and' between the penultimate and final items
+    For example, for a list of fruit objects:
+    [<Fruit: apples>,<Fruit: oranges>,<Fruit: pears>] -> 'apples, oranges and pears'
+    """
+    if not obj_list:
+        return ""
+    l=len(obj_list)
+    print obj_list
+    if l==1:
+        return u"%s" % obj_list[0]
+    else:
+    	# print "--------------------------------"
+    	str_obj = str(obj_list)
+    	str_obj = str_obj[1:-1]
+    	print str_obj
+    	string_list_of_values=""
+
+    	for temp in str_obj.split(','):
+    		# print "============================"
+    		# print temp
+    		# print "-=========================="
+    		temp = str(temp).strip()
+    		temp = temp[2:-1]
+    		# print "+++++++++++"
+    		# print temp
+    		# print "+++++++++++"
+    		string_list_of_values = string_list_of_values+temp+', '
+        # return ", ".join(unicode(obj) for obj in obj_list[:l-1]) \
+        #         + " and " + unicode(obj_list[l-1])
+        	# print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        	# print string_list_of_values
+        	# print "!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        return string_list_of_values[:-1]
+
+@get_execution_time
+@register.assignment_tag
+def get_download_videofilename(vid_mp4,vid_webm):
+
+
+
+	extension = None
+	if hasattr(node, 'if_file') and node.if_file[file_size_name].relurl:
+		from django.template.defaultfilters import slugify
+		relurl = node.if_file[file_size_name].relurl
+		relurl_split_list = relurl.split('.')
+
+		if len(relurl_split_list) > 1:
+			extension = "." + relurl_split_list[-1]
+		elif 'epub' in node.if_file.mime_type:
+			extension = '.epub'
+		elif not extension:
+			file_hive_obj = filehive_collection.one({'_id':ObjectId(node.if_file.original.id)})
+			file_blob = node.get_file(node.if_file.original.relurl)
+			file_mime_type = file_hive_obj.get_file_mimetype(file_blob)
+			extension = mimetypes.guess_extension(file_mime_type)
+		else:
+			extension = mimetypes.guess_extension(node.if_file.mime_type)
+
+		name = node.altnames if node.altnames else node.name
+		name = name.split('.')[0]
+		file_name = slugify(name)
+		name = name.encode('utf-8')
+
+		print name
+
+	if extension:
+		def Extension():
+			d = dict();
+			d['vid_mp4'] = name+".mp4"
+			d['vid_webm'] = name+".webm"
+			d['vid_mp4'] = vid_mp4
+			d['vid_webm'] = vid_webm
+			return vid_mp4,vid_webm
+
+		d = Extension()
+		if(node.if_file.original.relurl.endswith('webm')==True or node.if_file.original.relurl.endswith('mp4')==True):		
+			#print(name+vid_webm)
+			return d
+			# name+=extension
+			# return name
+	
+		else:
+			name+=extension
+			return name
+
+		return name
+
