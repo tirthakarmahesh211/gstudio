@@ -6044,6 +6044,10 @@ ul.horizontal_tabs_gstudio {
             .course_tree {
                 @include transition-prop(all);
                 width: 20%;
+                @media screen and (min-width: 250px) and (max-width: 750px)  {
+                  width: 100%;
+                  height:100%;
+                }
                 background-color: #2a6882;
                 border: 1px solid #e5f1f6;
 
@@ -6119,6 +6123,10 @@ ul.horizontal_tabs_gstudio {
 
             .course-editor-section {
                 width: 77%;
+                @media screen and (min-width: 250px) and (max-width: 750px)  {
+                   width:100%;
+                }
+
                 opacity: 1;
                 max-width: 100%;
                 background: #fff;
@@ -8739,3 +8747,11 @@ div.card.show {
       margin-left: 14px ! important;
     } 
 }
+
+#activity-content{
+  margin-left:20px;
+  @media screen and (min-width: 250px) and (max-width: 650px){
+    margin:2px;
+  } 
+}
+
