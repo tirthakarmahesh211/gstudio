@@ -4435,3 +4435,14 @@ def get_download_videofilename(vid_mp4,vid_webm):
 			return name
 
 		return name
+@get_execution_time
+@register.assignment_tag
+def chk_user_membership(groupid,user):
+        try:
+                node = node_collection.find_one({"_id":ObjectId(groupid)})
+                if user.id in node.author_set:
+                        return True
+        except Exception as e:
+                print e
+                return False
+        return False
