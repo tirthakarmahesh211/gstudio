@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load ndf_tags %}
 {% check_is_gstaff group_id request.user as is_gstaff %}
+{% chk_user_membership group_id request.user as chk_user_membership_in_grp %}
 {% user_access_policy groupid request.user as user_access_priv %}
 {% block head %}
 
@@ -19,7 +20,9 @@
 
    <!--  Interaction settings modal ends  -->
    {% include 'ndf/widget_user_access_modal.html' %}
+   {% if asset_obj.created_by == request.user.id or is_gstaff  %}
    {% include 'ndf/widget_cross_publish.html' with node=asset_obj %}
+   {% endif %}
 
 <div class="overlay-head">
    <div class="row">
@@ -84,8 +87,10 @@
             {% endif %}
 
             {% if request.user.is_authenticated  %}
-                <button type="button" class="orange-button add-asset-content"><i class="fi-plus"></i> {% trans "Add File" %}</button>
+                {% if each_asset.created_by == request.user.id or chk_user_membership_in_grp or is_gstaff  %}
+		    <button type="button" class="orange-button add-asset-content"><i class="fi-plus"></i> {% trans "Add File" %}</button>
                 <a href="{% url 'create_edit_asset_page' group_id asset_obj.pk %}"><button type="button" class="orange-button" ><i class="fi-plus"></i> {% trans "Add  page" %}</button></a>
+		{% endif %}
             {% endif %}
             {% if site.SITE_NAME != "NROER" and site.SITE_NAME != "metaStudio" %}
             {% if asset_content_list.grel_id and asset_obj.created_by == request.user.id  or is_gstaff and asset_obj and asset_content_list.grel_id  %}
