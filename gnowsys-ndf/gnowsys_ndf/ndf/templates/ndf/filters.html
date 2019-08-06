@@ -61,7 +61,7 @@
  		color: #A2A2A2;
  	}
  	div.filter-body>select {
- 		display: none;
+ 		/*display: none;*/
  		width: 330px;
  	}
  	div.filter-body {
@@ -125,10 +125,12 @@
 				<!--div class="small-12 large-3 columns small-text-left  large-text-center"><h5> {% trans 'Filter Resources' %}</h5></div-->
 				<div class="small-12 large-12 columns">
 					<div class="filter-body filter-margin">
+						{% comment %}
 						<div class="filter-button" id="filter_button">
 							<i class="fi-filter small" aria-hidden="true"></i>
 							<span>{% trans "Add Filter" %}</span>
 						</div>
+						{% endcomment %}
 						<select name="filter-field-name">
 							<option value="initial-select"> -- {% trans 'Select' %} -- </option>
 							{% for key, val in filter_dict.items %}
