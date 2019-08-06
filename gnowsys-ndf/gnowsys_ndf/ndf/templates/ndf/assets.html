@@ -55,9 +55,11 @@
                 </button>
             {% endif %}
             {% if title == "asset_list"  %}
+		{% if is_gstaff %}
                 <button type="button" class="right orange-button createAsset" style="margin-right:70px;">
                     <i class="fi-plus"> </i>{% trans "Add Folder" %} 
                 </button>
+		{% endif %}
             {% endif %}
         {% endif %}
         </div>

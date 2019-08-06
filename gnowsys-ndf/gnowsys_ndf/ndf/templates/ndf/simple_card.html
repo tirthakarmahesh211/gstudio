@@ -43,7 +43,7 @@
 {% elif first_arg and second_arg %}
   <a href="{% url url_name first_arg second_arg %}{{search_url_text|safe}}">
 {% elif first_arg %}
-  <a href='{% url url_name first_arg %}{{search_url_text|safe}}'>
+  {% comment %}<a href='{% url url_name first_arg %}{{search_url_text|safe}}'>{% endcomment %}
 {% else %}
   <a href='{% url url_name  %}{{search_url_text|safe}}'>
 {% endif %}

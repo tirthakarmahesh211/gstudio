@@ -113,10 +113,12 @@
     
         <div class="activity-sheet-actions">
             <div class="row">
+	    {% if is_gstaff %}
             {% if all_pages.count %}
             <button type="button" class="orange-button delete-activity right" title="Click on the checkbox on the files below to Delete"><i class="fa fa-trash"></i> {% trans "Delete" %}</button>
             {% endif %}
-            {% if user.is_authenticated %}
+	    {% endif %}
+            {% if is_gstaff %}
               {% if site.SITE_NAME == 'NROER' or site.SITE_NAME == "metaStudio" %}
                 <a class="right orange-button-template" href="{% url 'create_course_page_info'  group_id 'Info' %}"><i class="fi-plus"></i> {% trans "Add Cordinator's page" %}</a>
               {% else %}
